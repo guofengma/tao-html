@@ -219,6 +219,7 @@ export default {
         top: .4rem;
         height: 0.9rem;
         width: 0.9rem;
+        text-align: center;
         border-radius: 50%;
         border: 2px solid #ff5252;
         color: #ff5252;
