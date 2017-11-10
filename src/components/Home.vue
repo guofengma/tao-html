@@ -54,9 +54,7 @@
         <span>热门医生</span>
         <a href="#" class="f_right">更多</a>
       </div>
-      <div class="hot_list">
-        <HotDoctorList></HotDoctorList>
-      </div>
+      <HotDoctorList :list='arr'/>
     </div>
   </div>
 </template>
@@ -68,7 +66,7 @@ export default {
   data() {
     return {
       msg: "Welcome to Your Vue.js App",
-      arr:[1,2,3,4,5,6]
+      arr:[1,2,3,4,5]
     };
   },
   components: {
