@@ -134,7 +134,6 @@ export default {
 .hot{
   margin:0.3rem 0;
   .hot_top{
-    height: 2rem;
     padding:0.6rem;
     border-bottom: 1px solid @border;
     span{
