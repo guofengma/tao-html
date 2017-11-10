@@ -55,19 +55,7 @@
         <a href="#" class="f_right">更多</a>
       </div>
       <div class="hot_list">
-        <div class="doctor_list clearfix">
-              <div class="avatar f_left"><img src="../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
-              <div class="doctor_info">
-                  <h2><span>徐亮</span><span>主任</span><span>儿科</span></h2>
-                  <h4>北京安贞医院</h4>
-                  <p>擅长：发育不完整、发育缓慢、呼吸道感染、支气管感染</p>
-              </div>
-              <ul class="server_item clearfix">
-                  <li><img src="../../static/imgs/hospital/index/tdf_hospital_jkzx.png" alt=""></li>
-                  <li><img src="../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
-                  <li><img src="../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
-              </ul>
-          </div>
+        <HotDoctorList></HotDoctorList>
       </div>
     </div>
   </div>
@@ -79,7 +67,8 @@ export default {
   name: "HelloWorld",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      msg: "Welcome to Your Vue.js App",
+      arr:[1,2,3,4,5,6]
     };
   },
   components: {
