@@ -36,6 +36,7 @@ export default {
 <style lang='less' scoped>
     .order_list {
         li {
+            margin-bottom: .4rem;
             .order_top {
                 display: flex;
                 justify-content: space-between;

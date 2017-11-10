@@ -9,6 +9,7 @@
         </div>
         <mt-tab-container v-model="active" swipeable>
             <mt-tab-container-item id="tab-container1">
+                <!-- 全部订单列表展示 -->
                 <pubOrderList :num="num"/>
             </mt-tab-container-item>
             <mt-tab-container-item id="tab-container2">
