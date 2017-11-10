@@ -9,7 +9,7 @@
         </div>
         <mt-tab-container v-model="active" swipeable>
             <mt-tab-container-item id="tab-container1">
-                <pubOrderList />
+                <pubOrderList :num="num"/>
             </mt-tab-container-item>
             <mt-tab-container-item id="tab-container2">
                 <mt-cell v-for="n in 2" :key="n" title="tab-container2"></mt-cell>
@@ -34,7 +34,8 @@ export default {
   name: "myOrder",
   data() {
     return {
-      active: "tab-container1"
+      active: "tab-container1",
+      num: 3
     };
   },
   methods: {
