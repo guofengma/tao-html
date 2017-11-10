@@ -21,44 +21,69 @@
       <ul class="hot_item clearfix">
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_neike.png" alt=""></div>
-          <p>内科</p>
+          <h2>内科</h2>
         </li>
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_waike.png" alt=""></div>
-          <p>外科</p>
+          <h2>外科</h2>
         </li>
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_erke.png" alt=""></div>
-          <p>儿科</p>
+          <h2>儿科</h2>
         </li>
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_fchk.png" alt=""></div>
-          <p>妇产科</p>
+          <h2>妇产科</h2>
         </li>
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_pfk.png" alt=""></div>
-          <p>皮肤科</p>
+          <h2>皮肤科</h2>
         </li>
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_kqk.png" alt=""></div>
-          <p>口腔科</p>
+          <h2>口腔科</h2>
         </li>
         <li>
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_more.png" alt=""></div>
-          <p>更多</p>
+          <h2>更多</h2>
         </li>
       </ul>
+    </div>
+    <div class="hot_doctor">
+      <div class="hot_top">
+        <span>热门医生</span>
+        <a href="#" class="f_right">更多</a>
+      </div>
+      <div class="hot_list">
+        <div class="doctor_list clearfix">
+              <div class="avatar f_left"><img src="../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
+              <div class="doctor_info">
+                  <h2><span>徐亮</span><span>主任</span><span>儿科</span></h2>
+                  <h4>北京安贞医院</h4>
+                  <p>擅长：发育不完整、发育缓慢、呼吸道感染、支气管感染</p>
+              </div>
+              <ul class="server_item clearfix">
+                  <li><img src="../../static/imgs/hospital/index/tdf_hospital_jkzx.png" alt=""></li>
+                  <li><img src="../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
+                  <li><img src="../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
+              </ul>
+          </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import HotDoctorList from './hotDoctorList/HotDoctorList'
 export default {
   name: "HelloWorld",
   data() {
     return {
       msg: "Welcome to Your Vue.js App"
     };
+  },
+  components: {
+    HotDoctorList
   }
 };
 </script>
@@ -66,25 +91,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='less'>
 @mainColor: #fff;
-@fontColor: rgb(57,57,57);
-@font1Color: rgb(102,102,102);
+@fontColor: rgb(57, 57, 57);
+@font1Color: rgb(102, 102, 102);
 @assistColor: #666;
 @primary: #0032a7;
 @placeholder: #999;
-@border:rgb(238,238,238);
+@border: rgb(238, 238, 238); 
 // 顶部tab栏
 .topbar {
   font-size: 0.9rem;
   color: #fff;
   padding: 1rem 0.5rem;
   background: #3794fe;
-  text-align:center;
-  .topbar_icon{
-    width:1rem;
+  text-align: center;
+  .topbar_icon {
+    width: 1rem;
     height: 1rem;
-    img{
-      width:100%;
-      height:100%;
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
   .search {
@@ -131,43 +156,94 @@ export default {
     }
   }
 }
-.hot{
-  margin:0.3rem 0;
-  .hot_top{
-    padding:0.6rem;
-    border-bottom: 1px solid @border;
-    span{
-      color:@fontColor;
-      font-size:0.8rem;
-    }
-    a{
-      color:@font1Color;
-      font-size: 0.65rem;
-    }
+.hot_top {
+  padding: 0.6rem;
+  border-bottom: 1px solid @border;
+  span {
+    color: @fontColor;
+    font-size: 0.8rem;
   }
-  .hot_item{
-    padding:0.75rem 0;
-    li{
-      width:25%;
-      text-align:center;
-      margin-bottom:1.3rem;
-      float:left;
-      .hot_item_icon{
-        width:2rem;
+  a {
+    color: @font1Color;
+    font-size: 0.65rem;
+  }
+}
+.hot {
+  margin: 0.35rem 0;
+  background: #fff;
+  .hot_item {
+    padding: 0.75rem 0;
+    li {
+      width: 25%;
+      text-align: center;
+      margin-bottom: 1.3rem;
+      float: left;
+      .hot_item_icon {
+        width: 2rem;
         height: 2rem;
-        margin:0 auto;
-        margin-bottom:0.5rem;
+        margin: 0 auto;
+        margin-bottom: 0.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
-        img{
-          width:100%;
-          height:100%;
+        img {
+          width: 100%;
+          height: 100%;
         }
       }
+      h2 {
+        font-size: 0.8rem;
+        color: @fontColor;
+      }
+    }
+  }
+}
+.hot_doctor {
+  margin: 0.35rem 0;
+  background: #fff;
+  .doctor_list {
+    background: #fff;
+    padding: 0.75rem 0.6rem;
+    .avatar {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius:100%;
+      border: 1px solid #3794fe;
+      margin-right: 0.8rem;
+      img{
+        width:100%;
+      }
+    }
+    .doctor_info{
+      overflow:hidden;
+      font-size:0.8rem;
+      color:@font1Color;
+      h2{
+        color:@fontColor;        
+        margin-bottom:0.6rem;
+        span{
+          margin-right:0.5rem;
+        }
+      }
+      h4{  
+        margin-bottom:0.6rem;
+      }
       p{
-        font-size:0.7rem;
-        color:@fontColor;
+        line-height:1.3rem;
+        margin-bottom:0.8rem;
+      }
+    }
+    .server_item {
+      margin-left:3.5rem;
+      li {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 1.8rem;
+        float:left;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }
