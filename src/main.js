@@ -5,11 +5,13 @@ import App from './App'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import router from './router'
+import VueResource from 'vue-resource'
 //全局引入默认样式
 import '../static/css/base.css'
 
 //使用mint-ui框架
 Vue.use(MintUI)
+Vue.use(VueResource)
 
 //开发模式（true）
 Vue.config.debug = true

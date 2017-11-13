@@ -75,19 +75,18 @@ export default {
   components: {
     HotDoctorList,
     navbar
+  },
+  method:{
+    greet:function(){
+      console.log(231)
+    }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='less'>
-@mainColor: #fff;
-@fontColor: rgb(57, 57, 57);
-@font1Color: rgb(102, 102, 102);
-@assistColor: #666;
-@primary: #0032a7;
-@placeholder: #999;
-@border: rgb(238, 238, 238); 
+@import '../../static/less/globalVar.less';
 .home{
   padding-bottom:2.5rem;
   padding-top:3.2rem;

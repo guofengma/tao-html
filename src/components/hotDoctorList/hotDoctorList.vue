@@ -29,13 +29,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-@mainColor: #fff;
-@fontColor: rgb(57, 57, 57);
-@font1Color: rgb(102, 102, 102);
-@assistColor: #666;
-@primary: #0032a7;
-@placeholder: #999;
-@border: rgb(238, 238, 238);
+@import '../../../static/less/globalVar.less';
 .doctor_list {
   background: #fff;
   padding: 0.75rem 0.6rem;
