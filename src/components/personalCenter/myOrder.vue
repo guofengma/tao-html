@@ -29,6 +29,7 @@
 </template>
 
 <script>
+//引入公用医生列表子组件
 import pubOrderList from '../personalCenter/pubComponents/pubOrderList'
 export default {
   name: "myOrder",
@@ -37,11 +38,6 @@ export default {
       active: "tab-container1",
       num: 3
     };
-  },
-  methods: {
-      showTab(e) {
-          console.log(e);
-      }
   },
   components: {
       pubOrderList
