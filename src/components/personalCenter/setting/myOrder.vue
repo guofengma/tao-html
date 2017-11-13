@@ -30,7 +30,7 @@
 
 <script>
 //引入公用医生列表子组件
-import pubOrderList from '../personalCenter/pubComponents/pubOrderList'
+import pubOrderList from '../pubComponents/pubOrderList'
 export default {
   name: "myOrder",
   data() {

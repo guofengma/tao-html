@@ -3,17 +3,20 @@ import Router from 'vue-router'
 
 /*********************************wang***********************************************/
 import personalCenterIndex from '@/components/personalCenter/personalCenterIndex'
-import personalData from '@/components/personalCenter/personalData'
-import myOrder from '@/components/personalCenter/myOrder'
-import editName from '@/components/personalCenter/editName'
-import feedBack from '@/components/personalCenter/feedBack'
-import accountSecurity from '@/components/personalCenter/accountSecurity'
+
+import personalData from '@/components/personalCenter/setting/personalData'
+import myOrder from '@/components/personalCenter/setting/myOrder'
+import editName from '@/components/personalCenter/setting/editName'
+import feedBack from '@/components/personalCenter/setting/feedBack'
+import accountSecurity from '@/components/personalCenter/setting/accountSecurity'
+
 import settingIndex from '@/components/personalCenter/setting/settingIndex'
-import imprint from '@/components/personalCenter/setting/imprint'
+import myDoc from '@/components/personalCenter/setting/myDoc'
 import aboutTao from '@/components/personalCenter/setting/aboutTao'
-import officalAccount from '@/components/personalCenter/setting/officalAccount'
-import introTao from '@/components/personalCenter/setting/introTao'
-import pubDocList from '@/components/personalCenter/pubComponents/pubDocList'
+import imprint from '@/components/personalCenter/setting/aboutTao/imprint'
+import officalAccount from '@/components/personalCenter/setting/aboutTao/officalAccount'
+import introTao from '@/components/personalCenter/setting/aboutTao/introTao'
+import userAgreement from '@/components/personalCenter/setting/aboutTao/userAgreement'
 
 
 /**********************************xu************************************************/
@@ -68,29 +71,34 @@ export default new Router({
       component: settingIndex
     },
     {
-      path: '/imprint',
-      name: 'imprint',
-      component: imprint
-    },
-    {
       path: '/aboutTao',
       name: 'aboutTao',
       component: aboutTao
     },
     {
-      path: '/officalAccount',
-      name: 'officalAccount',
-      component: officalAccount
+      path: '/aboutTao/imprint',
+      name: 'imprint',
+      component: imprint
     },
     {
-      path: '/introTao',
+      path: '/aboutTao/introTao',
       name: 'introTao',
       component: introTao
     },
     {
-      path: '/pubDocList',
-      name: 'pubDocList',
-      component: pubDocList
+      path: '/aboutTao/officalAccount',
+      name: 'officalAccount',
+      component: officalAccount
+    },
+    {
+      path: '/aboutTao/userAgreement',
+      name: 'userAgreement',
+      component: userAgreement
+    },
+    {
+      path: '/myDoc',
+      name: 'myDoc',
+      component: myDoc
     }
   ]
 })

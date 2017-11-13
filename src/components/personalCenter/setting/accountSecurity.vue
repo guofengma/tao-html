@@ -3,7 +3,7 @@
       <ul>
           <li>
               <div class="ico_left">
-                  <img src="../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_cellphone@2x.png" alt="">
+                  <img src="../../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_cellphone@2x.png" alt="">
                     <span>手机号</span>
               </div>
               <div class="ico_right">
@@ -13,7 +13,7 @@
           </li>
           <li>
               <div class="ico_left">
-                  <img src="../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_weixin@2x.png" alt="">
+                  <img src="../../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_weixin@2x.png" alt="">
                 <span>微信</span>
               </div>
               <div class="ico_right">

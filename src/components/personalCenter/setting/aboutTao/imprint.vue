@@ -8,27 +8,27 @@
             <ul>
                 <li>
                     <p>1、首页改版，功能入口更清晰</p>
-                    <img src="../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_one.png" alt="">
+                    <img src="../../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_one.png" alt="">
                 </li>
                 <li>
                     <p>2、新增健康咨询板块，权威健康咨询</p>
-                    <img src="../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_two.png" alt="">
+                    <img src="../../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_two.png" alt="">
                 </li>
                 <li>
                     <p>3、互联网医院改版，银川脑心同治互联网医院唯一授权</p>
-                    <img src="../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_three.png" alt="">
+                    <img src="../../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_three.png" alt="">
                 </li>
                 <li>
                     <p>4、个人健康档案改版，健康档案持续记录</p>
-                    <img src="../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_four.png" alt="">
+                    <img src="../../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_four.png" alt="">
                 </li>
                 <li>
                     <p>5、指定医生健康咨询，服务更高效</p>
-                    <img src="../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_five.png" alt="">
+                    <img src="../../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_five.png" alt="">
                 </li>
                 <li>
                     <p>6、医生个人主页改版</p>
-                    <img src="../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_six.png" alt="">
+                    <img src="../../../../../static/imgs/personalCenterImgs/imprint/tdf_versions_six.png" alt="">
                 </li>
             </ul>
         </main>

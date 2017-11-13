@@ -3,15 +3,15 @@
     <!-- 头部背景 -->
     <div class="top">
       <div class="top_header">
-        <i class="iconfont icon-settings"></i>
+        <router-link tag="i" :to="{name:'settingIndex'}" class="iconfont icon-settings"></router-link>
         <i class="iconfont icon-mark"></i>
       </div>
-      <div class="top_main">
+      <router-link tag="div" :to="{name:'personalData'}" class="top_main">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png" alt="">
         </div>
         <span>世界是你们的</span>
-      </div>
+      </router-link>
       <ul class="top_footer">
         <li>
           <span>2000.00元</span>
@@ -37,19 +37,19 @@
         <li>
           <i>5</i>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_obligation@2x.png" alt="">
-          <span>代付款</span>
+          <span>待付款</span>
         </li>
         <li>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_serve@2x.png" alt="">
-          <span>代付款</span>
+          <span>待服务</span>
         </li>
         <li>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_in_service@2x.png" alt="">
-          <span>代付款</span>
+          <span>服务中</span>
         </li>
         <li>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_evaluate@2x.png" alt="">
-          <span>代付款</span>
+          <span>待评价</span>
         </li>
       </ul>
     </div>
@@ -62,13 +62,13 @@
         </div>
         <i class="iconfont icon-right"></i>
       </li>
-      <li>
+      <router-link tag="li" :to="{name:'myDoc'}">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_doctor@2x.png" alt="">
           <span>我的医生</span>
         </div>
         <i class="iconfont icon-right"></i>
-      </li>
+      </router-link>
       <li>
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_recipe@2x.png" alt="">

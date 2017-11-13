@@ -4,17 +4,17 @@
           <li>
               <span>头像</span>
               <div>
-                  <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png" alt="">
+                  <img :src="iconImg" alt="">
                   <i class="iconfont icon-right"></i>
               </div>
           </li>
-          <li>
+          <router-link tag="li" :to="{name: 'editName'}">
               <span>昵称</span>
               <div>
                   <b>从你的全世界路过</b>
                   <i class="iconfont icon-right"></i>
               </div>
-          </li>
+          </router-link>
           <li>
               <span>我的二维码</span>
               <div>
@@ -34,7 +34,12 @@
 
 <script>
 export default {
-    name: 'personalData'
+    name: 'personalData',
+    data() {
+        return {
+            iconImg: require('../../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png')
+        }
+    }
 }
 </script>
 
