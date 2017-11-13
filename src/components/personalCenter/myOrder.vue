@@ -30,7 +30,6 @@
 
 <script>
 import pubOrderList from '../personalCenter/pubComponents/pubOrderList'
-// import test from '../hotDoctorList/hotDoctorList'
 export default {
   name: "myOrder",
   data() {

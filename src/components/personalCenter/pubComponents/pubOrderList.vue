@@ -1,6 +1,6 @@
 <template>
     <ul class="order_list">
-        <li v-for='item in num' :key='item'>
+        <li v-for='(item, index) in num' :key='index' >
             <div class="order_top">
                 <div>
                     <img src="../../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png" alt="">
