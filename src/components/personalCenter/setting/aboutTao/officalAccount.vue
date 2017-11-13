@@ -2,7 +2,7 @@
   <div class="container">
         <main class="content">
             <p>官方微信公众号</p>
-            <img src="../../../../static/imgs/personalCenterImgs/aboutUs/tdf_tishi_erweima.png" alt="">
+            <img src="../../../../../static/imgs/personalCenterImgs/aboutUs/tdf_tishi_erweima.png" alt="">
             <p>官方网站</p>
             <a href="http://www.taodaifu.net">www.taodaifu.net</a>
         </main>

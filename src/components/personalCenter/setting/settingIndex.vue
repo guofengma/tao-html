@@ -1,17 +1,17 @@
 <template>
   <div class="wrap">
       <ul class="box">
-          <li class="big_img">
+          <router-link tag="li" :to="{name:'personalData'}" class="big_img">
               <div class="img_name">
                   <img src="../../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_head2@2x.png" alt="">
                   <span>昵称：世界是你们的</span>
               </div>
               <i class="iconfont icon-right"></i>
-          </li>
-          <li>
+          </router-link>
+          <router-link tag="li" :to="{name:'accountSecurity'}">
               <span>账户安全</span>
               <i class="iconfont icon-right"></i>
-          </li>
+          </router-link>
           <li>
               <span>通用</span>
               <i class="iconfont icon-right"></i>
@@ -20,14 +20,14 @@
               <span>联系我们</span>
               <a href="tel:4008167576">400-816-7576</a>   
           </li>
-          <li>
+          <router-link tag="li" :to="{name:'feedBack'}">
               <span>意见反馈</span>
               <i class="iconfont icon-right"></i>
-          </li>
-          <li>
+          </router-link>
+          <router-link tag="li" :to="{name:'aboutTao'}">
               <span>关于涛大夫</span>
               <b>v2.2.0.11</b>
-          </li>
+          </router-link>
       </ul>
       <div class="log_out">
           <button>退出登录</button>

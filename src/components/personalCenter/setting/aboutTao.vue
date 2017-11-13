@@ -5,22 +5,22 @@
           <p>2.2.0.11</p>
       </div>
       <ul class="main_list">
-          <li>
+          <router-link tag="li" :to="{name: 'introTao'}">
               <span>涛大夫简介</span>
               <i class="iconfont icon-right"></i>
-          </li>
-          <li>
+          </router-link>
+          <router-link tag="li" :to="{name: 'introTao'}">
               <span>版本说明</span>
               <i class="iconfont icon-right"></i>
-          </li>
-          <li>
+          </router-link>
+          <router-link tag="li" :to="{name: 'userAgreement'}">
               <span>用户协议</span>
               <i class="iconfont icon-right"></i>
-          </li>
-          <li>
+          </router-link>
+          <router-link tag="li" :to="{name: 'officalAccount'}">
               <span>官方账号</span>
               <i class="iconfont icon-right"></i>
-          </li>
+          </router-link>
       </ul>
       <div class="bottom_img">
           <img src="../../../../static/imgs/personalCenterImgs/aboutUs/tdf_about_us_copyright@2x.png" alt="">
