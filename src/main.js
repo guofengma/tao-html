@@ -18,6 +18,7 @@ Vue.use(VueResource)
 //开发模式（true）
 Vue.config.debug = true
 Vue.config.productionTip = false
+Vue.http.options.emulateJSON = true;
 
 /* eslint-disable no-new */
 /*这里的<App />标签会替换Id为app的元素位置*/

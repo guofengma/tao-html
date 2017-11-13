@@ -52,12 +52,30 @@
     <div class="hot_doctor">
       <div class="hot_top">
         <span>热门医生</span>
-        <a href="#" class="f_right">更多</a>
+        <a href="#" class="f_right" @click="greet">更多</a>
       </div>
       <HotDoctorList :list='arr'/>
     </div>
     <!-- 导航栏 -->
     <navbar/>
+    <!-- <mt-tabbar v-model="active" :fixed='tep'>
+      <mt-tab-item id="tab1">
+        <img slot="icon" src="../../static/imgs/hospital/index/tdf_home.png">
+        首页
+      </mt-tab-item>
+      <mt-tab-item id="tab2">
+        <img slot="icon" src="../../static/imgs/hospital/index/tdf_hospital_pre.png">
+        医院
+      </mt-tab-item>
+      <mt-tab-item id="tab3">
+        <img slot="icon" src="../../static/imgs/hospital/index/tdf_health.png">
+        健康
+      </mt-tab-item>
+      <mt-tab-item id="tab4">
+        <img slot="icon" src="../../static/imgs/hospital/index/tdf_me.png">
+        我的
+      </mt-tab-item>
+    </mt-tabbar> -->
   </div>
 </template>
 
@@ -68,30 +86,36 @@ export default {
   name: "HelloWorld",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App",
+      active: "active",
       arr:[1,2,3,4,5],
+      tep: true,
       url:'http://120.26.107.233:8080/taodoctor/rest/doc/getDoctorListForInternatHospital',
       item:{
-        getDataModule:'hotDoctor'
+        getDataModule:'hotDoctor',
+        idx:0,
+        pagesize:10,
+        region:""
       }
     };
   },
   components: {
     HotDoctorList,
     navbar
-  },
+  },  
   mounted:function(){
-    this.$http.post(this.url,this.item).then(response => {
-      response.setHeader("Access-Control-Allow-Origin", "*");
+    this.$http.post(this.url,this.item).then((response) => {
       console.log(response.data);
+      if(response.data.statusCode == 1){
+        this.arr = response.data.data.doctorInfo.item;
+      }
 
-    }, response => {
+    }, (response) => {
         console.log("error");
     });
   },
-  method:{
-    greet:function(){
-      console.log(231)
+  methods:{
+    greet:function(el){
+      console.log(el)
     }
   }
 };
@@ -101,7 +125,7 @@ export default {
 <style scoped lang='less'>
 @import '../../static/less/globalVar.less';
 .home{
-  padding-bottom:2.5rem;
+  padding-bottom:3rem;
   padding-top:3.2rem;
 }
 // 顶部tab栏
@@ -207,7 +231,7 @@ export default {
         }
       }
       h2 {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         color: @fontColor;
       }
     }

@@ -18,6 +18,7 @@ import pubDocList from '@/components/personalCenter/pubComponents/pubDocList'
 
 /**********************************xu************************************************/
 import Home from '@/components/Home'
+import doctorDetail from '@/components/doctorDetail/doctorDetail'
 
 Vue.use(Router)
 
@@ -30,7 +31,11 @@ export default new Router({
       name: 'home',
       component: Home
     },
-
+    {
+      path: '/doctorDetail',
+      name: 'doctorDetail',
+      component: doctorDetail
+    },
     //wang
     {
       path: '/personalCenterIndex',

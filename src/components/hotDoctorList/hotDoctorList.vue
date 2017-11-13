@@ -1,12 +1,12 @@
 <template>  
   <div class="hot_list">    
-    <div class="doctor_list clearfix" v-for="item in list" :key="item">
-      <div class="orders">接诊328单</div>
+    <div class="doctor_list clearfix" v-for="item in list" :key="item.value">
+      <div class="orders">接诊{{item.admissions}}单</div>
       <div class="avatar f_left"><img src="../../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
       <div class="doctor_info">
-          <h2><span>徐亮</span><span>主任</span><span>儿科</span></h2>
-          <h4>北京安贞医院</h4>
-          <p>擅长：发育不完整、发育缓慢、呼吸道感染、支气管感染</p>
+          <h2><span>{{item.doctorName}}</span><span>{{item.doctorTitle}}</span><span>{{item.departmentName}}</span></h2>
+          <h4>{{item.hospitalName}}</h4>
+          <p>擅长：{{item.diseaseName?item.diseaseName:'发育不完整、发育缓慢、呼吸道感染、支气管感染'}}</p>
       </div>
       <ul class="server_item clearfix">
           <li><img src='../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' ></li>
@@ -20,29 +20,40 @@
 export default {
   name: "HotDoctorList",
   data() {
-    return {
-      
-    };
+    return {};
   },
-  props: ['list']
+  props: ["list"],
+  methods:{
+    loadMore() {
+      this.loading = true;
+      setTimeout(() => {
+        let last = this.list[this.list.length - 1];
+        for (let i = 1; i <= 10; i++) {
+          this.list.push(last + i);
+        }
+        this.loading = false;
+      }, 2500);
+    }
+  },
+  
 };
 </script>
 
 <style scoped lang="less">
-@import '../../../static/less/globalVar.less';
+@import "../../../static/less/globalVar.less";
 .doctor_list {
   background: #fff;
   padding: 0.75rem 0.6rem;
   position: relative;
-  .orders{
-    background-image:linear-gradient(90deg,#82bcff,#5da8fd);
-    font-size:0.6rem;
-    color:#fff;
+  .orders {
+    background-image: linear-gradient(90deg, #82bcff, #5da8fd);
+    font-size: 0.6rem;
+    color: #fff;
     position: absolute;
-    padding:0.2rem 0.5rem;
+    padding: 0.2rem 0.5rem;
     right: 0.6rem;
-    top:0.8rem;
-    border-radius:0 0.8rem 0.8rem;
+    top: 0.8rem;
+    border-radius: 0 0.8rem 0.8rem;
   }
   .avatar {
     width: 2.75rem;
@@ -56,9 +67,10 @@ export default {
   }
   .doctor_info {
     overflow: hidden;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: @font1Color;
     h2 {
+      font-size: 0.75rem;
       color: @fontColor;
       margin-bottom: 0.6rem;
       span {
