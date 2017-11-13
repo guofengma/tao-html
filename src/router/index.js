@@ -13,7 +13,7 @@ import Home from '@/components/Home'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  mode: 'history',//使用html5
   routes: [
     //xu
     {

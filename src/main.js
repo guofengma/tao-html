@@ -5,12 +5,13 @@ import App from './App'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import router from './router'
+//全局引入默认样式
+import '../static/css/base.css'
 
+//使用mint-ui框架
 Vue.use(MintUI)
 
-Vue.component(MintUI.TabContainer.name, MintUI.TabContainer);
-Vue.component(MintUI.TabContainerItem.name, MintUI.TabContainerItem);
-
+//开发模式（true）
 Vue.config.debug = true
 Vue.config.productionTip = false
 
