@@ -7,6 +7,8 @@ import 'mint-ui/lib/style.css'
 import router from './router'
 //全局引入默认样式
 import '../static/css/base.css'
+//全局引入字体文件
+import '../static/css/iconfont.css'
 
 //使用mint-ui框架
 Vue.use(MintUI)
