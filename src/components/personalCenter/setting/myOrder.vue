@@ -1,28 +1,28 @@
 <template>
     <div class="container">
         <div class="top_header">
-            <mt-button @click.native.prevent="active = 'tab-container1'"><span :class="{'activeTab':active == 'tab-container1'}">全部</span></mt-button>
-            <mt-button @click.native.prevent="active = 'tab-container2'"><span :class="{'activeTab':active =='tab-container2'}">代付款</span></mt-button>
-            <mt-button @click.native.prevent="active = 'tab-container3'"><span :class="{'activeTab':active == 'tab-container3'}">待服务</span></mt-button>
-            <mt-button @click.native.prevent="active = 'tab-container4'"><span :class="{'activeTab':active == 'tab-container4'}">服务中</span></mt-button>
-            <mt-button @click.native.prevent="active = 'tab-container5'"><span :class="{'activeTab':active == 'tab-container5'}">待评价</span></mt-button>
+            <mt-button @click.native.prevent="showid = 'tab-container1'"><span :class="{'activeTab':showid == 'tab-container1'}">全部</span></mt-button>
+            <mt-button @click.native.prevent="showid = 'tab-container2'"><span :class="{'activeTab':showid == 'tab-container2'}">待付款</span></mt-button>
+            <mt-button @click.native.prevent="showid = 'tab-container3'"><span :class="{'activeTab':showid == 'tab-container3'}">待服务</span></mt-button>
+            <mt-button @click.native.prevent="showid = 'tab-container4'"><span :class="{'activeTab':showid == 'tab-container4'}">服务中</span></mt-button>
+            <mt-button @click.native.prevent="showid = 'tab-container5'"><span :class="{'activeTab':showid == 'tab-container5'}">待评价</span></mt-button>
         </div>
-        <mt-tab-container v-model="active" swipeable>
+        <mt-tab-container v-model="showid" swipeable>
             <mt-tab-container-item id="tab-container1">
                 <!-- 全部订单列表展示 -->
-                <pubOrderList :num="num"/>
+                <pubOrderList :num="1"/>
             </mt-tab-container-item>
             <mt-tab-container-item id="tab-container2">
-                <mt-cell v-for="n in 2" :key="n" title="tab-container2"></mt-cell>
+                <pubOrderList :num="2"/>
             </mt-tab-container-item>
             <mt-tab-container-item id="tab-container3">
-                <mt-cell v-for="n in 3" :key="n" title="tab-container3"></mt-cell>
+                <pubOrderList :num="3"/>
             </mt-tab-container-item>
             <mt-tab-container-item id="tab-container4">
-                <mt-cell v-for="n in 4" :key="n" title="tab-container4"></mt-cell>
+                <pubOrderList :num="4"/>
             </mt-tab-container-item>
             <mt-tab-container-item id="tab-container5">
-                <mt-cell v-for="n in 5" :key="n" title="tab-container5"></mt-cell>
+                <pubOrderList :num="5"/>
             </mt-tab-container-item>
         </mt-tab-container>
     </div>
@@ -35,9 +35,12 @@ export default {
   name: "myOrder",
   data() {
     return {
-      active: "tab-container1",
-      num: 3
+      showid: 'tab-container1'
     };
+  },
+  created() {
+      let id = this.$route.params.id
+      this.showid = id;
   },
   components: {
       pubOrderList

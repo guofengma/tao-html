@@ -46,7 +46,7 @@ export default new Router({
       component: personalData
     },
     {
-      path: '/myOrder',
+      path: '/myOrder/:id',
       name: 'myOrder',
       component: myOrder
     },
