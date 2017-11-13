@@ -1,6 +1,7 @@
 <template>  
-  <div class="hot_list">
+  <div class="hot_list">    
     <div class="doctor_list clearfix" v-for="item in list" :key="item">
+      <div class="orders">接诊328单</div>
       <div class="avatar f_left"><img src="../../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
       <div class="doctor_info">
           <h2><span>徐亮</span><span>主任</span><span>儿科</span></h2>
@@ -20,26 +21,29 @@ export default {
   name: "HotDoctorList",
   data() {
     return {
-      arr: 2
+      
     };
   },
-  props: {
-    list: Array
-  }
+  props: ['list']
 };
 </script>
 
 <style scoped lang="less">
-@mainColor: #fff;
-@fontColor: rgb(57, 57, 57);
-@font1Color: rgb(102, 102, 102);
-@assistColor: #666;
-@primary: #0032a7;
-@placeholder: #999;
-@border: rgb(238, 238, 238);
+@import '../../../static/less/globalVar.less';
 .doctor_list {
   background: #fff;
   padding: 0.75rem 0.6rem;
+  position: relative;
+  .orders{
+    background-image:linear-gradient(90deg,#82bcff,#5da8fd);
+    font-size:0.6rem;
+    color:#fff;
+    position: absolute;
+    padding:0.2rem 0.5rem;
+    right: 0.6rem;
+    top:0.8rem;
+    border-radius:0 0.8rem 0.8rem;
+  }
   .avatar {
     width: 2.75rem;
     height: 2.75rem;
@@ -67,6 +71,10 @@ export default {
     p {
       line-height: 1.3rem;
       margin-bottom: 0.8rem;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
   }
   .server_item {
