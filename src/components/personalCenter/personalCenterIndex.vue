@@ -108,7 +108,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "../../../static/css/iconfont.css";
 .container {
   min-width: 320px;
   max-width: 640px;

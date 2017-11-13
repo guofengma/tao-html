@@ -39,7 +39,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import '../../../static/css/iconfont.css';
     .container {
         background-color: #eff4fa;
         min-width: 320px;
