@@ -69,12 +69,25 @@ export default {
   data() {
     return {
       msg: "Welcome to Your Vue.js App",
-      arr:[1,2,3,4,5]
+      arr:[1,2,3,4,5],
+      url:'http://120.26.107.233:8080/taodoctor/rest/doc/getDoctorListForInternatHospital',
+      item:{
+        getDataModule:'hotDoctor'
+      }
     };
   },
   components: {
     HotDoctorList,
     navbar
+  },
+  mounted:function(){
+    this.$http.post(this.url,this.item).then(response => {
+      response.setHeader("Access-Control-Allow-Origin", "*");
+      console.log(response.data);
+
+    }, response => {
+        console.log("error");
+    });
   },
   method:{
     greet:function(){
