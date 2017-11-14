@@ -22,6 +22,7 @@ import userAgreement from '@/components/personalCenter/setting/aboutTao/userAgre
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctorDetail/doctorDetail'
+import doctor from '@/components/doctor/doctor'
 
 Vue.use(Router)
 
@@ -38,6 +39,11 @@ export default new Router({
       path: '/doctorDetail',
       name: 'doctorDetail',
       component: doctorDetail
+    },
+    {
+      path: '/doctor',
+      name: 'doctor',
+      component: doctor
     },
     //wang
     {

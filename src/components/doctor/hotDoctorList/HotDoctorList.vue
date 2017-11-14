@@ -1,20 +1,22 @@
 <template>  
-  <div class="hot_list">    
+  <ul class="hot_list"> 
     <div class="doctor_list clearfix" v-for="item in list" :key="item.value">
-      <div class="orders">接诊{{item.admissions}}单</div>
-      <div class="avatar f_left"><img src="../../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
-      <div class="doctor_info">
-          <h2><span>{{item.doctorName}}</span><span>{{item.doctorTitle}}</span><span>{{item.departmentName}}</span></h2>
-          <h4>{{item.hospitalName}}</h4>
-          <p>擅长：{{item.diseaseName?item.diseaseName:'发育不完整、发育缓慢、呼吸道感染、支气管感染'}}</p>
-      </div>
-      <ul class="server_item clearfix">
-          <li><img src='../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' ></li>
-          <li><img src="../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
-          <li><img src="../../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
-      </ul>
+      <router-link tag='li' to='/doctorDetail'>
+        <div class="orders">接诊{{item.admissions}}单</div>
+        <div class="avatar f_left"><img src="../../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
+        <div class="doctor_info">
+            <h2><span>{{item.doctorName}}</span><span>{{item.doctorTitle}}</span><span>{{item.departmentName}}</span></h2>
+            <h4>{{item.hospitalName}}</h4>
+            <p>擅长：{{item.diseaseName?item.diseaseName:'发育不完整、发育缓慢、呼吸道感染、支气管感染'}}</p>
+        </div>
+        <ul class="server_item clearfix">
+            <li><img src='../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' ></li>
+            <li><img src="../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
+            <li><img src="../../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
+        </ul>
+      </router-link>
     </div>
-  </div>
+  </ul>
 </template>
 <script>
 export default {
@@ -43,7 +45,11 @@ export default {
 @import "../../../static/less/globalVar.less";
 .doctor_list {
   background: #fff;
-  padding: 0.75rem 0.6rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid @border;
+  &:last-child{
+    border-bottom:0;
+  }
   position: relative;
   .orders {
     background-image: linear-gradient(90deg, #82bcff, #5da8fd);

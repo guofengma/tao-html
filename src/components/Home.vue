@@ -52,7 +52,7 @@
     <div class="hot_doctor">
       <div class="hot_top">
         <span>热门医生</span>
-        <a href="#" class="f_right" @click="greet">更多</a>
+        <router-link tag="a" class="f_right" to="/doctor">更多</router-link>
       </div>
       <HotDoctorList :list='arr'/>
     </div>
@@ -83,7 +83,7 @@
 import HotDoctorList from './hotDoctorList/HotDoctorList'
 import navbar from './navbar'
 export default {
-  name: "HelloWorld",
+  name: "Home",
   data() {
     return {
       active: "active",
@@ -196,7 +196,7 @@ export default {
   }
 }
 .hot_top {
-  padding: 0.6rem;
+  padding: 0.6rem 0;
   border-bottom: 1px solid @border;
   span {
     color: @fontColor;
@@ -208,6 +208,7 @@ export default {
   }
 }
 .hot {
+  padding:0 0.6rem;
   margin: 0.35rem 0;
   background: #fff;
   .hot_item {
@@ -238,6 +239,7 @@ export default {
   }
 }
 .hot_doctor {
+  padding:0 0.6rem;
   margin: 0.35rem 0;
   background: #fff;
 }
