@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import HotDoctorList from "../hotDoctorList/HotDoctorList";
+import HotDoctorList from "./hotDoctorList/HotDoctorList";
 export default {
   name: "doctor",
   data() {

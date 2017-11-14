@@ -21,7 +21,9 @@ import userAgreement from '@/components/personalCenter/setting/aboutTao/userAgre
 
 /**********************************xu************************************************/
 import Home from '@/components/Home'
-import doctorDetail from '@/components/doctorDetail/doctorDetail'
+import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
+import departList from '@/components/doctor/departList/departList'
+import doctorList from '@/components/doctor/departList/doctorList'
 import doctor from '@/components/doctor/doctor'
 
 Vue.use(Router)
@@ -44,6 +46,16 @@ export default new Router({
       path: '/doctor',
       name: 'doctor',
       component: doctor
+    },
+    {
+      path: '/departList',
+      name: 'departList',
+      component: departList
+    },
+    {
+      path: '/doctorList',
+      name: 'doctorList',
+      component: doctorList
     },
     //wang
     {

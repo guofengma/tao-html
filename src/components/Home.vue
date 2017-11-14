@@ -16,7 +16,7 @@
     <div class="hot">
       <div class="hot_top">
         <span>热门科室</span>
-        <a href="#" class="f_right">更多</a>
+        <router-link tag="a"  class="f_right" to="/departList">更多</router-link>
       </div>
       <ul class="hot_item clearfix">
         <li>
@@ -43,10 +43,10 @@
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_kqk.png" alt=""></div>
           <h2>口腔科</h2>
         </li>
-        <li>
+        <router-link tag="li" to="/departList">
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_more.png" alt=""></div>
           <h2>更多</h2>
-        </li>
+        </router-link>
       </ul>
     </div>
     <div class="hot_doctor">
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import HotDoctorList from './hotDoctorList/HotDoctorList'
+import HotDoctorList from './doctor/hotDoctorList/HotDoctorList'
 import navbar from './navbar'
 export default {
   name: "Home",
