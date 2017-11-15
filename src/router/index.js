@@ -27,6 +27,9 @@ import navPage from '@/components/login/navPage'
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
+import doctor from '@/components/doctor/doctor'
+import departList from '@/components/doctor/departList/departList'
+import doctorList from '@/components/doctor/departList/doctorList'
 
 Vue.use(Router)
 
@@ -43,12 +46,42 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        title: '互联网医院'
+      }
+    },
+    {
+      path: '/doctor',
+      name: 'doctor',
+      component: doctor,
+      meta: {
+        title: '医生'
+      }
     },
     {
       path: '/doctorDetail',
       name: 'doctorDetail',
-      component: doctorDetail
+      component: doctorDetail,
+      meta: {
+        title: '医生详情'
+      }
+    },
+    {
+      path: '/departList',
+      name: 'departList',
+      component: departList,
+      meta: {
+        title: '科室列表'
+      }
+    },
+    {
+      path: '/doctorList',
+      name: 'doctorList',
+      component: doctorList,
+      meta: {
+        title: '医生列表'
+      }
     },
     //wang(个人中心)
     {
