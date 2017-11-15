@@ -26,7 +26,7 @@ import navPage from '@/components/login/navPage'
 
 /**********************************xu************************************************/
 import Home from '@/components/Home'
-import doctorDetail from '@/components/doctorDetail/doctorDetail'
+import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
 
 Vue.use(Router)
 
