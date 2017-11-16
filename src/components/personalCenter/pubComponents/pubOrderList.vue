@@ -1,21 +1,22 @@
 <template>
-    <ul class="order_list" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+<mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
+  <ul class="order_list">
         <li v-for='(item, index) in list' :key='index' >
             <div class="order_top">
                 <div>
-                    <img src="../../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png" alt="">
-                    <span>孙连浩</span>
-                    <b>心脑血管科</b>
+                    <img :src="item.heardimage" alt="">
+                    <span>{{item.doctorname}}</span>
+                    <b>{{item.departmentname}}</b>
                 </div>
-                <span>已完成</span>
+                <span>{{item.status}}</span>
             </div>
             <div class="order_main">
                 <p>症状描述：</p>
-                <p>我今年30岁，男。前一段时间出现眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施我今年40岁，男。前一段时间出现眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施</p>
+                <p>{{item.description}}</p>
             </div>
             <div class="order_money">
-                <span>健康咨询</span>
-                <span>￥20.00</span>
+                <span>{{item.servertype}}</span>
+                <span>￥{{item.servermoney}}</span>
             </div>
             <div class="order_foot">
                 <div>
@@ -24,16 +25,19 @@
             </div>
         </li>
     </ul>
+</mt-loadmore>
 </template>
 
 <script>
+import { Toast } from 'mint-ui';
 export default {
   name: "pubOrderList",
   data() {
     return {
-      loading: false,
       list: [],
-      index: 0
+      index: 0,
+      allLoaded: false,
+      autoFill: false
     };
   },
   props: {
@@ -46,17 +50,46 @@ export default {
       default: ""
     }
   },
+  watch: {
+    category() {
+      this.allLoaded = false;
+      this.index = 0;
+      this.list = [];
+      this.showMore();
+    },
+    myKey() {
+      this.allLoaded = false;
+      this.index = 0;
+      this.list = [];
+      this.showMore();
+    }
+  },
   methods: {
-    loadMore() {
-      this.loading = true;
+    loadBottom() {
+      this.showMore();
+    },
+    showMore() {
       this.index += 1;
       let data = {};
-      if (this.category == "全部") {
+      if (this.category == "全部" && this.myKey == '我的订单') {
+        data = {
+          customerId: "880631824E9A482DBA94B6138A5F91B2",
+          index: this.index,
+          pageSize: 10
+        };
+      }else if(this.category == "全部" && this.myKey != '我的订单') {
         data = {
           customerId: "880631824E9A482DBA94B6138A5F91B2",
           index: this.index,
           pageSize: 10,
           key: this.myKey
+        };
+      }else if(this.category != "全部" && this.myKey == '我的订单') {
+        data = {
+          customerId: "880631824E9A482DBA94B6138A5F91B2",
+          index: this.index,
+          pageSize: 10,
+          category: this.category
         };
       } else {
         data = {
@@ -67,18 +100,26 @@ export default {
           category: this.category
         };
       }
-      setTimeout(() => {
-        this.$http
-          .post(this.baseUrl + "orderList/getOrderList", data)
-          .then(res => {
-            console.log(JSON.stringify(res.body));
-            let dataJson = res.body
-            if(dataJson.statusCode == 1) {
-              this.list = dataJson.obj
+      this.$http
+        .post(this.baseUrl + "orderList/getOrderList", data)
+        .then(res => {
+          let dataJson = res.body;
+          if (dataJson.statusCode == 1) {
+            console.log(dataJson);
+            if (dataJson.obj.length > 0) {
+              let objList = dataJson.obj;
+              for (let value of objList) {
+                value.heardimage = this.baseImgUrl + value.heardimage;
+                this.list.push(value);
+              }
+              this.list.concat(dataJson);
+            }else {
+                this.allLoaded = true;
+                Toast('暂无更多数据');
             }
-          })
-        this.loading = true;
-      }, 1000);
+          }
+          this.$refs.loadmore.onBottomLoaded();
+        });
     }
   }
 };
@@ -87,6 +128,9 @@ export default {
 <style lang='less' scoped>
 .order_list {
   li {
+    &:first-of-type {
+      padding-top: 2rem;
+    }
     margin-bottom: 0.4rem;
     .order_top {
       display: flex;

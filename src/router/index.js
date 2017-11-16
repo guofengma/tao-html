@@ -23,7 +23,6 @@ import loginIndex from '@/components/login/loginIndex'
 import settingNameLogo from '@/components/login/settingNameLogo'
 import navPage from '@/components/login/navPage'
 
-
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
