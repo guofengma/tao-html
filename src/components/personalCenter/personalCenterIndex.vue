@@ -83,20 +83,20 @@
         </div>
         <i class="iconfont icon-right"></i>
       </li>
-      <li>
+      <router-link tag="li" :to="{name:'myCollect'}">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_collect@2x.png" alt="">
           <span>我的收藏</span>
         </div>
         <i class="iconfont icon-right"></i>
-      </li>
-      <li>
+      </router-link>
+      <router-link tag="li" :to="{name:'InviteFriends'}">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_invite@2x.png" alt="">
           <span>邀好友&nbsp;&nbsp;&nbsp;得奖励</span>
         </div>
         <i class="iconfont icon-right"></i>
-      </li>
+      </router-link>
     </ul>
   </div>
 </template>

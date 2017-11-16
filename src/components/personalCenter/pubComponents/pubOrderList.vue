@@ -1,5 +1,5 @@
 <template>
-    <ul class="order_list">
+    <ul class="order_list" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
         <li v-for='(item, index) in num' :key='index' >
             <div class="order_top">
                 <div>
@@ -29,7 +29,22 @@
 <script>
 export default {
     name: 'pubOrderList',
-    props: ['num']
+    data () {
+        return {
+            loading: false
+        }
+    },
+    props: {
+        'showList': {
+            type: String,
+            default: ''
+        }
+    },
+    methods: {
+        loadMore() {
+            
+        }
+    }
 }
 </script>
 
