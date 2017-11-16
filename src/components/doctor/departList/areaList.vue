@@ -3,10 +3,10 @@
     <div class="department">
       <div class="departmentList">
         <ul class="department_left">
-          <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
+          <li v-for="(item,index) in area" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.pAreaName}}</li>
         </ul>
         <ul class="department_right">
-          <router-link tag="li" to="/doctorList" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
+          <router-link tag="li" to="/doctorList" v-for="(item,index) in area_item" :key="index">{{item.areaName}}</router-link>
         </ul>
       </div>
     </div>
@@ -17,11 +17,11 @@
 export default {
   data() {
     return {
-      department: [],
+      area: [],
       activeDep: "activeDep",
       showid: "0",
-      url:"http://120.26.107.233:8080/taodoctor/rest/doctor/getDepartmentWithChildren",
-      department_item: []
+      url:"http://120.26.107.233:8080/taodoctor/rest/doc/getAllAreaList",
+      area_item: []
     };
   },
   mounted: function() {
@@ -32,9 +32,11 @@ export default {
       this.$http.post(this.url, this.item).then(
         response => {
           console.log(response.data);
+          var city = response.data.data ;
           if (response.data.success) {
-            this.department = response.data.data;
-            this.department_item = this.department[0].childDepartment;
+            this.area = response.data.data.areaInfoList.item;
+            this.area.unshift({pAreaName:"重点城市",areainfoCustom:response.data.data.emphasesCityInfo.item});
+            this.area_item = this.area[0].areainfoCustom;
           }
         },
         response => {
@@ -47,7 +49,7 @@ export default {
     choiceDepartment(item, index) {
       // console.log(item,index);
       this.showid = index; // 添加当前状态
-      this.department_item = item.childDepartment;
+      this.area_item = item.areainfoCustom;
     }
   }
 };

@@ -9,7 +9,7 @@
 
       <div class="search">
         <div class="search_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_search.png" alt=""></div>
-        <input type="text" placeholder="医生 医院 疾病" class="search_box">
+        <router-link tag="input" to="/searchPage" placeholder="医生 医院 疾病" class="search_box"></router-link>
       </div>
     </div>
 
