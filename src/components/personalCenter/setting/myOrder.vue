@@ -1,30 +1,23 @@
 <template>
     <div class="container">
-        <div class="top_header">
-            <mt-button data-show-id="tab-container1" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container1'}">全部</span></mt-button>
-            <mt-button data-show-id="tab-container2" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container2'}">待付款</span></mt-button>
-            <mt-button data-show-id="tab-container3" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container3'}">待服务</span></mt-button>
-            <mt-button data-show-id="tab-container4" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container4'}">服务中</span></mt-button>
-            <mt-button data-show-id="tab-container5" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container5'}">待评价</span></mt-button>
-        </div>
-        <mt-tab-container v-model="showid">
-            <mt-tab-container-item id="tab-container1">
-                <!-- 全部订单列表展示 -->
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container2">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container3">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container4">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container5">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-        </mt-tab-container>
+        <ul class="top_header">
+          <li>
+            <span data-show-id="1" data-show-value="全部" :class="{'activeTab': showid==1}" @click="showNew">全部</span>
+          </li>
+          <li>
+            <span data-show-id="2" data-show-value="待付款" :class="{'activeTab': showid==2}" @click="showNew">待付款</span>
+          </li>
+          <li>
+            <span data-show-id="3" data-show-value="待服务" :class="{'activeTab': showid==3}" @click="showNew">待服务</span>
+          </li>
+          <li>
+            <span data-show-id="4" data-show-value="服务中" :class="{'activeTab': showid==4}" @click="showNew">服务中</span>
+          </li>
+          <li>
+            <span data-show-id="5" data-show-value="待评价" :class="{'activeTab': showid==5}" @click="showNew">待评价</span>
+          </li>
+        </ul>
+        <pubOrderList :category="showValue" :myKey="'健康咨询'"/>
     </div>
 </template>
 
@@ -35,7 +28,8 @@ export default {
   name: "myOrder",
   data() {
     return {
-      showid: "tab-container1"
+      showid: 1,
+      showValue: '全部'
     };
   },
   created() {
@@ -47,8 +41,11 @@ export default {
   },
   methods: {
     showNew(e) {
-      let showId = e.target.dataset.showId;
+      let showId = e.target.dataset.showId
+      let showValue = e.target.dataset.showValue
       this.showid = showId
+      this.showValue = showValue
+      console.log(showValue)
     }
   }
 };
@@ -68,7 +65,7 @@ export default {
   height: 2rem;
   border-bottom: 1px solid rgb(231, 231, 231);
   background-color: #fff;
-  button {
+  li {
     width: 20%;
     color: rgb(57, 57, 57);
     text-align: center;

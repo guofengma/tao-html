@@ -1,5 +1,6 @@
 <template>
-  <div id="app" v-wechat-title="$route.meta.title">
+ <!-- v-wechat-title="$route.meta.title" -->
+  <div id="app">
     <div class="dask" v-if="isLoading"></div>
     <router-view/>
   </div>
