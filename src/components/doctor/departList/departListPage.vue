@@ -3,10 +3,10 @@
     <div class="department">
       <div class="departmentList">
         <ul class="department_left">
-          <li v-for="(item,index) in area" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.pAreaName}}</li>
+          <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
         </ul>
         <ul class="department_right">
-          <li v-for="(item,index) in area_item" :key="index" @click="transferArea(item,index)">{{item.areaName}}</li>
+          <router-link tag="li" :to="{name:'doctorList',params:item}" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
         </ul>
       </div>
     </div>
@@ -17,26 +17,24 @@
 export default {
   data() {
     return {
-      area: [],
+      department: [],
       activeDep: "activeDep",
       showid: "0",
-      area_item: []
+      department_item: []
     };
   },
   mounted: function() {
     var _this = this;
-    var url = this.baseUrl + 'doc/getAllAreaList';
+    var url = _this.baseUrl + 'doctor/getDepartmentWithChildren';
     this.$nextTick(function() {
       // Code that will run only after the
       // entire view has been rendered
       this.$http.post(url, this.item).then(
         response => {
-          // console.log(response.data);
-          var city = response.data.data ;
+          console.log(response.data);
           if (response.data.success) {
-            this.area = response.data.data.areaInfoList.item;
-            this.area.unshift({pAreaName:"重点城市",areainfoCustom:response.data.data.emphasesCityInfo.item});
-            this.area_item = this.area[0].areainfoCustom;
+            this.department = response.data.data;
+            this.department_item = this.department[0].childDepartment;
           }
         },
         response => {
@@ -49,18 +47,16 @@ export default {
     choiceDepartment(item, index) {
       // console.log(item,index);
       this.showid = index; // 添加当前状态
-      this.area_item = item.areainfoCustom;
-    },
-    transferArea(item,index){
-      // console.log(item,index);
-      // 传递给父组件的事件、数据对象、索引
-      this.$emit("seachArea",item,index);
+      this.department_item = item.childDepartment;
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+.home {
+  // padding-top: 2rem;
+}
 .department {
   background: #fff;
 }

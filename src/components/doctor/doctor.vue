@@ -30,8 +30,6 @@ export default {
       list: [],
       allLoaded: false,
       topStatus: "",
-      url:
-        "http://120.26.107.233:8080/taodoctor/rest/doc/getDoctorListForInternatHospital",
       item: {
         getDataModule: "hotDoctor",
         idx: 0, // 页码
@@ -44,7 +42,8 @@ export default {
     HotDoctorList,
   },
   mounted: function() {
-    this.$http.post(this.url, this.item).then(
+    var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
+    this.$http.post(url, this.item).then(
       (response) => {
         console.log(response.data);
         if (response.data.statusCode == 1) {
@@ -60,15 +59,16 @@ export default {
     loadTop: function() {
       // 刷新数据的操作
       var _this = this;
-      _this.item.idx = 0;
-      self.$refs.loadmore.onTopLoaded();
+     console.log("no up")
+      // self.$refs.loadmore.onTopLoaded();
     },
     loadBottom: function() {
       // 加载更多数据的操作
       //load data
-      this.allLoaded = true;// 若数据已全部获取完毕
+      // this.allLoaded = true;// 若数据已全部获取完毕
+      console.log('no down')
       var _this = this;
-      _this.item.idx++;
+      
       self.$refs.loadmore.onBottomLoaded();
     },
     handleTopChange: function(status) {

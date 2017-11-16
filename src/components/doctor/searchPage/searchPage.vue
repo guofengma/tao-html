@@ -38,16 +38,16 @@
 
 <script>
 export default {
-    data(){
-        return {
-            isHistory:true
-        }
-    },
-    methods:{
-        Delhistory:function(){
-            this.isHistory = !this.isHistory;
-        }
+  data() {
+    return {
+      isHistory: true
+    };
+  },
+  methods: {
+    Delhistory: function() {
+      this.isHistory = !this.isHistory;
     }
+  }
 };
 </script>
 
@@ -138,7 +138,8 @@ export default {
       border-radius: 0.3rem;
       border: 1px solid @borderColor;
       color: rgb(102, 102, 102);
-      margin:0 0.8rem 0.8rem 0;
+      margin: 0 0.8rem 0.8rem 0;
+      background:rgb(239,244,250);
     }
   }
 }
