@@ -89,7 +89,6 @@ export default {
       active: "active",
       arr:[1,2,3,4,5],
       tep: true,
-      url:'http://120.26.107.233:8080/taodoctor/rest/doc/getDoctorListForInternatHospital',
       item:{
         getDataModule:'hotDoctor',
         idx:0,
@@ -103,7 +102,8 @@ export default {
     navbar
   },  
   mounted:function(){
-    this.$http.post(this.url,this.item).then((response) => {
+    var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
+    this.$http.post(url,this.item).then((response) => {
       console.log(response.data);
       if(response.data.statusCode == 1){
         this.arr = response.data.data.doctorInfo.item;

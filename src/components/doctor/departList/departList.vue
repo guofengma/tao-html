@@ -6,7 +6,7 @@
           <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
         </ul>
         <ul class="department_right">
-          <router-link tag="li" to="/doctorList" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
+          <router-link tag="li" :to="{name:'doctorList',params:item}" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
         </ul>
       </div>
     </div>
@@ -20,16 +20,16 @@ export default {
       department: [],
       activeDep: "activeDep",
       showid: "0",
-      url:"http://120.26.107.233:8080/taodoctor/rest/doctor/getDepartmentWithChildren",
       department_item: []
     };
   },
   mounted: function() {
     var _this = this;
+    var url = _this.baseUrl + 'doctor/getDepartmentWithChildren';
     this.$nextTick(function() {
       // Code that will run only after the
       // entire view has been rendered
-      this.$http.post(this.url, this.item).then(
+      this.$http.post(url, this.item).then(
         response => {
           console.log(response.data);
           if (response.data.success) {

@@ -20,16 +20,16 @@ export default {
       area: [],
       activeDep: "activeDep",
       showid: "0",
-      url:"http://120.26.107.233:8080/taodoctor/rest/doc/getAllAreaList",
       area_item: []
     };
   },
   mounted: function() {
     var _this = this;
+    var url = this.baseUrl + 'doc/getAllAreaList';
     this.$nextTick(function() {
       // Code that will run only after the
       // entire view has been rendered
-      this.$http.post(this.url, this.item).then(
+      this.$http.post(url, this.item).then(
         response => {
           console.log(response.data);
           var city = response.data.data ;

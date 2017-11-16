@@ -30,8 +30,13 @@ export default {
   },
   data() {
     return {
-      showid: "3",// 选中当前项
+      showid: "1",// 选中当前项
     };
+  },
+  created() {
+    let item = this.$route.params;
+    // this.showid = id;
+    console.log(item.fatherId)
   },
   methods:{
     closeShadow(){
