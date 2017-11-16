@@ -1,5 +1,5 @@
 <template>
-  <div class="home" v-if="isShow">
+  <div class="home">
     <div class="fliter_item">
     <h2 class="fliter_top">服务类型</h2>
     <ul class="fliter_list">
@@ -22,7 +22,6 @@
 export default {
   data() {
     return {
-      isShow: true,
       service_id: "service0",
       doctor_id: null,
       service_type: [
@@ -37,12 +36,15 @@ export default {
         { jobName: "主治医师", jobKey: "multiple" },
         { jobName: "副主任医师", jobKey: "multiple" },
         { jobName: "主任医师", jobKey: "multiple" }
-      ]
+      ],
+      serviceType:'', // 服务类型(后台字段)
+      doctorTitle:'', // 医生职称(后台字段)
     };
   },
   methods: {
     serviceId(item, index) {
       this.service_id = "service" + index;
+      this.serviceType = item.serviceKey;
       console.log(item, index);
     },
     doctorJobId(item, index) {
@@ -56,13 +58,16 @@ export default {
     },
     // 完成
     Finished() {
-      this.isShow = !this.isShow;
+        this.$emit("searchFliter",this.serviceType,this.doctorTitle);
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+.fliter_item{
+  margin-top:0.5rem;
+}
 .fliter_top {
   line-height: 2rem;
   font-size: 0.75rem;

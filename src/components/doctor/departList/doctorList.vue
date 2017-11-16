@@ -1,20 +1,21 @@
 <template>
   <div class="doctorList">
     <ul class="doctor_top">
-      <li @click="showid = '1'" :class="{'active':showid == '1'}"><h2>科室</h2><span class="triangle"></span></li>
-      <li @click="showid = '2'" :class="{'active':showid == '2'}"><h2>地区</h2><span class="triangle"></span></li>
-      <li @click="showid = '3'" :class="{'active':showid == '3'}"><h2>筛选</h2><span class="triangle"></span></li>
+      <li @click="switchTab(item,index)" :class="{'active':switchTabActive == 'switch' + index}" v-for="(item,index) in switchTabList" :key='index'><h2>{{item.switchName}}</h2><span class="triangle"></span></li>
     </ul>
     <div class="depart_list" v-if="showid==1">
-      <departmentList/>
+      <departmentList @searchDepart = "searchDepart"/>
     </div>
     <div class="area_list" v-if="showid==2">
-      <areaList/>
+      <areaList @seachArea="seachArea"/>
     </div>
     <div class="fliter_list" v-if="showid==3">
-      <fliterList/>
+      <fliterList @searchFliter='searchFliter'/>
     </div>
-    <div class="shadow_box" @click="closeShadow" v-if="showid==1 || showid == 2 || showid == 3"></div>
+    <div class="shadow_box" @touchmove="closeShadow" v-if="isShowShadow"></div>
+    <div class="hot_doctor_list">
+      <HotDoctorList :list='departList'/>
+    </div>
   </div>
 </template>
 
@@ -22,39 +23,136 @@
 import departmentList from "./departList";
 import areaList from "./areaList";
 import fliterList from "./fliterList";
+import HotDoctorList from "../hotDoctorList/hotDoctorList";
 export default {
   components: {
     departmentList, // 科室列表
     areaList, // 地区列表
-    fliterList // 筛选列表
+    fliterList, // 筛选列表
+    HotDoctorList
   },
   data() {
     return {
-      showid: "1",// 选中当前项
+      showid: "1", // 判断是否选中当前项
+      switchTabActive: "switch0",
+      departList: [], // 医生列表数据
+      switchTabList: [
+        { switchName: "科室" },
+        { switchName: "地区" },
+        { switchName: "筛选" }
+      ],
+      isShowShadow: true, // 是否显示遮罩
+      departmentId:'', // 科室ID(已选择科室增加地区等条件是需要存储)
+      region:'', // 地区(已选择地区增加筛选等条件是需要存储)
     };
   },
   created() {
     let item = this.$route.params;
-    // this.showid = id;
-    console.log(item.fatherId)
+    var option = {
+      getDataModule: "hotDepartment",
+      idx: 0,
+      pagesize: 10,
+      region: "",
+      department: item.id
+    };
+    var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
+    this.$http.post(url, option).then(
+      response => {
+        console.log(response.data);
+        if (response.data.success && response.data.statusCode == 1) {
+          this.departList = response.data.data.doctorInfo.item;
+        }
+      },
+      response => {
+        console.log("error");
+      }
+    );
   },
-  methods:{
-    closeShadow(){
-      this.showid = 4;
+  mounted: function() {},
+  methods: {
+    // 遮罩消失
+    closeShadow() {
+      this.isShowShadow = false; // 遮罩消失
+      this.showid = "4"; // 查询条件列表消失
+    },
+    // 切换查询条件tab栏
+    switchTab(item, index) {
+      this.showid = index + 1; // 查询条件列表出现
+      this.isShowShadow = true; // 遮罩出现
+      this.switchTabActive = "switch" + index; // 当前选中的特殊状态
+    },
+    // 按科室查询
+    searchDepart(item, index) {
+      // console.log(item, index);
+      this.showid = "4"; // 查询条件列表消失
+      this.switchTabList[0].switchName = item.name; // 显示当前选中的科室名字
+      this.isShowShadow = false; // 遮罩的显示隐藏
+      this.department = item.id;// 科室ID(已选择科室增加地区等条件是需要存储)
+      var option = {
+        getDataModule: "hotDepartment",
+        idx: 0,
+        pagesize: 10,
+        region: "",
+        department: item.id 
+      };
+      var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
+      this.$http.post(url, option).then(
+        response => {
+          console.log(response.data);
+          if (response.data.success && response.data.statusCode == 1) {
+            this.departList = response.data.data.doctorInfo.item;
+          }
+        },
+        response => {
+          console.log("error");
+        }
+      );
+    },
+    // 按地区查询
+    seachArea(item, index) {
+      console.log(item, index);
+      this.showid = "4"; // 查询条件列表消失
+      this.switchTabList[1].switchName = item.areaName; // 显示当前选中的地区名字
+      this.isShowShadow = false; // 遮罩的显示隐藏
+      this.region = item.areaName // 地区(已选择地区增加筛选等条件是需要存储)
+      var option = {
+        getDataModule: "hotDepartment",
+        idx: 0,
+        pagesize: 10,
+        region: item.areaName,
+        chooseRegion:item.areaName,
+        department:this.departmentId
+      };
+      var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
+      this.$http.post(url, option).then(
+        response => {
+          console.log(response.data);
+          if (response.data.success && response.data.statusCode == 1) {
+            this.departList = response.data.data.doctorInfo.item;
+          }
+        },
+        response => {
+          console.log("error");
+        }
+      );
+    },
+    // 按筛选查询
+    searchFliter(serviceType,doctorTitle){
+      console.log(serviceType,doctorTitle)
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.doctorList{
+.doctorList {
   position: relative;
 }
 .doctor_top {
   width: 100%;
   height: 2rem;
   background: #fff;
-  border-bottom:1px solid rgb(229, 229, 229);
+  border-bottom: 1px solid rgb(229, 229, 229);
   position: fixed;
   left: 0;
   top: 2rem;
@@ -88,7 +186,6 @@ export default {
       display: block;
       width: 0;
       height: 0;
-
       border-top: 0;
       border-right: 0.3rem solid transparent;
       border-left: 0.3rem solid transparent;
@@ -105,11 +202,16 @@ export default {
   top: 0;
   z-index: 9999;
 }
-.depart_list,.area_list,.fliter_list{
-  width:100%;
+.depart_list,
+.area_list,
+.fliter_list {
+  width: 100%;
   position: absolute;
   left: 0;
-  top:3.5rem;
+  top: 3.5rem;
   z-index: 10000;
+}
+.hot_doctor_list {
+  padding-top: 4.3rem;
 }
 </style>

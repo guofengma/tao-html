@@ -29,6 +29,7 @@ import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
 import doctor from '@/components/doctor/doctor'
 import departList from '@/components/doctor/departList/departList'
+import departListPage from '@/components/doctor/departList/departListPage'
 import doctorList from '@/components/doctor/departList/doctorList'
 import searchPage from '@/components/doctor/searchPage/searchPage'
 
@@ -69,9 +70,9 @@ export default new Router({
       }
     },
     {
-      path: '/departList',
-      name: 'departList',
-      component: departList,
+      path: '/departListPage',
+      name: 'departListPage',
+      component: departListPage,
       meta: {
         title: '科室列表'
       }
