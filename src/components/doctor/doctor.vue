@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import hotDoctorList from "./hotDoctorList/HotDoctorList";
+import hotDoctorList from "./hotDoctorList/hotDoctorList";
 export default {
   name: "doctor",
   data() {
