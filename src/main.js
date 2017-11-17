@@ -16,11 +16,17 @@ Vue.use(MintUI)
 Vue.use(VueResource)
 Vue.use(VueTitle)
 
+
 //开发模式（true）
 Vue.config.debug = true
 Vue.config.productionTip = false
-Vue.http.options.emulateJSON = true;
-
+Vue.http.options.emulateJSON = true
+/*全局的baseUrl*/
+Vue.prototype.baseUrl = 'http://192.168.5.77:8080/taodoctor/rest/'
+Vue.prototype.baseImgUrl = 'http://www.tdaifu.cn:8090/taodoctor' 
+//正则匹配
+Vue.prototype.regTel = /^(0|86|17951)?(13[0-9]|15[012356789]|17[0123456789]|18[0-9]|14[57])[0-9]{8}$/
+Vue.prototype.regCode = /^\d{4}$/
 /* eslint-disable no-new */
 /*这里的<App />标签会替换Id为app的元素位置*/
 /*这里实例话Vue又引用了子组件APP，即‘#app’会替换App.vue*/

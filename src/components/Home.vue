@@ -9,14 +9,14 @@
 
       <div class="search">
         <div class="search_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_search.png" alt=""></div>
-        <input type="text" placeholder="医生 医院 疾病" class="search_box">
+        <router-link tag="input" to="/searchPage" placeholder="医生 医院 疾病" class="search_box"></router-link>
       </div>
     </div>
 
     <div class="hot">
       <div class="hot_top">
         <span>热门科室</span>
-        <router-link tag="a"  class="f_right" to="/departList">更多</router-link>
+        <router-link tag="a"  class="f_right" to="/departListPage">更多</router-link>
       </div>
       <ul class="hot_item clearfix">
         <li>
@@ -43,7 +43,7 @@
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_kqk.png" alt=""></div>
           <h2>口腔科</h2>
         </li>
-        <router-link tag="li" to="/departList">
+        <router-link tag="li" to="/departListPage">
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_more.png" alt=""></div>
           <h2>更多</h2>
         </router-link>
@@ -54,7 +54,7 @@
         <span>热门医生</span>
         <router-link tag="a" class="f_right" to="/doctor">更多</router-link>
       </div>
-      <HotDoctorList :list='arr'/>
+      <hotDoctorList :list='arr'/>
     </div>
     <!-- 导航栏 -->
     <navbar/>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import HotDoctorList from './doctor/hotDoctorList/HotDoctorList'
+import hotDoctorList from './doctor/hotDoctorList/hotDoctorList'
 import navbar from './navbar'
 export default {
   name: "Home",
@@ -89,7 +89,6 @@ export default {
       active: "active",
       arr:[1,2,3,4,5],
       tep: true,
-      url:'http://120.26.107.233:8080/taodoctor/rest/doc/getDoctorListForInternatHospital',
       item:{
         getDataModule:'hotDoctor',
         idx:0,
@@ -99,11 +98,12 @@ export default {
     };
   },
   components: {
-    HotDoctorList,
+    hotDoctorList,
     navbar
   },  
   mounted:function(){
-    this.$http.post(this.url,this.item).then((response) => {
+    var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
+    this.$http.post(url,this.item).then((response) => {
       console.log(response.data);
       if(response.data.statusCode == 1){
         this.arr = response.data.data.doctorInfo.item;

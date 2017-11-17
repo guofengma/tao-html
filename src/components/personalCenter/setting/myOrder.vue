@@ -1,30 +1,23 @@
 <template>
     <div class="container">
-        <div class="top_header">
-            <mt-button data-show-id="tab-container1" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container1'}">全部</span></mt-button>
-            <mt-button data-show-id="tab-container2" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container2'}">待付款</span></mt-button>
-            <mt-button data-show-id="tab-container3" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container3'}">待服务</span></mt-button>
-            <mt-button data-show-id="tab-container4" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container4'}">服务中</span></mt-button>
-            <mt-button data-show-id="tab-container5" @click.native.prevent="showNew"><span :class="{'activeTab':showid == 'tab-container5'}">待评价</span></mt-button>
-        </div>
-        <mt-tab-container v-model="showid">
-            <mt-tab-container-item id="tab-container1">
-                <!-- 全部订单列表展示 -->
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container2">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container3">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container4">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-            <mt-tab-container-item id="tab-container5">
-                <pubOrderList :showList="showid"/>
-            </mt-tab-container-item>
-        </mt-tab-container>
+        <ul class="top_header">
+          <li>
+            <span data-show-id="1" data-show-value="全部" :class="{'activeTab': showid==1}" @click="showNew">全部</span>
+          </li>
+          <li>
+            <span data-show-id="2" data-show-value="待付款" :class="{'activeTab': showid==2}" @click="showNew">待付款</span>
+          </li>
+          <li>
+            <span data-show-id="3" data-show-value="待服务" :class="{'activeTab': showid==3}" @click="showNew">待服务</span>
+          </li>
+          <li>
+            <span data-show-id="4" data-show-value="服务中" :class="{'activeTab': showid==4}" @click="showNew">服务中</span>
+          </li>
+          <li>
+            <span data-show-id="5" data-show-value="待评价" :class="{'activeTab': showid==5}" @click="showNew">待评价</span>
+          </li>
+        </ul>
+        <pubOrderList :category="showValue" :myKey="sortText"/>
     </div>
 </template>
 
@@ -35,11 +28,26 @@ export default {
   name: "myOrder",
   data() {
     return {
-      showid: "tab-container1"
+      showid: 1,
+      showValue: '',
+      myOrderChooseShow: false,
+      sortText: '我的订单'
     };
   },
   created() {
     let id = this.$route.params.id;
+    switch (id) {
+      case '1': this.showValue = '全部'
+      break;
+      case '2': this.showValue = '待付款'
+      break;
+      case '3': this.showValue = '待服务'
+      break;
+      case '4': this.showValue = '服务中'
+      break;
+      case '5': this.showValue = '待评价'
+      break;
+    }
     this.showid = id;
   },
   components: {
@@ -47,8 +55,10 @@ export default {
   },
   methods: {
     showNew(e) {
-      let showId = e.target.dataset.showId;
+      let showId = e.target.dataset.showId
+      let showValue = e.target.dataset.showValue
       this.showid = showId
+      this.showValue = showValue
     }
   }
 };
@@ -68,7 +78,12 @@ export default {
   height: 2rem;
   border-bottom: 1px solid rgb(231, 231, 231);
   background-color: #fff;
-  button {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1001;
+  li {
     width: 20%;
     color: rgb(57, 57, 57);
     text-align: center;
@@ -85,6 +100,58 @@ export default {
   }
   .mint-button--default {
     box-shadow: none;
+  }
+}
+.my_order_button {
+  position: fixed;
+  top: 2.3rem;
+  right: .5rem;
+  z-index: 1001;
+  display: flex;
+  justify-content: flex-end;
+  a {
+    line-height: 1.5rem;
+    color: #fff;
+    background-color: #2d8dff;
+    padding: 0 .5rem;
+    border-radius: .3rem;
+    text-align: center;
+    display: flex;
+    justify-content: flex-end;
+    i {
+      margin-left: .2rem;
+    }
+  }
+}
+.my_order_list {
+  position: fixed;
+  top: 2rem;
+  left: 0;
+  width: 100%;
+  padding: 0 .6rem;
+  background-color: #fff;
+  z-index: 1001;
+  h3 {
+    font-size: .75rem;
+    color: rgb(57,57,57);
+    padding: .7rem 0;
+    border-bottom: 1px solid rgb(238,238,238);
+  }
+  ul {
+    display: flex;
+    justify-content: space-between;
+    padding: .8rem 0 2.25rem 0;
+    li {
+      width: 28%;
+      height: 1.25rem;
+      line-height: 1.25rem;
+      color: rgb(43,140,255);
+      font-size: .7rem;
+      text-align: center;
+      background-color: rgb(218,234,253);
+      border-radius: .3rem;
+      border: 1px solid rgb(82,163,255); 
+    }
   }
 }
 </style>

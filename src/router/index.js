@@ -22,13 +22,15 @@ import userAgreement from '@/components/personalCenter/setting/aboutTao/userAgre
 import loginIndex from '@/components/login/loginIndex'
 import settingNameLogo from '@/components/login/settingNameLogo'
 import navPage from '@/components/login/navPage'
-
+/********************************订单详情（支付提醒）**********************************************************/
+import orderDetail from '@/components/personalCenter/aboutOrder/orderDetail.vue'
 
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
 import doctor from '@/components/doctor/doctor'
 import departList from '@/components/doctor/departList/departList'
+import departListPage from '@/components/doctor/departList/departListPage'
 import doctorList from '@/components/doctor/departList/doctorList'
 import searchPage from '@/components/doctor/searchPage/searchPage'
 
@@ -69,9 +71,9 @@ export default new Router({
       }
     },
     {
-      path: '/departList',
-      name: 'departList',
-      component: departList,
+      path: '/departListPage',
+      name: 'departListPage',
+      component: departListPage,
       meta: {
         title: '科室列表'
       }
@@ -244,6 +246,15 @@ export default new Router({
       component: navPage,
       meta: {
         title: '欢迎进入涛大夫'
+      }
+    },
+    //订单详情展示及支付页面（离开提醒）
+    {
+      path: '/orderDetail',
+      name: 'orderDetail',
+      component: orderDetail,
+      meta: {
+        title: '订单详情'
       }
     }
   ]

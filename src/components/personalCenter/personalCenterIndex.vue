@@ -29,25 +29,25 @@
     </div>
     <!-- 查看订单部分 -->
     <div class="order">
-      <router-link tag="div" :to="{name: 'myOrder',params:{id: 'tab-container1'}}" class="order_top">
+      <router-link tag="div" :to="{name: 'myOrder',params:{id: '1'}}" class="order_top">
         <span>我的订单</span>
         <b>查看更多订单&nbsp;&nbsp;&nbsp;<i class="iconfont icon-right"></i></b>
       </router-link>
       <ul class="order_main">
-        <router-link tag="li" :to="{name: 'myOrder',params:{id: 'tab-container2'}}">
+        <router-link tag="li" :to="{name: 'myOrder',params:{id: '2'}}">
           <i>5</i>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_obligation@2x.png" alt="">
           <span>待付款</span>
         </router-link>
-        <router-link tag="li" :to="{name: 'myOrder',params:{id: 'tab-container3'}}">
+        <router-link tag="li" :to="{name: 'myOrder',params:{id: '3'}}">
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_serve@2x.png" alt="">
           <span>待服务</span>
         </router-link>
-        <router-link tag="li" :to="{name: 'myOrder',params:{id: 'tab-container4'}}">
+        <router-link tag="li" :to="{name: 'myOrder',params:{id: '4'}}">
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_in_service@2x.png" alt="">
           <span>服务中</span>
         </router-link>
-        <router-link tag="li" :to="{name: 'myOrder',params:{id: 'tab-container5'}}">
+        <router-link tag="li" :to="{name: 'myOrder',params:{id: '5'}}">
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_evaluate@2x.png" alt="">
           <span>待评价</span>
         </router-link>
