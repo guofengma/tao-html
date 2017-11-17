@@ -30,6 +30,7 @@
 
 <script>
 import { Toast } from 'mint-ui';
+import { Indicator } from 'mint-ui';
 export default {
   name: "pubOrderList",
   data() {
@@ -69,6 +70,7 @@ export default {
       this.showMore();
     },
     showMore() {
+      Indicator.open();
       this.index += 1;
       let data = {};
       if (this.category == "全部" && this.myKey == '我的订单') {
@@ -113,6 +115,7 @@ export default {
                 this.list.push(value);
               }
               this.list.concat(dataJson);
+              Indicator.close();
             }else {
                 this.allLoaded = true;
                 Toast('暂无更多数据');

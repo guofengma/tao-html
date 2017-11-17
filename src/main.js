@@ -22,7 +22,7 @@ Vue.config.debug = true
 Vue.config.productionTip = false
 Vue.http.options.emulateJSON = true
 /*全局的baseUrl*/
-Vue.prototype.baseUrl = 'http://192.168.5.77:8080/taodoctor/rest/'
+Vue.prototype.baseUrl = 'http://120.26.107.233:8080/taodoctor/rest/'
 Vue.prototype.baseImgUrl = 'http://www.tdaifu.cn:8090/taodoctor' 
 //正则匹配
 Vue.prototype.regTel = /^(0|86|17951)?(13[0-9]|15[012356789]|17[0123456789]|18[0-9]|14[57])[0-9]{8}$/
