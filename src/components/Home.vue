@@ -54,7 +54,7 @@
         <span>热门医生</span>
         <router-link tag="a" class="f_right" to="/doctor">更多</router-link>
       </div>
-      <HotDoctorList :list='arr'/>
+      <hotDoctorList :list='arr'/>
     </div>
     <!-- 导航栏 -->
     <navbar/>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import HotDoctorList from './doctor/hotDoctorList/HotDoctorList'
+import hotDoctorList from './doctor/hotDoctorList/hotDoctorList'
 import navbar from './navbar'
 export default {
   name: "Home",
@@ -98,7 +98,7 @@ export default {
     };
   },
   components: {
-    HotDoctorList,
+    hotDoctorList,
     navbar
   },  
   mounted:function(){

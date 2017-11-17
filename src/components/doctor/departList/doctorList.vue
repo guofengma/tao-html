@@ -14,7 +14,7 @@
     </div>
     <div class="shadow_box" @touchmove="closeShadow" v-if="isShowShadow"></div>
     <div class="hot_doctor_list">
-      <HotDoctorList :list='departList'/>
+      <hotDoctorList :list='departList'/>
     </div>
   </div>
 </template>
@@ -23,13 +23,13 @@
 import departmentList from "./departList";
 import areaList from "./areaList";
 import fliterList from "./fliterList";
-import HotDoctorList from "../hotDoctorList/hotDoctorList";
+import hotDoctorList from "../hotDoctorList/hotDoctorList";
 export default {
   components: {
     departmentList, // 科室列表
     areaList, // 地区列表
     fliterList, // 筛选列表
-    HotDoctorList
+    hotDoctorList
   },
   data() {
     return {

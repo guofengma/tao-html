@@ -5,14 +5,14 @@
         <div class="orders">接诊{{item.admissions}}单</div>
         <div class="avatar f_left"><img src="../../../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
         <div class="doctor_info">
-            <h2><span>{{item.doctorName}}</span><span>{{item.doctorTitle}}</span><span>{{item.departmentName}}</span></h2>
-            <h4>{{item.hospitalName}}</h4>
-            <p>擅长：{{item.diseaseName?item.diseaseName:'发育不完整、发育缓慢、呼吸道感染、支气管感染'}}</p>
+          <h2><span>{{item.doctorName}}</span><span>{{item.doctorTitle}}</span><span>{{item.departmentName}}</span></h2>
+          <h4>{{item.hospitalName}}</h4>
+          <p>擅长：{{item.diseaseName?item.diseaseName:'发育不完整、发育缓慢、呼吸道感染、支气管感染'}}</p>
         </div>
         <ul class="server_item clearfix">
-            <li><img src='../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' ></li>
-            <li><img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
-            <li><img src="../../../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
+          <li><img src='../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' ></li>
+          <li><img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
+          <li><img src="../../../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
         </ul>
       </router-link>
     </div>
@@ -20,22 +20,12 @@
 </template>
 <script>
 export default {
-  name: "HotDoctorList",
+  name: "hotDoctorList",
   data() {
     return {};
   },
   props: ["list"],
   methods:{
-    loadMore() {
-      this.loading = true;
-      setTimeout(() => {
-        let last = this.list[this.list.length - 1];
-        for (let i = 1; i <= 10; i++) {
-          this.list.push(last + i);
-        }
-        this.loading = false;
-      }, 2500);
-    }
   },
   
 };
