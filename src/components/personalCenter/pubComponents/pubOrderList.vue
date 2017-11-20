@@ -1,6 +1,7 @@
 <template>
-<mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
-  <ul class="order_list">
+<div>
+  <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :autoFill="false">
+  <ul v-if="!noOrderShow" class="order_list">
         <li v-for='(item, index) in list' :key='index' >
             <div class="order_top">
                 <div>
@@ -25,12 +26,19 @@
             </div>
         </li>
     </ul>
-</mt-loadmore>
+  </mt-loadmore>
+  <div v-if="noOrderShow" class="no_order">
+        <div>
+          <img :src="noOrderList[showI-1].url" alt="">
+          <p>{{noOrderList[showI-1].name}}</p>
+        </div>
+      </div>
+  </div>
 </template>
 
 <script>
-import { Toast } from 'mint-ui';
-import { Indicator } from 'mint-ui';
+import { Toast } from "mint-ui";
+import { Indicator } from "mint-ui";
 export default {
   name: "pubOrderList",
   data() {
@@ -38,7 +46,30 @@ export default {
       list: [],
       index: 0,
       allLoaded: false,
-      autoFill: false
+      autoFill: false,
+      noOrderShow: false,
+      noOrderList: [
+        {
+          name: "暂无订单哦！",
+          url: require("../../../../static/imgs/aboutOrder/tdf_default-page_chufnag.png")
+        },
+        {
+          name: "暂无待付款订单哦~",
+          url: require("../../../../static/imgs/aboutOrder/tdf_default-page_dfk.png")
+        },
+        {
+          name: "暂无待服务订单哦~",
+          url: require("../../../../static/imgs/aboutOrder/tdf_default-page_dfw.png")
+        },
+        {
+          name: "暂无服务中订单哦~",
+          url: require("../../../../static/imgs/aboutOrder/tdf_default-page_dfw.png")
+        },
+        {
+          name: "暂无待评价订单哦~",
+          url: require("../../../../static/imgs/aboutOrder/tdf_default-page_dpj.png")
+        }
+      ]
     };
   },
   props: {
@@ -49,10 +80,15 @@ export default {
     myKey: {
       type: String,
       default: ""
+    },
+    showI: {
+      type: String,
+      default: 0
     }
   },
   watch: {
     category() {
+      this.noOrderShow = false;
       this.allLoaded = false;
       this.index = 0;
       this.list = [];
@@ -65,6 +101,9 @@ export default {
       this.showMore();
     }
   },
+  created() {
+    this.showMore();
+  },
   methods: {
     loadBottom() {
       this.showMore();
@@ -73,20 +112,20 @@ export default {
       Indicator.open();
       this.index += 1;
       let data = {};
-      if (this.category == "全部" && this.myKey == '我的订单') {
+      if (this.category == "全部" && this.myKey == "我的订单") {
         data = {
           customerId: "880631824E9A482DBA94B6138A5F91B2",
           index: this.index,
           pageSize: 10
         };
-      }else if(this.category == "全部" && this.myKey != '我的订单') {
+      } else if (this.category == "全部" && this.myKey != "我的订单") {
         data = {
           customerId: "880631824E9A482DBA94B6138A5F91B2",
           index: this.index,
           pageSize: 10,
           key: this.myKey
         };
-      }else if(this.category != "全部" && this.myKey == '我的订单') {
+      } else if (this.category != "全部" && this.myKey == "我的订单") {
         data = {
           customerId: "880631824E9A482DBA94B6138A5F91B2",
           index: this.index,
@@ -115,12 +154,15 @@ export default {
                 this.list.push(value);
               }
               this.list.concat(dataJson);
-              Indicator.close();
-            }else {
-                this.allLoaded = true;
-                Toast('暂无更多数据');
+            } else {
+              this.allLoaded = true;
+              Toast("暂无更多数据");
+            }
+            if (this.list.length <= 0) {
+              this.noOrderShow = true;
             }
           }
+          Indicator.close();
           this.$refs.loadmore.onBottomLoaded();
         });
     }
@@ -130,6 +172,7 @@ export default {
 
 <style lang='less' scoped>
 .order_list {
+  height: 100%;
   li {
     &:first-of-type {
       padding-top: 2rem;
@@ -220,6 +263,29 @@ export default {
           font-size: 0.7rem;
         }
       }
+    }
+  }
+}
+
+.no_order {
+  width: 100%;
+  margin-top: 7.5rem;
+  div {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    img {
+      width: 60%;
+      display: block;
+      margin: 0 auto;
+    }
+    p {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.65rem;
+      color: rgb(177, 177, 177);
     }
   }
 }

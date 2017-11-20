@@ -1,4 +1,4 @@
-<template>
+  <template>
     <div class="container">
         <ul class="top_header">
           <li>
@@ -17,7 +17,7 @@
             <span data-show-id="5" data-show-value="待评价" :class="{'activeTab': showid==5}" @click="showNew">待评价</span>
           </li>
         </ul>
-        <pubOrderList :category="showValue" :myKey="sortText"/>
+        <pubOrderList :category="showValue" :myKey="sortText" :showI="showid"/>
     </div>
 </template>
 
@@ -100,58 +100,6 @@ export default {
   }
   .mint-button--default {
     box-shadow: none;
-  }
-}
-.my_order_button {
-  position: fixed;
-  top: 2.3rem;
-  right: .5rem;
-  z-index: 1001;
-  display: flex;
-  justify-content: flex-end;
-  a {
-    line-height: 1.5rem;
-    color: #fff;
-    background-color: #2d8dff;
-    padding: 0 .5rem;
-    border-radius: .3rem;
-    text-align: center;
-    display: flex;
-    justify-content: flex-end;
-    i {
-      margin-left: .2rem;
-    }
-  }
-}
-.my_order_list {
-  position: fixed;
-  top: 2rem;
-  left: 0;
-  width: 100%;
-  padding: 0 .6rem;
-  background-color: #fff;
-  z-index: 1001;
-  h3 {
-    font-size: .75rem;
-    color: rgb(57,57,57);
-    padding: .7rem 0;
-    border-bottom: 1px solid rgb(238,238,238);
-  }
-  ul {
-    display: flex;
-    justify-content: space-between;
-    padding: .8rem 0 2.25rem 0;
-    li {
-      width: 28%;
-      height: 1.25rem;
-      line-height: 1.25rem;
-      color: rgb(43,140,255);
-      font-size: .7rem;
-      text-align: center;
-      background-color: rgb(218,234,253);
-      border-radius: .3rem;
-      border: 1px solid rgb(82,163,255); 
-    }
   }
 }
 </style>
