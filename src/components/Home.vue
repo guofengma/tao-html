@@ -58,24 +58,6 @@
     </div>
     <!-- 导航栏 -->
     <navbar/>
-    <!-- <mt-tabbar v-model="active" :fixed='tep'>
-      <mt-tab-item id="tab1">
-        <img slot="icon" src="../../static/imgs/hospital/index/tdf_home.png">
-        首页
-      </mt-tab-item>
-      <mt-tab-item id="tab2">
-        <img slot="icon" src="../../static/imgs/hospital/index/tdf_hospital_pre.png">
-        医院
-      </mt-tab-item>
-      <mt-tab-item id="tab3">
-        <img slot="icon" src="../../static/imgs/hospital/index/tdf_health.png">
-        健康
-      </mt-tab-item>
-      <mt-tab-item id="tab4">
-        <img slot="icon" src="../../static/imgs/hospital/index/tdf_me.png">
-        我的
-      </mt-tab-item>
-    </mt-tabbar> -->
   </div>
 </template>
 

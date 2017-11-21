@@ -14,7 +14,9 @@
     </div>
     <div class="shadow_box" @touchmove="closeShadow" v-if="isShowShadow"></div>
     <div class="hot_doctor_list">
-      <hotDoctorList :list='departList'/>
+      <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
+        <hotDoctorList :list='departList'/>
+      </mt-loadmore>
     </div>
   </div>
 </template>
@@ -33,7 +35,7 @@ export default {
   },
   data() {
     return {
-      showid: "1", // 判断是否选中当前项
+      showid: "", // 判断是否选中当前项
       switchTabActive: "switch0",
       departList: [], // 医生列表数据
       switchTabList: [
@@ -41,9 +43,17 @@ export default {
         { switchName: "地区" },
         { switchName: "筛选" }
       ],
-      isShowShadow: true, // 是否显示遮罩
+      isShowShadow: false, // 是否显示遮罩
       departmentId:'', // 科室ID(已选择科室增加地区等条件是需要存储)
       region:'', // 地区(已选择地区增加筛选等条件是需要存储)
+      item: {
+        getDataModule: "hotDoctor",
+        idx: 0, // 页码
+        pagesize: 2, // 请求数量
+        region: "" // 城市
+      },
+      list:[],
+      allLoaded:false
     };
   },
   created() {
@@ -68,8 +78,37 @@ export default {
       }
     );
   },
-  mounted: function() {},
+  mounted() {
+    
+  },
   methods: {
+    getDoctorList() {
+      var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
+      this.$http.post(url, this.item).then(
+        (response) => {
+          // console.log(response.data);
+          if (response.data.statusCode == 1) {
+            this.list.push(response.data.data.doctorInfo.item);
+          }
+        },
+        (response) => {
+          console.log("error");
+        }
+      );
+    },
+    loadTop() {
+      // 下拉刷新
+       
+      this.getDoctorList();
+      this.$refs.loadmore.onTopLoaded();
+    },
+    loadBottom() {
+      // 上拉加载更多数据
+      this.item.idx++;
+      this.getDoctorList();
+      this.allLoaded = true; // 若数据已全部获取完毕
+      this.$refs.loadmore.onBottomLoaded();
+    },
     // 遮罩消失
     closeShadow() {
       this.isShowShadow = false; // 遮罩消失

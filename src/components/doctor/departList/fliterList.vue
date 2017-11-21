@@ -3,17 +3,17 @@
     <div class="fliter_item">
     <h2 class="fliter_top">服务类型</h2>
     <ul class="fliter_list">
-        <li v-for="(item,index) in service_type" :key="index" @click="serviceId(item,index)" :class="{'active':service_id == 'service'+index}">{{item.serviceName}}</li>
+      <li v-for="(item,index) in service_type" :key="index" @click="serviceId($event,item,index)" :class="{'active':service_id == 'service'+index}">{{item.serviceName}}</li>
     </ul>
     <h2 class="fliter_top">医生职称</h2>
     <ul class="fliter_list">
-        <li v-for="(item,index) in doctor_job" :key="index" @click="doctorJobId(item,index)" :class="{'active':doctor_id == item.jobKey}">{{item.jobName}}</li>
+      <li v-for="(item,index) in doctor_job" :key="index" @click="doctorJobId($event,item,index)" :class="{'active':doctor_id == item.jobKey}">{{item.jobName}}</li>
     </ul>
     </div>
     
     <ul class="btn_box">
-        <li @click="Reset">重置</li>
-        <li @click="Finished">完成</li>
+      <li @click="Reset">重置</li>
+      <li @click="Finished">完成</li>
     </ul>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       service_id: "service0",
-      doctor_id: null,
+      doctor_id: true,
       service_type: [
         { serviceName: "不限", serviceKey: "" },
         { serviceName: "健康咨询", serviceKey: "healthPhone" },
@@ -31,24 +31,43 @@ export default {
         { serviceName: "家庭医生", serviceKey: "houseDoctor" }
       ],
       doctor_job: [
-        { jobName: "不限", jobKey: null },
-        { jobName: "医师", jobKey: "multiple" },
-        { jobName: "主治医师", jobKey: "multiple" },
-        { jobName: "副主任医师", jobKey: "multiple" },
-        { jobName: "主任医师", jobKey: "multiple" }
+        { jobName: "不限", jobKey: true },
+        { jobName: "医师", jobKey: false },
+        { jobName: "主治医师", jobKey: false },
+        { jobName: "副主任医师", jobKey: false },
+        { jobName: "主任医师", jobKey: false }
       ],
       serviceType:'', // 服务类型(后台字段)
       doctorTitle:'', // 医生职称(后台字段)
+      doctorTitleArr:[], // 医生职称数组
     };
   },
   methods: {
-    serviceId(item, index) {
+    serviceId(e,item, index) {
       this.service_id = "service" + index;
+      if(e.target.className.indexOf('active') == -1){
+        e.target.className = "active";
+        // this.serviceType = item.serviceKey;
+      }else{
+        e.target.className = '';
+        this.service_id = "service0";
+      }
       this.serviceType = item.serviceKey;
-      console.log(item, index);
+      console.log(e.target.className,item, index);
     },
-    doctorJobId(item, index) {
-      this.doctor_id = item.jobKey;
+    doctorJobId(e,item, index) {
+      if(e.target.className.indexOf('active') == -1){
+        e.target.className = "active";
+        this.doctorTitleArr.push(item.jobName);
+      }else{
+        if(index != 0){
+          e.target.className = '';
+        }else{
+          e.target.className = "active";
+          // this.doctor_id = null;
+        }
+      }
+      
       console.log(item, index);
     },
     // 重置
@@ -58,7 +77,8 @@ export default {
     },
     // 完成
     Finished() {
-        this.$emit("searchFliter",this.serviceType,this.doctorTitle);
+      console.log(this.serviceType,this.doctorTitle)
+      this.$emit("searchFliter",this.serviceType,this.doctorTitle);
     }
   }
 };
