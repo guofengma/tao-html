@@ -33,6 +33,7 @@ import departList from '@/components/doctor/departList/departList'
 import departListPage from '@/components/doctor/departList/departListPage'
 import doctorList from '@/components/doctor/departList/doctorList'
 import searchPage from '@/components/doctor/searchPage/searchPage'
+import searchDoctorList from '@/components/doctor/searchPage/searchDoctorList'
 
 Vue.use(Router)
 
@@ -92,6 +93,14 @@ export default new Router({
       component: searchPage,
       meta: {
         title: '搜索页面'
+      }
+    },
+    {
+      path: '/searchDoctorList',
+      name: 'searchDoctorList',
+      component: searchDoctorList,
+      meta: {
+        title: '搜索医生列表'
       }
     },
     //wang(个人中心)
