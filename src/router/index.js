@@ -18,12 +18,16 @@ import imprint from '@/components/personalCenter/setting/aboutTao/imprint'
 import officalAccount from '@/components/personalCenter/setting/aboutTao/officalAccount'
 import introTao from '@/components/personalCenter/setting/aboutTao/introTao'
 import userAgreement from '@/components/personalCenter/setting/aboutTao/userAgreement'
+/********************************wang就诊人*******************************************************/
+import patienterIndex from '@/components/personalCenter/patienter/patienterIndex.vue'
+import patienterInfo from '@/components/personalCenter/patienter/patienterInfo.vue'
 /********************************wang登录页面*******************************************************/
 import loginIndex from '@/components/login/loginIndex'
 import settingNameLogo from '@/components/login/settingNameLogo'
 import navPage from '@/components/login/navPage'
 /********************************订单详情（支付提醒）**********************************************************/
 import orderDetail from '@/components/personalCenter/aboutOrder/orderDetail.vue'
+import orderPay from '@/components/personalCenter/aboutOrder/orderPay.vue'
 
 /**********************************xu************************************************/
 import Home from '@/components/Home'
@@ -255,6 +259,31 @@ export default new Router({
       component: orderDetail,
       meta: {
         title: '订单详情'
+      }
+    },
+    {
+      path: '/orderPay',
+      name: 'orderPay',
+      component: orderPay,
+      meta: {
+        title: '购买服务'
+      }
+    },
+    //就诊人页面展示
+    {
+      path: '/patienterIndex',
+      name: 'patienterIndex',
+      component: patienterIndex,
+      meta: {
+        title: '就诊人'
+      }
+    },
+    {
+      path: '/patienterInfo',
+      name: 'patienterInfo',
+      component: patienterInfo,
+      meta: {
+        title: '就诊人信息'
       }
     }
   ]

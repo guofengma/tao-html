@@ -103,7 +103,22 @@
 
 <script>
 export default {
-  name: "personalCenterIndex"
+  name: "personalCenterIndex",
+  created() {
+    this.$http
+      .post(
+        this.baseUrl + "DisplayTotalAccountController/findOrderInUseMoney",
+        { customerId: "880631824E9A482DBA94B6138A5F91B2" }
+      )
+      .then(
+        res => {
+          console.log(res);
+        },
+        res => {
+          console.log(res);
+        }
+      );
+  }
 };
 </script>
 
@@ -112,7 +127,7 @@ export default {
   min-width: 320px;
   max-width: 640px;
   margin: 0 auto;
-  background-color: rgb(239,244,250);
+  background-color: rgb(239, 244, 250);
 }
 .top {
   background-color: #4da0ff;
@@ -179,15 +194,15 @@ export default {
   }
 }
 .order {
-  margin-top: .35rem;
+  margin-top: 0.35rem;
   background-color: #fff;
   .order_top {
     display: flex;
     justify-content: space-between;
     height: 1.9rem;
     line-height: 1.9rem;
-    padding: 0 .6rem;
-    border-bottom: 1px solid rgb(238,238,238); 
+    padding: 0 0.6rem;
+    border-bottom: 1px solid rgb(238, 238, 238);
     span {
       color: rgb(57, 57, 57);
       font-size: 0.8rem;
@@ -198,7 +213,7 @@ export default {
       vertical-align: middle;
       i {
         vertical-align: middle;
-        font-size: .8rem;
+        font-size: 0.8rem;
       }
     }
   }
@@ -211,11 +226,11 @@ export default {
       flex-direction: column;
       align-items: center;
       position: relative;
-      padding: .6rem;
+      padding: 0.6rem;
       i {
         position: absolute;
         right: 1.2rem;
-        top: .4rem;
+        top: 0.4rem;
         height: 0.9rem;
         width: 0.9rem;
         text-align: center;
@@ -227,41 +242,41 @@ export default {
       img {
         width: 1.5rem;
         height: 1.5rem;
-        margin-bottom: .4rem;
+        margin-bottom: 0.4rem;
       }
       span {
-        font-size: .6rem;
-        color: rgb(102,102,102);
+        font-size: 0.6rem;
+        color: rgb(102, 102, 102);
       }
     }
   }
 }
 .meau_list {
-  >li {
+  > li {
     background-color: #fff;
     display: flex;
     justify-content: space-between;
-    padding: 0 .6rem;
+    padding: 0 0.6rem;
     align-items: center;
     height: 2.25rem;
-    border-bottom: 1px solid rgb(238,238,238); 
+    border-bottom: 1px solid rgb(238, 238, 238);
     &:nth-of-type(5) {
-      margin-top: .35rem;
-    } 
-    >div {
+      margin-top: 0.35rem;
+    }
+    > div {
       img {
         height: 1.5rem;
         width: 1.5rem;
         vertical-align: middle;
       }
       span {
-        font-size: .75rem;
+        font-size: 0.75rem;
         vertical-align: middle;
-        color: rgb(57,57,57);
-        padding-left: .7rem;
+        color: rgb(57, 57, 57);
+        padding-left: 0.7rem;
       }
     }
-    >i {
+    > i {
       font-size: 1rem;
       color: #999;
     }
