@@ -2,35 +2,28 @@
   <div class="home">
     <div class="search_box">
         <ul class="search_top">
-            <li class="search">
-                <div class="search_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_search.png" alt=""></div>
-                <input type="text" placeholder="医生 医院 科室 疾病">
-            </li>
-            <router-link tag="li" to="/home">取消</router-link>
+          <li class="search">
+            <div class="search_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_search.png" alt=""></div>
+            <input type="text" placeholder="医生 医院 科室 疾病" @keydown="Enter($event)">
+          </li>
+          <router-link tag="li" to="/home">取消</router-link>
         </ul>
         <div class="history_search" v-if="isHistory">
-            <div class="item_top">
-                <h2>历史搜索</h2>
-                <div class="del" @click="Delhistory"><img src="../../../../static/imgs/hospital/index/tdf_search_clean.png" alt="del"></div>
-            </div>
-            <ul>
-                <li>感冒</li>
-                <li>胸闷喘不过气</li>
-                <li>嗓子疼</li>
-            </ul>
+          <div class="item_top">
+            <h2>历史搜索</h2>
+            <div class="del" @click="Delhistory"><img src="../../../../static/imgs/hospital/index/tdf_search_clean.png" alt="del"></div>
+          </div>
+          <ul>
+            <li v-for="(item,index) in hostorySearch" :key="index">{{item}}</li>
+          </ul>
         </div>
         <div class="hot_search">
-            <div class="item_top">
-                <h2>热门搜索</h2>
-            </div>
-            <ul>
-                <li>感冒</li>
-                <li>胸闷喘不过气</li>
-                <li>嗓子疼</li>
-                <li>135</li>
-                <li>感冒发烧</li>
-                <li>腰背酸痛</li>
-            </ul>
+          <div class="item_top">
+            <h2>热门搜索</h2>
+          </div>
+          <ul>
+            <li v-for="(item,index) in hotSearch" :key="index">{{item}}</li>
+          </ul>
         </div>
     </div>
   </div>
@@ -40,12 +33,52 @@
 export default {
   data() {
     return {
-      isHistory: true
+      isHistory: true,
+      hostorySearch:[], // 历史搜索
+      hotSearch:['感冒','胸闷喘不过气','嗓子疼','135','感冒发烧','感冒发烧','腰背酸痛'], // 热门搜索
     };
+  },
+  computed: {
+    // isHistoryFn: function() {
+    //   var _this = this;
+    //   if(_this.hostorySearch.length == 0){
+    //     _this.isHistory = false;
+    //   }
+    //   return _this.isHistory;
+    // }
   },
   methods: {
     Delhistory: function() {
       this.isHistory = !this.isHistory;
+    },
+    Enter(e) {
+      var _this = this;
+      var url = _this.baseUrl + "doc/getDoctorListForInternatHospital";
+      if (e.keyCode == 13) {
+        var keywords = e.target.value;
+        var data = {
+          getDataModule: "searchBar",
+          idx: 0,
+          pagesize: 10,
+          region: "",
+          key: keywords
+        };
+        // 添加到历史搜索中
+        if(_this.hostorySearch.indexOf(keywords) == -1){
+          _this.hostorySearch.push(keywords); 
+        }
+        this.$http.post(url, data).then(
+          response => {
+            console.log(response.data);
+            if (response.data.statusCode == 1) {
+              window.location.href = "doctorList"
+            }
+          },
+          response => {
+            console.log("error");
+          }
+        );
+      }
     }
   }
 };
@@ -139,7 +172,7 @@ export default {
       border: 1px solid @borderColor;
       color: rgb(102, 102, 102);
       margin: 0 0.8rem 0.8rem 0;
-      background:rgb(239,244,250);
+      background: rgb(239, 244, 250);
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>  
   <ul class="hot_list"> 
     <div class="doctor_list clearfix" v-for="item in list" :key="item.value">
-      <router-link tag='li' to='/doctorDetail'>
+      <router-link tag='li' :to='{name:"doctorDetail",params:item}'>
         <div class="orders">接诊{{item.admissions}}单</div>
         <div class="avatar f_left"><img src="../../../../static/imgs/hospital/index/tdf_hospital_head.png" alt=""></div>
         <div class="doctor_info">
@@ -25,9 +25,6 @@ export default {
     return {};
   },
   props: ["list"],
-  methods:{
-  },
-  
 };
 </script>
 
