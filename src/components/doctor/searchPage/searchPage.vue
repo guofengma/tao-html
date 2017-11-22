@@ -53,31 +53,14 @@ export default {
     },
     Enter(e) {
       var _this = this;
-      var url = _this.baseUrl + "doc/getDoctorListForInternatHospital";
       if (e.keyCode == 13) {
+
         var keywords = e.target.value;
-        var data = {
-          getDataModule: "searchBar",
-          idx: 0,
-          pagesize: 10,
-          region: "",
-          key: keywords
-        };
         // 添加到历史搜索中
         if(_this.hostorySearch.indexOf(keywords) == -1){
           _this.hostorySearch.push(keywords); 
         }
-        this.$http.post(url, data).then(
-          response => {
-            console.log(response.data);
-            if (response.data.statusCode == 1) {
-              window.location.href = "doctorList"
-            }
-          },
-          response => {
-            console.log("error");
-          }
-        );
+        window.location.href = "searchDoctorList?keywords=" + encodeURI(encodeURI(keywords));
       }
     }
   }

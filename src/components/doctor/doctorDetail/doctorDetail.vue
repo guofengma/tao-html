@@ -203,7 +203,7 @@ export default {
             this.expertArticle = expertArticle;
             console.log(expertArticle)
             this.expertArticle.forEach(function(v,i){
-              v.newsCoverimage = this.baseImgUrl + v.newsCoverimage;
+              v.newsCoverimage = _this.baseImgUrl + v.newsCoverimage;
             });
             // this.customerAppraisal = response.data.obj;
             // var simpleContent = response.data.obj.simpleContent;
