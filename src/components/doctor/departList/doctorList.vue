@@ -12,7 +12,7 @@
     <div class="fliter_list" v-if="showid==3">
       <fliterList @searchFliter='searchFliter'/>
     </div>
-    <div class="shadow_box" @touchmove="closeShadow" v-if="isShowShadow"></div>
+    <div class="shadow_box" @click="closeShadow" @touchmove="closeShadow" v-if="isShowShadow"></div>
     <div class="hot_doctor_list">
       <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
         <hotDoctorList :list='departList'/>
@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       showid: "", // 判断是否选中当前项
-      switchTabActive: "switch0",
+      switchTabActive: "switch",
       departList: [], // 医生列表数据
       switchTabList: [
         { switchName: "科室" },
@@ -98,7 +98,6 @@ export default {
     },
     loadTop() {
       // 下拉刷新
-       
       this.getDoctorList();
       this.$refs.loadmore.onTopLoaded();
     },
@@ -113,6 +112,7 @@ export default {
     closeShadow() {
       this.isShowShadow = false; // 遮罩消失
       this.showid = "4"; // 查询条件列表消失
+      this.switchTabActive = 'switch' // 取消当前选中状态
     },
     // 切换查询条件tab栏
     switchTab(item, index) {
@@ -186,6 +186,11 @@ export default {
 <style lang="less" scoped>
 .doctorList {
   position: relative;
+  padding-top:2.3rem;
+}
+.hot_doctor_list{
+  padding:0rem 0.6rem 0;
+  background:#fff;
 }
 .doctor_top {
   width: 100%;
@@ -194,8 +199,8 @@ export default {
   border-bottom: 1px solid rgb(229, 229, 229);
   position: fixed;
   left: 0;
-  top: 2rem;
-  z-index: 10000;
+  top: 0rem;
+  z-index: 10001;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -245,12 +250,9 @@ export default {
 .area_list,
 .fliter_list {
   width: 100%;
-  position: absolute;
+  position: fixed;
   left: 0;
-  top: 3.5rem;
+  top:1.5rem;
   z-index: 10000;
-}
-.hot_doctor_list {
-  padding-top: 4.3rem;
 }
 </style>

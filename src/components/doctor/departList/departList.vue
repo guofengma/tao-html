@@ -58,9 +58,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.home {
-  // padding-top: 2rem;
-}
 .department {
   background: #fff;
 }

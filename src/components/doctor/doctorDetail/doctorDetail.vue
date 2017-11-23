@@ -84,7 +84,7 @@
           <div class="expert_article" v-for="(item,index) in expertArticle" :key="index">
             <div class="expert_left">
               <div class="expert_img">
-                <img src="" alt="">
+                <img :src="item.newsCoverimage" alt="">
               </div>
             </div>
             <div class="expert_right">
@@ -92,7 +92,7 @@
                 <li><h2>{{item.newsTitle}}</h2></li>
                 <li><p>{{item.description}}</p></li>
                 <li class="expert_sign">
-                  <div><img :src="item.newsCoverimage" alt="">{{item.newsTage}}</div>
+                  <div><img src="../../../../static/imgs/hospital/index/tdf_doctor_tab.png" alt="">{{item.newsTage}}</div>
                   <p>{{item.createTime | formatDate}}</p>
                 </li>
               </ul>
@@ -105,19 +105,19 @@
 
 <script>
 import pubOrderList from "../../personalCenter/pubComponents/pubOrderList";
-import {formatDate} from "../formdate";
+import { formatDate } from "../formdate";
 export default {
   data() {
     return {
       active: "activeTab",
       showid: "tab1",
       doctorInfo: {}, // 医生详情
-      customerAppraisal:[], // 用户评价 
-      expertArticle:[], // 专家文章
+      customerAppraisal: [], // 用户评价
+      expertArticle: [], // 专家文章
       imgUrl: "", // 图片路径
       doctorId: "", // 医生ID
       customerImpression: [], // 患者印象
-      simpleContent:[], // 用户评价中患者印象
+      simpleContent: [] // 用户评价中患者印象
     };
   },
   components: {
@@ -129,11 +129,10 @@ export default {
     this.doctorId = item.doctorId;
     this.getDoctorDetail(); // 获取用户详细信息
   },
-  filters:{
-    formatDate(time){
+  filters: {
+    formatDate(time) {
       let date = new Date(time);
-      return formatDate(date,'yyyy-MM-dd hh:mm');
-      //此处formatDate是一个函数，将其封装在common/js/date.js里面，便于全局使用
+      return formatDate(date, "yyyy-MM-dd hh:mm");
     }
   },
   methods: {
@@ -144,7 +143,7 @@ export default {
       };
       this.$http.post(url, data).then(
         response => {
-          // console.log("doctorDetail", response.data);
+          // console.log(response.data);
           if (response.data.statusCode == 1) {
             this.doctorInfo = response.data.obj;
             var customerImpression = response.data.obj.customerImpression;
@@ -152,8 +151,9 @@ export default {
             if (customerImpression) {
               this.customerImpression = customerImpression.split(",");
             }
-            this.imgUrl = imgUrl ? this.baseImgUrl + imgUrl : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
-            // console.log(this.customerImpression);
+            this.imgUrl = imgUrl
+              ? this.baseImgUrl + imgUrl
+              : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
           }
         },
         response => {
@@ -162,11 +162,11 @@ export default {
       );
     },
     getCustomerImpression() {
-      this.showid = 'tab2';
+      this.showid = "tab2";
       var url = this.baseUrl + "newDoctorBaseInfo/getCustomerImpression";
       var data = {
         doctorId: this.doctorId,
-        index:1
+        index: 1
       };
       this.$http.post(url, data).then(
         response => {
@@ -178,7 +178,9 @@ export default {
             if (simpleContent) {
               this.simpleContent = simpleContent.split(",");
             }
-            response.data.obj.photo = photo ? this.baseImgUrl + photo : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            response.data.obj.photo = photo
+              ? this.baseImgUrl + photo
+              : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
           }
         },
         response => {
@@ -186,32 +188,24 @@ export default {
         }
       );
     },
-    getExpertArticle(){
+    getExpertArticle() {
       this.showid = "tab3";
       var _this = this;
       var url = this.baseUrl + "orderList/getExpertArticle";
       var data = {
         doctorId: this.doctorId,
-        index:1,
-        pageSize:10
+        index: 1,
+        pageSize: 10
       };
       this.$http.post(url, data).then(
         response => {
-          console.log("doctorDetail", response.data);
+          console.log("专家文章", response.data);
           if (response.data.statusCode == 1) {
             var expertArticle = response.data.obj;
             this.expertArticle = expertArticle;
-            console.log(expertArticle)
-            this.expertArticle.forEach(function(v,i){
+            this.expertArticle.forEach(function(v, i) {
               v.newsCoverimage = _this.baseImgUrl + v.newsCoverimage;
             });
-            // this.customerAppraisal = response.data.obj;
-            // var simpleContent = response.data.obj.simpleContent;
-            // var photo = response.data.obj.photo;
-            // if (simpleContent) {
-            //   this.simpleContent = simpleContent.split(",");
-            // }
-            // response.data.obj.photo = photo ? this.baseImgUrl + photo : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
           }
         },
         response => {
@@ -475,7 +469,7 @@ export default {
   .expert_right {
     flex-grow: 1;
     .expert_info > li {
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.4rem;
       h2 {
         font-size: 0.7rem;
         color: @fontColor;
@@ -492,6 +486,8 @@ export default {
         font-size: 0.6rem;
         div {
           color: rgb(82, 163, 255);
+          display: flex;
+          align-items: center;
           img {
             width: 0.6rem;
             margin-right: 0.35rem;

@@ -1,15 +1,11 @@
 <template>
-  <div class="home">
-    <div class="department">
-      <div class="departmentList">
-        <ul class="department_left">
-          <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
-        </ul>
-        <ul class="department_right">
-          <router-link tag="li" :to="{name:'doctorList',params:item}" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
-        </ul>
-      </div>
-    </div>
+  <div class="departmentList">
+    <ul class="department_left">
+      <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
+    </ul>
+    <ul class="department_right">
+      <router-link tag="li" :to="{name:'doctorList',params:item}" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
+    </ul>
   </div>
 </template>
 
@@ -25,13 +21,13 @@ export default {
   },
   mounted: function() {
     var _this = this;
-    var url = _this.baseUrl + 'doctor/getDepartmentWithChildren';
+    var url = _this.baseUrl + "doctor/getDepartmentWithChildren";
     this.$nextTick(function() {
       // Code that will run only after the
       // entire view has been rendered
       this.$http.post(url, this.item).then(
         response => {
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.success) {
             this.department = response.data.data;
             this.department_item = this.department[0].childDepartment;
@@ -54,15 +50,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.home {
-  // padding-top: 2rem;
-}
-.department {
-  background: #fff;
-}
 .departmentList {
   display: flex;
-  margin: 0.5rem 0;
   height: 25rem;
   overflow: hidden;
   .department_left {
@@ -99,6 +88,7 @@ export default {
     }
   }
   .department_right {
+    background: #fff;
     flex-grow: 1;
     height: 100%;
     overflow-x: hidden;

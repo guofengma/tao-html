@@ -19,30 +19,10 @@
         <router-link tag="a"  class="f_right" to="/departListPage">更多</router-link>
       </div>
       <ul class="hot_item clearfix">
-        <li>
-          <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_neike.png" alt=""></div>
-          <h2>内科</h2>
-        </li>
-        <li>
-          <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_waike.png" alt=""></div>
-          <h2>外科</h2>
-        </li>
-        <li>
-          <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_erke.png" alt=""></div>
-          <h2>儿科</h2>
-        </li>
-        <li>
-          <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_fchk.png" alt=""></div>
-          <h2>妇产科</h2>
-        </li>
-        <li>
-          <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_pfk.png" alt=""></div>
-          <h2>皮肤科</h2>
-        </li>
-        <li>
-          <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_kqk.png" alt=""></div>
-          <h2>口腔科</h2>
-        </li>
+        <router-link tag="li" :to="{name:'doctorList',params:item}" v-for="(item,index) in hotDepartment" :key="index">
+          <div class="hot_item_icon"><img :src="item.departmentPicture" alt=""></div>
+          <h2>{{item.departmentName}}</h2>
+        </router-link>
         <router-link tag="li" to="/departListPage">
           <div class="hot_item_icon"><img src="../../static/imgs/hospital/index/tdf_hospital_more.png" alt=""></div>
           <h2>更多</h2>
@@ -70,6 +50,7 @@ export default {
     return {
       active: "active",
       arr:[1,2,3,4,5],
+      hotDepartment:[], // 科室列表
       tep: true,
       item:{
         getDataModule:'hotDoctor',
@@ -84,13 +65,13 @@ export default {
     navbar
   },  
   mounted:function(){
+    this.getHotDepartment();
     var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
     this.$http.post(url,this.item).then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       if(response.data.statusCode == 1){
         this.arr = response.data.data.doctorInfo.item;
       }
-
     }, (response) => {
         console.log("error");
     });
@@ -98,6 +79,23 @@ export default {
   methods:{
     greet:function(el){
       console.log(el)
+    },
+    // 获取热门科室
+    getHotDepartment(){
+      var _this = this;
+      var url = _this.baseUrl + "doctor/selectHotDepartments";
+      _this.$http.post(url).then(res => {
+        // console.log(res.data)
+        if(res.data.success){
+          res.data.data.forEach(function(v,i){
+            v.departmentPicture = _this.baseImgUrl + v.departmentPicture;
+            v.id = v.departmentId; // 添加id字段，统一二级菜单的字段名
+          });
+          _this.hotDepartment = res.data.data;
+        }
+      }),res => {
+        console.log('error')
+      }
     }
   }
 };
