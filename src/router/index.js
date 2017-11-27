@@ -28,6 +28,9 @@ import navPage from '@/components/login/navPage'
 /********************************订单详情（支付提醒）**********************************************************/
 import orderDetail from '@/components/personalCenter/aboutOrder/orderDetail.vue'
 import orderPay from '@/components/personalCenter/aboutOrder/orderPay.vue'
+import addPatienter from '@/components/personalCenter/patienter/addPatienter.vue'
+import realNameAuthentication from '@/components/personalCenter/patienter/realNameAuthentication.vue'
+import fillInfomation from '@/components/personalCenter/patienter/fillInfomation.vue'
 
 /**********************************xu************************************************/
 import Home from '@/components/Home'
@@ -293,6 +296,30 @@ export default new Router({
       component: patienterInfo,
       meta: {
         title: '就诊人信息'
+      }
+    },
+    {
+      path: '/addPatienter',
+      name: 'addPatienter',
+      component: addPatienter,
+      meta: {
+        title: '添加就诊人'
+      }
+    },
+    {
+      path: '/realNameAuthentication',
+      name: 'realNameAuthentication',
+      component: realNameAuthentication,
+      meta: {
+        title: '实名认证'
+      }
+    },
+    {
+      path: '/fillInfomation',
+      name: 'fillInfomation',
+      component: fillInfomation,
+      meta: {
+        title: '填写资料'
       }
     }
   ]

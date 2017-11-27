@@ -59,20 +59,21 @@ export default {
     height: 100%;
 }
 .top {
-    background-color: #f38590;
-    padding-left: .6rem;
+  background-color: transparent;
+  padding-left: 0.6rem;
+  line-height: 1.75rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  p {
+    font-size: 0.65rem;
+    color: #f38590;
     line-height: 1.75rem;
-    position: fixed;
-    left: 0;top: 0;
-    width: 100%;
-    p {
-        font-size: .65rem;
-        color: #fff;
-        line-height: 1.75rem;
-    }
+  }
 }
 .base_list {
-    padding-top: 2.35rem;
+    padding-top: 2rem;
     li {
         height: 2.45rem;
         display: flex;
