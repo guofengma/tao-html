@@ -3,13 +3,13 @@
     <ul class="doctor_top">
       <li @click="switchTab(item,index)" :class="{'active':switchTabActive == 'switch' + index}" v-for="(item,index) in switchTabList" :key='index'><h2>{{item.switchName}}</h2><span class="triangle"></span></li>
     </ul>
-    <div class="depart_list" v-if="showid==1">
-      <departmentList @searchDepart = "searchDepart"/>
+    <div class="depart_list" v-show="showid==1">
+      <departmentList @searchDepart = "searchDepart" :department="department"/>
     </div>
-    <div class="area_list" v-if="showid==2">
-      <areaList @seachArea="seachArea"/>
-    </div>
-    <div class="fliter_list" v-if="showid==3">
+    <div class="area_list" v-show="showid==2">
+      <areaList @seachArea="seachArea" :area='area'/>
+    </div> 
+    <div class="fliter_list" v-show="showid==3">
       <fliterList @searchFliter='searchFliter'/>
     </div>
     <div class="shadow_box" @click="closeShadow" @touchmove="closeShadow" v-if="isShowShadow"></div>
@@ -26,6 +26,7 @@ import departmentList from "./departList";
 import areaList from "./areaList";
 import fliterList from "./fliterList";
 import hotDoctorList from "../hotDoctorList/hotDoctorList";
+import { Indicator } from "mint-ui";
 export default {
   components: {
     departmentList, // 科室列表
@@ -53,7 +54,9 @@ export default {
         region: "" // 城市
       },
       list:[],
-      allLoaded:false
+      allLoaded:false,
+      department:[], // 科室列表数据
+      area:[], // 地区列表
     };
   },
   created() {
@@ -65,23 +68,67 @@ export default {
       region: "",
       department: item.id
     };
-    var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
-    this.$http.post(url, option).then(
+    Indicator.open({
+      text:"加载中...",
+      spinnerType: 'circle'
+    });
+    var doctorUrl = this.baseUrl + "doc/getDoctorListForInternatHospital";
+    this.$http.post(doctorUrl, option).then(
       response => {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.success && response.data.statusCode == 1) {
           this.departList = response.data.data.doctorInfo.item;
+          Indicator.close(); // 关闭加载动画
         }
       },
       response => {
         console.log("error");
       }
     );
+    // 获取科室列表
+    var departUrl = this.baseUrl + 'doctor/getDepartmentWithChildren';
+    this.getDepartList(departUrl);
+    // 获取地区列表
+    var areaUrl = this.baseUrl + 'doc/getAllAreaList';
+    this.getAreaList(areaUrl);
   },
   mounted() {
     
   },
   methods: {
+    // 获取科室列表
+    getDepartList(url){
+      this.$http.post(url).then(
+        response => {
+          // console.log(response.data);
+          if (response.data.success) {
+            this.department = response.data.data;
+            // this.department_item = this.department[0].childDepartment;
+          }
+        },
+        response => {
+          console.log("error");
+        }
+      );
+    },
+    // 获取地区列表
+    getAreaList(url){
+      this.$http.post(url).then(
+        response => {
+          console.log(response.data);
+          var city = response.data.data ;
+          if (response.data.success) {
+            this.area = response.data.data.areaInfoList.item;
+            this.area.unshift({pAreaName:"重点城市",areainfoCustom:response.data.data.emphasesCityInfo.item});
+            // this.area_item = this.area[0].areainfoCustom;
+          }
+        },
+        response => {
+          console.log("error");
+        }
+      );
+    },
+    // 获取查询医生列表
     getDoctorList() {
       var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
       this.$http.post(url, this.item).then(
@@ -123,10 +170,13 @@ export default {
     // 按科室查询
     searchDepart(item, index) {
       // console.log(item, index);
+      Indicator.open({
+        text:"科室加载中..."
+      });
       this.showid = "4"; // 查询条件列表消失
       this.switchTabList[0].switchName = item.name; // 显示当前选中的科室名字
       this.isShowShadow = false; // 遮罩的显示隐藏
-      this.department = item.id;// 科室ID(已选择科室增加地区等条件是需要存储)
+      this.departmentId = item.id;// 科室ID(已选择科室增加地区等条件是需要存储)
       var option = {
         getDataModule: "hotDepartment",
         idx: 0,
@@ -137,9 +187,10 @@ export default {
       var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
       this.$http.post(url, option).then(
         response => {
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.success && response.data.statusCode == 1) {
             this.departList = response.data.data.doctorInfo.item;
+            Indicator.close(); // 关闭loading动画
           }
         },
         response => {
@@ -149,7 +200,7 @@ export default {
     },
     // 按地区查询
     seachArea(item, index) {
-      console.log(item, index);
+      // console.log(item, index);
       this.showid = "4"; // 查询条件列表消失
       this.switchTabList[1].switchName = item.areaName; // 显示当前选中的地区名字
       this.isShowShadow = false; // 遮罩的显示隐藏
@@ -177,6 +228,34 @@ export default {
     },
     // 按筛选查询
     searchFliter(serviceType,doctorTitle){
+      this.showid = "4"; // 查询条件列表消失
+      this.isShowShadow = false; // 遮罩的显示隐藏
+      var option = {
+        getDataModule: "hotDepartment",
+        idx: 0,
+        pagesize: 10,
+        region: this.region,
+        department:this.departmentId,
+        serviceType:serviceType,
+        doctorTitle:doctorTitle
+      };
+      Indicator.open({
+        text:"加载中...",
+        spinnerType: 'circle'
+      });
+      var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
+      this.$http.post(url, option).then(
+        response => {
+          console.log(response.data);
+          if (response.data.success && response.data.statusCode == 1) {
+            this.departList = response.data.data.doctorInfo.item;
+            Indicator.close();
+          }
+        },
+        response => {
+          console.log("error");
+        }
+      );
       console.log(serviceType,doctorTitle)
     }
   }

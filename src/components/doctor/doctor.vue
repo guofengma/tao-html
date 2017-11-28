@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import { Toast } from "mint-ui";
+import { Indicator } from "mint-ui";
 import hotDoctorList from "./hotDoctorList/hotDoctorList";
 export default {
   name: "doctor",
@@ -34,6 +36,10 @@ export default {
     }
   },
   created() {
+    Indicator.open({
+      text: '加载中...',
+      spinnerType: 'fading-circle'
+    });
     var _this = this;
     var diseaseId = this.$route.params.diseaseId;
     var url = this.baseUrl + "doc/getDoctorListByDiseaseIdForSearch";
@@ -49,6 +55,7 @@ export default {
         // console.log(response.data);
         if (response.data.statusCode == 1) {
           _this.doctorList = response.data.object;
+          Indicator.close()
         }
       },
       response => {

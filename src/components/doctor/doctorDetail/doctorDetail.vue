@@ -106,6 +106,7 @@
 <script>
 import pubOrderList from "../../personalCenter/pubComponents/pubOrderList";
 import { formatDate } from "../formdate";
+import { Indicator } from "mint-ui";
 export default {
   data() {
     return {
@@ -136,11 +137,15 @@ export default {
     }
   },
   methods: {
+    // 获取医生详细信息
     getDoctorDetail() {
       var url = this.baseUrl + "newDoctorBaseInfo/getDoctorDetail";
       var data = {
         doctorId: this.doctorId
       };
+      Indicator.open({
+        text:"加载中..."
+      });
       this.$http.post(url, data).then(
         response => {
           // console.log(response.data);
@@ -151,9 +156,8 @@ export default {
             if (customerImpression) {
               this.customerImpression = customerImpression.split(",");
             }
-            this.imgUrl = imgUrl
-              ? this.baseImgUrl + imgUrl
-              : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            this.imgUrl = imgUrl ? this.baseImgUrl + imgUrl : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            Indicator.close(); // 关闭loading动画  
           }
         },
         response => {
@@ -161,6 +165,7 @@ export default {
         }
       );
     },
+    // 获取用户评价
     getCustomerImpression() {
       this.showid = "tab2";
       var url = this.baseUrl + "newDoctorBaseInfo/getCustomerImpression";
@@ -178,9 +183,7 @@ export default {
             if (simpleContent) {
               this.simpleContent = simpleContent.split(",");
             }
-            response.data.obj.photo = photo
-              ? this.baseImgUrl + photo
-              : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            response.data.obj.photo = photo ? this.baseImgUrl + photo : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
           }
         },
         response => {
@@ -188,6 +191,7 @@ export default {
         }
       );
     },
+    // 获取专家文章
     getExpertArticle() {
       this.showid = "tab3";
       var _this = this;
@@ -234,7 +238,7 @@ export default {
         margin-right: 0.5rem;
       }
       img {
-        max-width: 100%;
+        width: 100%;
         max-height: 100%;
       }
     }
@@ -250,7 +254,7 @@ export default {
     margin-left: -2.1rem;
     overflow: hidden;
     img {
-      max-width: 100%;
+      width: 100%;
       max-height: 100%;
     }
   }

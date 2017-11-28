@@ -14,7 +14,7 @@
             <div class="del" @click="Delhistory"><img src="../../../../static/imgs/hospital/index/tdf_search_clean.png" alt="del"></div>
           </div>
           <ul>
-            <li v-for="(item,index) in hostorySearch" :key="index">{{item}}</li>
+            <router-link tag="li" :to="{name:'searchDoctorList',params:{key:item}}" v-for="(item,index) in historySearch" :key="index">{{item}}</router-link>
           </ul>
         </div>
         <div class="hot_search">
@@ -22,7 +22,7 @@
             <h2>热门搜索</h2>
           </div>
           <ul>
-            <li v-for="(item,index) in hotSearch" :key="index">{{item}}</li>
+            <router-link tag="li" :to="{name:'searchDoctorList',params:{key:item}}" v-for="(item,index) in hotSearch" :key="index">{{item}}</router-link>
           </ul>
         </div>
     </div>
@@ -34,33 +34,40 @@ export default {
   data() {
     return {
       isHistory: true,
-      hostorySearch:[], // 历史搜索
+      historySearch:[], // 历史搜索
       hotSearch:['感冒','胸闷喘不过气','嗓子疼','135','感冒发烧','感冒发烧','腰背酸痛'], // 热门搜索
     };
   },
   computed: {
-    // isHistoryFn: function() {
-    //   var _this = this;
-    //   if(_this.hostorySearch.length == 0){
-    //     _this.isHistory = false;
-    //   }
-    //   return _this.isHistory;
-    // }
+  },
+  created(){
+    this.historySearch = this.getSearchHistory();
   },
   methods: {
     Delhistory: function() {
       this.isHistory = !this.isHistory;
     },
+    // 读取本地存储的数据
+    getSearchHistory(){
+      var arr = localStorage.searchHistory ? JSON.parse(localStorage.searchHistory) : [];
+      return arr;
+    },
+    // 保存本地存储的数据
+    saveSearchHistory(data){
+      localStorage.searchHistory = JSON.stringify(data);
+    },
     Enter(e) {
       var _this = this;
       if (e.keyCode == 13) {
-
         var keywords = e.target.value;
         // 添加到历史搜索中
-        if(_this.hostorySearch.indexOf(keywords) == -1){
-          _this.hostorySearch.push(keywords); 
+        if(_this.historySearch.indexOf(keywords) == -1){
+          _this.historySearch.push(keywords); 
+          _this.saveSearchHistory(_this.historySearch);
         }
-        window.location.href = "searchDoctorList?keywords=" + encodeURI(encodeURI(keywords));
+        // window.location.href = "searchDoctorList?keywords=" + encodeURI(encodeURI(keywords));
+        this.$router.push({name:'searchDoctorList',params:{key:keywords}});
+        // this.$router.replace({name:'searchDoctorList',params:{key:keywords}})
       }
     }
   }
@@ -72,7 +79,7 @@ export default {
 @bgColor: rgb(239, 244, 250);
 @borderColor: rgb(220, 220, 220);
 .home {
-  padding-top: 2rem;
+  padding-top: 0.3rem;
 }
 .search_box {
   padding: 0 0.6rem;

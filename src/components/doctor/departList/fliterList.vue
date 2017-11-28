@@ -7,7 +7,7 @@
     </ul>
     <h2 class="fliter_top">医生职称</h2>
     <ul class="fliter_list">
-      <li v-for="(item,index) in doctor_job" :key="index" @click="doctorJobId($event,item,index)" :class="{'active':doctor_id == item.jobKey}">{{item.jobName}}</li>
+      <li v-for="(item,index) in doctor_job" :key="index" @click="doctorJobId($event,item,index)" :class="{'active':doctor_id == 'doctor' + index}">{{item}}</li>
     </ul>
     </div>
     
@@ -22,25 +22,26 @@
 export default {
   data() {
     return {
-      service_id: "service0",
-      doctor_id: true,
+      service_id: "service0", // 服务类型默认选中
+      doctor_id: 'doctor0', // 医生职称默认选中
       service_type: [
         { serviceName: "不限", serviceKey: "" },
         { serviceName: "健康咨询", serviceKey: "healthPhone" },
         { serviceName: "准时预约", serviceKey: "punctualBespeak" },
         { serviceName: "家庭医生", serviceKey: "houseDoctor" }
       ],
-      doctor_job: [
-        { jobName: "不限", jobKey: true },
-        { jobName: "医师", jobKey: false },
-        { jobName: "主治医师", jobKey: false },
-        { jobName: "副主任医师", jobKey: false },
-        { jobName: "主任医师", jobKey: false }
-      ],
+      doctor_job: ["不限","医师","主治医师","副主任医师","主任医师"],
       serviceType:'', // 服务类型(后台字段)
       doctorTitle:'', // 医生职称(后台字段)
       doctorTitleArr:[], // 医生职称数组
     };
+  },
+  computed:{
+    monitor(){
+      if(this.doctorTitleArr.length <= 0){
+        this.doctor_id = 'doctor0';
+      }
+    }
   },
   methods: {
     serviceId(e,item, index) {
@@ -53,31 +54,46 @@ export default {
         this.service_id = "service0";
       }
       this.serviceType = item.serviceKey;
-      console.log(e.target.className,item, index);
+      // console.log(e.target.className,item, index);
     },
     doctorJobId(e,item, index) {
-      if(e.target.className.indexOf('active') == -1){
-        e.target.className = "active";
-        this.doctorTitleArr.push(item.jobName);
+      if(index == 0){
+        this.doctor_id = 'doctor0';
+        this.doctorTitleArr.splice(0);
+        var siblings = e.target.parentNode.children;
+        for(let i = 0;i < siblings.length;i++){
+          if(e.target !== siblings[i]){
+            siblings[i].classList.remove("active");
+          }
+        }
       }else{
-        if(index != 0){
-          e.target.className = '';
+        if(e.target.className.indexOf('active') == -1){
+          e.target.className = "active"; 
+          this.doctor_id = 'index';
         }else{
-          e.target.className = "active";
-          // this.doctor_id = null;
+          e.target.className = "";
+          if(this.doctorTitleArr.length <= 1){
+            this.doctor_id = 'doctor0';
+          }
+        }
+        if(this.doctorTitleArr.indexOf(item) == -1 && index != 0){
+          this.doctorTitleArr.push(item);
+          this.doctor_id = 'index';
+        }else{
+          this.doctorTitleArr.splice(this.doctorTitleArr.indexOf(item),1)
         }
       }
-      
-      console.log(item, index);
+      this.doctorTitle = this.doctorTitleArr.join(","); // 医生职称
+      // console.log(this.doctorTitleArr.join(","))
     },
     // 重置
     Reset() {
       this.service_id = "service0";
-      this.doctor_id = null;
+      this.doctor_id = "doctor0";
     },
     // 完成
     Finished() {
-      console.log(this.serviceType,this.doctorTitle)
+      // console.log(this.serviceType,this.doctorTitle)
       this.$emit("searchFliter",this.serviceType,this.doctorTitle);
     }
   }

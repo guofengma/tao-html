@@ -34,7 +34,7 @@
         <span>热门医生</span>
         <router-link tag="a" class="f_right" to="/doctor">更多</router-link>
       </div>
-      <hotDoctorList :list='arr'/>
+      <hotDoctorList :list='doctorList'/>
     </div>
     <!-- 导航栏 -->
     <navbar/>
@@ -42,60 +42,69 @@
 </template>
 
 <script>
-import hotDoctorList from './doctor/hotDoctorList/hotDoctorList'
-import navbar from './navbar'
+import hotDoctorList from "./doctor/hotDoctorList/hotDoctorList";
+import navbar from "./navbar";
+import { Indicator } from "mint-ui";
 export default {
   name: "Home",
   data() {
     return {
-      active: "active",
-      arr:[1,2,3,4,5],
-      hotDepartment:[], // 科室列表
-      tep: true,
-      item:{
-        getDataModule:'hotDoctor',
-        idx:0,
-        pagesize:10,
-        region:""
-      }
+      doctorList: [], // 热门医生列表
+      hotDepartment: [], // 热门科室列表
     };
   },
   components: {
     hotDoctorList,
     navbar
-  },  
-  mounted:function(){
-    this.getHotDepartment();
-    var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
-    this.$http.post(url,this.item).then((response) => {
-      // console.log(response.data);
-      if(response.data.statusCode == 1){
-        this.arr = response.data.data.doctorInfo.item;
-      }
-    }, (response) => {
-        console.log("error");
-    });
   },
-  methods:{
-    greet:function(el){
-      console.log(el)
-    },
+  mounted: function() {
+    var baseUrl = this.baseUrl;
+    Indicator.open({
+      text: "加载中..."
+    });
+    // 获取热门科室列表
+    this.getHotDepartment(baseUrl + "doctor/selectHotDepartments");
+    // 获取热门医生列表
+    this.getHotDoctor(baseUrl + "doc/getDoctorListForInternatHospital");
+  },
+  methods: {
     // 获取热门科室
-    getHotDepartment(){
+    getHotDepartment(url) {
       var _this = this;
-      var url = _this.baseUrl + "doctor/selectHotDepartments";
       _this.$http.post(url).then(res => {
         // console.log(res.data)
-        if(res.data.success){
-          res.data.data.forEach(function(v,i){
+        if (res.data.success) {
+          res.data.data.forEach(function(v, i) {
             v.departmentPicture = _this.baseImgUrl + v.departmentPicture;
             v.id = v.departmentId; // 添加id字段，统一二级菜单的字段名
           });
           _this.hotDepartment = res.data.data;
         }
-      }),res => {
-        console.log('error')
-      }
+      },
+      res => {
+        console.log("error");
+      });
+    },
+    // 获取热门医生
+    getHotDoctor(url) {
+      var item = {
+        getDataModule: "hotDoctor",
+        idx: 0,
+        pagesize: 10,
+        region: ""
+      };
+      this.$http.post(url,item).then(
+        response => {
+          // console.log(response.data);
+          if (response.data.statusCode == 1) {
+            this.doctorList = response.data.data.doctorInfo.item;
+            Indicator.close(); // 关闭loading动画
+          }
+        },
+        response => {
+          console.log("error");
+        }
+      );
     }
   }
 };
@@ -103,10 +112,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='less'>
-@import '../../static/less/globalVar.less';
-.home{
-  padding-bottom:3rem;
-  padding-top:3.2rem;
+@import "../../static/less/globalVar.less";
+.home {
+  padding-bottom: 3rem;
+  padding-top: 3.2rem;
 }
 // 顶部tab栏
 .topbar {
@@ -115,13 +124,13 @@ export default {
   background: #3794fe;
   text-align: center;
   padding-bottom: 0.5rem;
-  .title{
-    width:100%;
-    padding:1rem 0.5rem;
+  .title {
+    width: 100%;
+    padding: 1rem 0.5rem;
     background: #3794fe;
     position: fixed;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     z-index: 999;
   }
   .topbar_icon {
@@ -188,7 +197,7 @@ export default {
   }
 }
 .hot {
-  padding:0 0.6rem;
+  padding: 0 0.6rem;
   margin: 0.35rem 0;
   background: #fff;
   .hot_item {
@@ -219,7 +228,7 @@ export default {
   }
 }
 .hot_doctor {
-  padding:0 0.6rem;
+  padding: 0 0.6rem;
   margin: 0.35rem 0;
   background: #fff;
 }

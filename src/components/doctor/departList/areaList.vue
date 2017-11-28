@@ -17,33 +17,13 @@
 export default {
   data() {
     return {
-      area: [],
-      activeDep: "activeDep",
       showid: "0",
       area_item: []
     };
   },
+  props:['area'],
   mounted: function() {
-    var _this = this;
-    var url = this.baseUrl + 'doc/getAllAreaList';
-    this.$nextTick(function() {
-      // Code that will run only after the
-      // entire view has been rendered
-      this.$http.post(url, this.item).then(
-        response => {
-          // console.log(response.data);
-          var city = response.data.data ;
-          if (response.data.success) {
-            this.area = response.data.data.areaInfoList.item;
-            this.area.unshift({pAreaName:"重点城市",areainfoCustom:response.data.data.emphasesCityInfo.item});
-            this.area_item = this.area[0].areainfoCustom;
-          }
-        },
-        response => {
-          console.log("error");
-        }
-      );
-    });
+    this.area_item = this.area[0].areainfoCustom; // 默认显示第一项
   },
   methods: {
     choiceDepartment(item, index) {
