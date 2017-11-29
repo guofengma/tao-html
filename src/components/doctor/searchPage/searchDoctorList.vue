@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       showid: "tab0",
-      keywords: "",
+      keywords: this.$route.params.key,
       tabList: [
         { name: "全部", key: "all" },
         { name: "医院", key: "hospital" },
@@ -89,13 +89,24 @@ export default {
     diseaseList // 疾病列表组件
   },
   created() {
-    var item = this.$route.params;
-    var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
-    this.keywords = item.key; // 获取搜索关键词
-    this.getKeywords(url,this.keywords);
+    this.getKeywords(this.keywords);
   },
   activated(){
-    console.log(123)
+    var item = this.$route.params;
+    if(item.key){
+      this.keywords = item.key; // 获取搜索关键词
+      this.getKeywords(item.key);
+    }
+  },
+  deactivated(){
+    console.log('level')
+  },
+  watch:{
+    keywordsFn(){
+      if(this.keywords != this.$route.params.key){
+        this.getKeywords(this.keywords);
+      }
+    }
   },
   computed:{
     
@@ -113,8 +124,9 @@ export default {
       this.showid = 'tab' + index;
     },
     // 根据关键词搜索列表数据
-    getKeywords(url,keywords) {
+    getKeywords(keywords) {
       var _this = this;
+      var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
       var data = {
         getDataModule: "searchBar",
         idx: 0,
