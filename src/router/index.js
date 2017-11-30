@@ -21,6 +21,9 @@ import userAgreement from '@/components/personalCenter/setting/aboutTao/userAgre
 /********************************wang就诊人*******************************************************/
 import patienterIndex from '@/components/personalCenter/patienter/patienterIndex.vue'
 import patienterInfo from '@/components/personalCenter/patienter/patienterInfo.vue'
+import addPatienter from '@/components/personalCenter/patienter/addPatienter.vue'
+import realNameAuthentication from '@/components/personalCenter/patienter/realNameAuthentication.vue'
+import fillInfomation from '@/components/personalCenter/patienter/fillInfomation.vue'
 /********************************wang登录页面*******************************************************/
 import loginIndex from '@/components/login/loginIndex'
 import settingNameLogo from '@/components/login/settingNameLogo'
@@ -28,10 +31,6 @@ import navPage from '@/components/login/navPage'
 /********************************订单详情（支付提醒）**********************************************************/
 import orderDetail from '@/components/personalCenter/aboutOrder/orderDetail.vue'
 import orderPay from '@/components/personalCenter/aboutOrder/orderPay.vue'
-import addPatienter from '@/components/personalCenter/patienter/addPatienter.vue'
-import realNameAuthentication from '@/components/personalCenter/patienter/realNameAuthentication.vue'
-import fillInfomation from '@/components/personalCenter/patienter/fillInfomation.vue'
-
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
@@ -266,7 +265,7 @@ export default new Router({
     },
     //订单详情展示及支付页面（离开提醒）
     {
-      path: '/orderDetail',
+      path: '/orderDetail/:orderId/:category',
       name: 'orderDetail',
       component: orderDetail,
       meta: {
@@ -291,7 +290,7 @@ export default new Router({
       }
     },
     {
-      path: '/patienterInfo',
+      path: '/patienterInfo/:id/:defaultCustomer',
       name: 'patienterInfo',
       component: patienterInfo,
       meta: {
@@ -315,7 +314,7 @@ export default new Router({
       }
     },
     {
-      path: '/fillInfomation',
+      path: '/fillInfomation/:customerId',
       name: 'fillInfomation',
       component: fillInfomation,
       meta: {

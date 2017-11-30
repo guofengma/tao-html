@@ -127,7 +127,7 @@ export default {
     var item = this.$route.params;
     this.doctorInfo = item;
     this.doctorId = item.doctorId;
-    this.getDoctorDetail(); // 获取用户详细信息
+    this.getDoctorDetail(); //获取用户详细信息
   },
   filters: {
     formatDate(time) {

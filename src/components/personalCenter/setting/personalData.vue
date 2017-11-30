@@ -11,7 +11,7 @@
           <router-link tag="li" :to="{name: 'editName'}">
               <span>昵称</span>
               <div>
-                  <b>从你的全世界路过</b>
+                  <b>{{userInfo.name}}</b>
                   <i class="iconfont icon-right"></i>
               </div>
           </router-link>
@@ -43,13 +43,20 @@
                         </div>
                     </li>
                     <li>
-                        <img src="../../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_camera@2x.png" alt="">
-                        <form action="">
-                            <input type="file" >
+                        <img v-if="!fileImg" src="../../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_camera@2x.png" alt="">
+                        <form v-if="!fileImg" action="">
+                            <input type="file" @change="uploadHeadimage">
                         </form>
+                        <div v-if="fileImg" class="img_box">
+                          <img :src="forLoop.imgUrl" alt="">
+                          <!-- <i class="iconfont icon-close" @click="cancelImg"></i> -->
+                        </div>
                     </li>
                 </ul>
-                <div class="calcel_btn">
+                <div class="save_btn" @click="saveBtn">
+                    <p>保存</p>
+                </div>
+                <div class="calcel_btn" @click="concelBtn">
                     <p>取消</p>
                 </div>
             </div>
@@ -59,11 +66,24 @@
 </template>
 
 <script>
+import { Toast } from "mint-ui";
+import { Indicator } from "mint-ui";
 export default {
   name: "personalData",
   data() {
     return {
+      userInfo: {}, //用户的基本信息
       iconImg: require("../../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png"), //默认图像地址
+      fileImg: false, //是上传本地图片，还是在线选择
+      index: 1001, //选择的第几张作图默认头像
+      upLoadList: [
+        "\\uploads\\sys_image\\head\\tdf_my_set_head1@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head2@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head3@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head4@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head5@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head6@2x.png"
+      ],
       chooseImgList: [
         {
           path: require("../../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_head1@2x.png"),
@@ -90,20 +110,114 @@ export default {
           selected: false
         }
       ], //选择图片的地址
-      popupVisible: false //控制底部弹出框的显示隐藏
+      popupVisible: false, //控制底部弹出框的显示隐藏
+      forLoop: {
+        //存储上传文件的对象
+        imgUrl: "",
+        file: []
+      }
     };
+  },
+  created() {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.userInfo = userInfo;
+    this.iconImg = this.userInfo.headerImage;
   },
   methods: {
     pop() {
       this.popupVisible = true; //pop的显隐
     },
     chooseIcon(index) {
+      this.fileImg = false;
+      this.index = index;
+      this.forLoop = {
+        imgUrl: "",
+        file: []
+      };
       let imgBox = this.chooseImgList;
       for (let value of imgBox) {
         this.$set(value, "selected", false);
       }
       this.iconImg = imgBox[index].path;
       this.$set(imgBox[index], "selected", true);
+    },
+    //点击选择上传图片文件
+    uploadHeadimage(e) {
+      this.fileImg = true;
+      //给图片对应的索引
+      let that = this;
+      let formFile = new FormData();
+      let file = e.target.files[0];
+      //预览照片
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function() {
+        that.forLoop.imgUrl = this.result;
+        that.iconImg = this.result;
+      };
+      this.i++;
+      formFile.append("file", file);
+      formFile.append(
+        "customerId",
+        JSON.parse(localStorage.getItem("userInfo")).id
+      );
+      this.forLoop.file = formFile;
+    },
+    //取消按钮
+    concelBtn() {
+      this.popupVisible = false;
+    },
+    //保存按钮
+    saveBtn() {
+      this.popupVisible = false;
+      if (this.fileImg) {
+        //上传本地文件作为头像
+        Indicator.open({
+          text: "头像上传中",
+          spinnerType: "fading-circle"
+        });
+        this.$http
+          .post(
+            this.baseUrl + "customer/updateCustomerHeader",
+            this.forLoop.file,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }
+          )
+          .then(
+            res => {
+              console.log(JSON.stringify(res));
+              let userInfo = res.body.object;
+              userInfo.headerImage = this.baseImgUrl + userInfo.headerImage;
+              localStorage.setItem('userInfo',JSON.stringify(userInfo));
+              Indicator.close();
+              Toast('设置头像成功');
+            },
+            res => {
+              console.log(res);
+            }
+          );
+      } else if (!this.fileImg) {
+        //调用头像的在线地址
+        let index = this.index;
+        let upLoadFileStr = this.upLoadList[index];
+        this.$http
+          .post(this.baseUrl + "customer/updateCustomerHeader", {
+            customerId: JSON.parse(localStorage.getItem("userInfo")).id,
+            headerImage: upLoadFileStr
+          })
+          .then(
+            res => {
+              console.log(res);
+              Toast('设置头像成功');
+            },
+            res => {
+              console.log(res);
+            }
+          );
+      }
     }
   }
 };
@@ -187,6 +301,8 @@ export default {
       margin-right: 5.3%;
       border-radius: 50%;
       position: relative;
+      overflow: hidden;
+      width: 3rem;
       > div {
         position: absolute;
         top: 0;
@@ -204,6 +320,28 @@ export default {
           color: #fff;
         }
       }
+      &:last-of-type {
+        position: relative;
+        > .img_box {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          img {
+            display: block;
+            width: 3rem;
+            height: 3rem;
+          }
+          .icon-close {
+            position: absolute;
+            right: 0rem;
+            font-size: 0.8rem;
+            top: 0rem;
+            left: auto;
+            background-color: #e64340;
+            color: #fff;
+          }
+        }
+      }
       &.active {
         background-color: rgba(0, 0, 0, 0.58);
       }
@@ -218,7 +356,6 @@ export default {
       }
       img {
         height: 3rem;
-        width: 3rem;
       }
       &:nth-of-type(4n) {
         margin-right: 0;
@@ -245,12 +382,24 @@ export default {
     }
   }
   .calcel_btn {
-    height: 2.25rem;
+    height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 0.4rem;
     background-color: #fff;
+    p {
+      font-size: 0.8rem;
+      color: rgb(82, 163, 255);
+    }
+  }
+  .save_btn {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    margin-top: 0.4rem;
+    border-bottom: 1px solid #ccc;
     p {
       font-size: 0.8rem;
       color: rgb(82, 163, 255);

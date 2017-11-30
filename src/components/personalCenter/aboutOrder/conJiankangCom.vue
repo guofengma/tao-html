@@ -3,23 +3,23 @@
           <ul class="health_top">
               <li>
                   <img src="../../../../static/imgs/aboutOrder/tdf_order_jkzx.png" alt="">
-                  <span>健康咨询</span>
+                  <span>{{orderInfo.servertype}}</span>
               </li>
               <li>
-                  <span>29.90元</span>
+                  <span>{{orderInfo.totalMoney}}元</span>
               </li>
           </ul>
           <div class="health_main">
               <div class="main_top">
-                  <img class="icon_pic" src="../../../../static/imgs/aboutOrder/tdf_order_touxiang.png" alt="">
-                  <span>徐亮</span>
+                  <img class="icon_pic" :src="orderInfo.patientPhoto" alt="">
+                  <span>{{orderInfo.patientName}}</span>
                   <img src="../../../../static/imgs/aboutOrder/tdf_order_xintiao.png" alt="">
-                  <img class="icon_pic" src="../../../../static/imgs/aboutOrder/tdf_order_touxiang.png" alt="">
-                  <span>儿科医生</span>
+                  <img class="icon_pic" :src="orderInfo.heardimage" alt="">
+                  <span>{{orderInfo.doctorname}}</span>
               </div>
               <div class="main_text">
                   <h3>症状描述：</h3>
-                  <p>我今年40了，男。前一段时间出现了眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施我今年40了，男。前一段时间出现了眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施</p>
+                  <p>{{orderInfo.description}}</p>
               </div>
           </div>
       </div>
@@ -27,7 +27,8 @@
 
 <script>
 export default {
-  name: "conJiankangCom"
+  name: "conJiankangCom",
+  props: ['orderInfo']
 };
 </script>
 
