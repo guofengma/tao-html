@@ -40,72 +40,90 @@
         <mt-button @click.native.prevent="getExpertArticle"><span :class="{'activeTab':showid == 'tab3'}">专家文章</span></mt-button>
       </div>
 
-      <mt-tab-container v-model="showid">
-        <mt-tab-container-item id="tab1">
-          <ul class="doctor_introduce">
-            <li>
-              <h2>职业点</h2>
-              <p>{{doctorInfo.hospitalName}}&nbsp;&nbsp;{{doctorInfo.department}}</p>
-            </li>
-            <li>
-              <h2>简介</h2>
-              <p>{{doctorInfo.aboutDoctor}}</p>
-            </li>
-            <li>
-              <h2>擅长</h2>
-              <p>{{doctorInfo.beGoodAtAsDoctor}}</p>
-            </li>
-          </ul>
-        </mt-tab-container-item>
-        <mt-tab-container-item id="tab2">
-          <div class="user_rating" v-for="(item,index) in customerAppraisal" :key="index">
-            <div class="user_left">
-              <div class="user_avatar">
-                <img src="../../../../static/imgs/hospital/index/tdf_hospital_head.png" alt="">
+      <div class="tab_container">
+        <mt-tab-container v-model="showid">
+          <mt-tab-container-item id="tab1">
+            <ul class="doctor_introduce">
+              <li>
+                <h2>职业点</h2>
+                <p>{{doctorInfo.hospitalName}}&nbsp;&nbsp;{{doctorInfo.department}}</p>
+              </li>
+              <li>
+                <h2>简介</h2>
+                <p>{{doctorInfo.aboutDoctor}}</p>
+              </li>
+              <li>
+                <h2>擅长</h2>
+                <p>{{doctorInfo.beGoodAtAsDoctor}}</p>
+              </li>
+            </ul>
+          </mt-tab-container-item>
+          <mt-tab-container-item id="tab2">
+            <div class="user_rating" v-for="(item,index) in customerAppraisal" :key="index">
+              <div class="user_left">
+                <div class="user_avatar">
+                  <img src="../../../../static/imgs/hospital/index/tdf_hospital_head.png" alt="">
+                </div>
+              </div>
+              <div class="user_right">
+                <ul class="user_info">
+                  <li><h2>{{item.customName}}</h2></li>
+                  <li><span>{{item.createTime}}</span></li>
+                  <li><p>{{item.content}}</p></li>
+                </ul>
+                <ul class="user_img">
+                  <li><img src="" alt=""></li>
+                  <li><img src="" alt=""></li>
+                </ul>
+                <ul class="user_sign">
+                  <li v-for="(item,index) in simpleContent" :key="index">{{item}}</li>
+                </ul>
               </div>
             </div>
-            <div class="user_right">
-              <ul class="user_info">
-                <li><h2>{{item.customName}}</h2></li>
-                <li><span>{{item.createTime}}</span></li>
-                <li><p>{{item.content}}</p></li>
-              </ul>
-              <ul class="user_img">
-                <li><img src="" alt=""></li>
-                <li><img src="" alt=""></li>
-              </ul>
-              <ul class="user_sign">
-                <li v-for="(item,index) in simpleContent" :key="index">{{item}}</li>
-              </ul>
-            </div>
-          </div>
-        </mt-tab-container-item>
-        <mt-tab-container-item id="tab3">
-          <div class="expert_article" v-for="(item,index) in expertArticle" :key="index">
-            <div class="expert_left">
-              <div class="expert_img">
-                <img :src="item.newsCoverimage" alt="">
+          </mt-tab-container-item>
+          <mt-tab-container-item id="tab3">
+            <div class="expert_article" v-for="(item,index) in expertArticle" :key="index">
+              <div class="expert_left">
+                <div class="expert_img">
+                  <img :src="item.newsCoverimage" alt="">
+                </div>
+              </div>
+              <div class="expert_right">
+                <ul class="expert_info">
+                  <li><h2>{{item.newsTitle}}</h2></li>
+                  <li><p>{{item.description}}</p></li>
+                  <li class="expert_sign">
+                    <div><img src="../../../../static/imgs/hospital/index/tdf_doctor_tab.png" alt="">{{item.newsTage}}</div>
+                    <p>{{item.createTime | formatDate}}</p>
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="expert_right">
-              <ul class="expert_info">
-                <li><h2>{{item.newsTitle}}</h2></li>
-                <li><p>{{item.description}}</p></li>
-                <li class="expert_sign">
-                  <div><img src="../../../../static/imgs/hospital/index/tdf_doctor_tab.png" alt="">{{item.newsTage}}</div>
-                  <p>{{item.createTime | formatDate}}</p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </mt-tab-container-item>
-      </mt-tab-container>
+          </mt-tab-container-item>
+        </mt-tab-container>
+      </div>
+
+      <ul class="service">
+        <li>
+          <div class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png" alt=""></div>
+          <p>健康咨询</p>
+        </li>
+        <li>
+          <div class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></div>
+          <p>准时预约</p>
+        </li>
+        <li>
+          <div class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png" alt=""></div>
+          <p>家庭医生</p>
+        </li>
+      </ul>
   </div>
 </template>
 
 <script>
 import pubOrderList from "../../personalCenter/pubComponents/pubOrderList";
 import { formatDate } from "../formdate";
+import { Indicator } from "mint-ui";
 export default {
   data() {
     return {
@@ -117,7 +135,8 @@ export default {
       imgUrl: "", // 图片路径
       doctorId: "", // 医生ID
       customerImpression: [], // 患者印象
-      simpleContent: [] // 用户评价中患者印象
+      simpleContent: [], // 用户评价中患者印象
+      service:[], // 服务类型
     };
   },
   components: {
@@ -136,14 +155,18 @@ export default {
     }
   },
   methods: {
+    // 获取医生详细信息
     getDoctorDetail() {
       var url = this.baseUrl + "newDoctorBaseInfo/getDoctorDetail";
       var data = {
         doctorId: this.doctorId
       };
+      Indicator.open({
+        text:"加载中..."
+      });
       this.$http.post(url, data).then(
         response => {
-          // console.log(response.data);
+          // console.log(response.data); 
           if (response.data.statusCode == 1) {
             this.doctorInfo = response.data.obj;
             var customerImpression = response.data.obj.customerImpression;
@@ -151,9 +174,8 @@ export default {
             if (customerImpression) {
               this.customerImpression = customerImpression.split(",");
             }
-            this.imgUrl = imgUrl
-              ? this.baseImgUrl + imgUrl
-              : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            this.imgUrl = imgUrl ? this.baseImgUrl + imgUrl : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            Indicator.close(); // 关闭loading动画  
           }
         },
         response => {
@@ -161,6 +183,7 @@ export default {
         }
       );
     },
+    // 获取用户评价
     getCustomerImpression() {
       this.showid = "tab2";
       var url = this.baseUrl + "newDoctorBaseInfo/getCustomerImpression";
@@ -178,9 +201,7 @@ export default {
             if (simpleContent) {
               this.simpleContent = simpleContent.split(",");
             }
-            response.data.obj.photo = photo
-              ? this.baseImgUrl + photo
-              : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            response.data.obj.photo = photo ? this.baseImgUrl + photo : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
           }
         },
         response => {
@@ -188,6 +209,7 @@ export default {
         }
       );
     },
+    // 获取专家文章
     getExpertArticle() {
       this.showid = "tab3";
       var _this = this;
@@ -234,7 +256,7 @@ export default {
         margin-right: 0.5rem;
       }
       img {
-        max-width: 100%;
+        width: 100%;
         max-height: 100%;
       }
     }
@@ -250,7 +272,7 @@ export default {
     margin-left: -2.1rem;
     overflow: hidden;
     img {
-      max-width: 100%;
+      width: 100%;
       max-height: 100%;
     }
   }
@@ -349,6 +371,9 @@ export default {
   .mint-button--default {
     box-shadow: none;
   }
+}
+.tab_container{
+  padding-bottom:3.6rem;
 }
 // 医生介绍
 .doctor_introduce {
@@ -498,6 +523,35 @@ export default {
           color: @font1Color;
         }
       }
+    }
+  }
+}
+// 服务类型
+.service{
+  width:100%;
+  height:3.5rem;
+  background:rgb(239,244,250);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom:0;
+  left: 0;
+  li{
+    width:33.33%;
+    text-align:center;
+    .service_icon{
+      width:1.6rem;
+      height:1.6rem;
+      margin:0 auto;
+      margin-bottom:0.45rem;
+      img{
+        width:100%;
+      }
+    }
+    p{
+      font-size:0.65rem;
+      color:@font1Color;
     }
   }
 }

@@ -2,7 +2,8 @@
  <!-- v-wechat-title="$route.meta.title" -->
   <div id="app">
     <div class="dask" v-if="isLoading"></div>
-    <router-view/>
+    <keep-alive><router-view v-if="$route.meta.keepAlive"/></keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"/>
   </div>
 </template>
 

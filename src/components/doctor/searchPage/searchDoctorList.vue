@@ -5,7 +5,8 @@
     </div>
     <mt-tab-container v-model="showid">
       <mt-tab-container-item id="tab0">
-        <div class="lists">
+        <div class="lists" v-if="doctorInfo.length>0">
+          
           <div class="list_top">
             <h2>医生</h2>
             <p @click="openUpDoctor($event)"></p>
@@ -15,7 +16,7 @@
             <div class="more" @click='viewDoctor(1)'>查看更多相关医生和团队</div>
           </div>
         </div>
-        <div class="lists">
+        <div class="lists" v-if="hospitalInfo.length>0">
            <div class="list_top">
             <h2>医院</h2>
             <p @click="openUpHospital($event)"></p>
@@ -25,7 +26,7 @@
             <div class="more" @click='viewDoctor(2)'>查看更多相关医院</div>
           </div>
         </div>
-        <div class="lists">
+        <div class="lists" v-if="diseaseInfo.length>0">
            <div class="list_top">
             <h2>疾病</h2>
             <p @click="openUpDisease($event)"></p>
@@ -37,7 +38,7 @@
         </div>
       </mt-tab-container-item>
       <mt-tab-container-item id="tab1">
-        <div class="lists"><hotdoctorList :list="doctorInfo" /> </div>
+        <div class="lists"><hotdoctorList :list="doctorInfo" /></div>
       </mt-tab-container-item>
       <mt-tab-container-item id="tab2">
         <div class="lists"><hospitalList :list="hospitalInfo" /></div>
@@ -57,11 +58,13 @@ import hotdoctorList from "../hotDoctorList/hotDoctorList";
 import hospitalList from "../hospitalList/hospitalList";
 import diseaseList from "../diseaseList/diseaseList";
 import { getRequest } from "../getRequest";
+// import { Toast } from "mint-ui";
+import { Indicator } from "mint-ui";
 export default {
   data() {
     return {
       showid: "tab0",
-      keywords: "",
+      keywords: this.$route.params.key,
       tabList: [
         { name: "全部", key: "all" },
         { name: "医院", key: "hospital" },
@@ -72,6 +75,9 @@ export default {
       isDoctorInfo: true, // 医生列表展开折叠
       ishospitalInfo: true, // 医院列表展开折叠
       isdiseaseInfo: true, // 疾病列表展开折叠
+      isDoctorList:false, // 医生列表面板是否显示
+      isHospitalList:false, // 医院列表面板是否显示
+      isDiseaseList:false, // 疾病列表面板是否显示
       doctorInfo: [], // 医生列表信息
       hospitalInfo: [], // 医院列表信息
       diseaseInfo: [] // 疾病列表信息
@@ -82,26 +88,56 @@ export default {
     hospitalList, // 医院列表组件
     diseaseList // 疾病列表组件
   },
+  created() {
+    this.getKeywords(this.keywords);
+  },
+  activated(){
+    var item = this.$route.params;
+    if(item.key){
+      this.keywords = item.key; // 获取搜索关键词
+      this.getKeywords(item.key);
+    }
+  },
+  deactivated(){
+    console.log('level')
+  },
+  watch:{
+    keywordsFn(){
+      if(this.keywords != this.$route.params.key){
+        this.getKeywords(this.keywords);
+      }
+    }
+  },
+  computed:{
+    
+  },
   mounted() {
-    this.getKeywords();
+    
   },
   methods: {
+    // tab栏切换
     switchTab(item,index){
       this.showid = "tab" + index;
     },
+    // 查看更多
     viewDoctor(index){
       this.showid = 'tab' + index;
     },
-    getKeywords() {
+    // 根据关键词搜索列表数据
+    getKeywords(keywords) {
       var _this = this;
-      var url = _this.baseUrl + "doc/getDoctorListForInternatHospital";
+      var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
       var data = {
         getDataModule: "searchBar",
         idx: 0,
-        pagesize: 2,
+        pagesize: 20,
         region: "",
-        key: decodeURI(getRequest()["keywords"])
+        // key: decodeURI(getRequest()["keywords"])
+        key: keywords
       };
+      Indicator.open({
+        text: '加载中...'
+      });
       this.$http.post(url, data).then(
         response => {
           // console.log(response.data);
@@ -109,12 +145,14 @@ export default {
             _this.doctorInfo = response.data.data.doctorInfo.item; // 医生
             _this.hospitalInfo = response.data.data.hospitalInfo.item; // 医院
             _this.diseaseInfo = response.data.data.diseaseInfo.item; // 疾病
+            Indicator.close(); // 关闭加载动画
           }
         },
         response => {
           console.log("error");
         }
       );
+      
     },
     // 医生列表展开关闭
     openUpDoctor(e) {

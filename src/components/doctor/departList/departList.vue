@@ -1,14 +1,12 @@
 <template>
-  <div class="home">
-    <div class="department">
-      <div class="departmentList">
-        <ul class="department_left">
-          <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
-        </ul>
-        <ul class="department_right">
-          <li @click="transferDepart(item,index)" v-for="(item,index) in department_item" :key="index">{{item.name}}</li>
-        </ul>
-      </div>
+  <div class="department">
+    <div class="departmentList">
+      <ul class="department_left">
+        <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index.toString()}" @click="choiceDepartment(item,index)">{{item.name}}</li>
+      </ul>
+      <ul class="department_right">
+        <li @click="transferDepart($event,item,index)" :class="{'active':departid == showid.toString() + index}" v-for="(item,index) in department_item" :key="index">{{item.name}}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -17,39 +15,25 @@
 export default {
   data() {
     return {
-      department: [], // 一级科室列表
+      // department: [], // 一级科室列表
       department_item: [], // 二级科室列表
-      activeDep: "activeDep", // 选中当前科室特殊状态
+      departid:'',
       showid: "0" // 判断是否选中当前科室
     };
   },
+  props:['department'],
   mounted: function() {
     var _this = this;
-    var url = _this.baseUrl + "doctor/getDepartmentWithChildren";
-    this.$nextTick(function() {
-      // Code that will run only after the
-      // entire view has been rendered
-      this.$http.post(url, this.item).then(
-        response => {
-          // console.log(response.data);
-          if (response.data.success) {
-            this.department = response.data.data;
-            this.department_item = this.department[0].childDepartment;
-          }
-        },
-        response => {
-          console.log("error");
-        }
-      );
-    });
+    this.department_item = this.department[0].childDepartment; // 默认显示第一项
   },
   methods: {
     choiceDepartment(item, index) {
       // console.log(item,index);
-      this.showid = index; // 添加当前状态
+      this.showid = index.toString(); // 添加当前状态
       this.department_item = item.childDepartment; // 二级科室列表数据
     },
-    transferDepart(item, index) {
+    transferDepart(el,item, index) {
+      this.departid = this.showid.toString() + index;
       // 传递给父组件的事件、数据对象、索引
       this.$emit("searchDepart", item, index);
     }
@@ -114,6 +98,19 @@ export default {
       border-bottom: 1px solid rgb(238, 238, 238);
       font-size: 0.75rem;
       color: rgb(102, 102, 102);
+      position: relative;
+      &.active::after{
+        content:'';
+        display: block;
+        width:0.8rem;
+        height: 0.8rem;
+        position: absolute;
+        right: 0.6rem;
+        top:0.6rem;
+        background-image: url('../../../../static/imgs/hospital/index/tdf_keshi_xuanze.png');
+        background-size:100%;
+        background-repeat:no-repeat;
+      }
     }
   }
 }

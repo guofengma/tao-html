@@ -106,7 +106,8 @@ export default new Router({
       name: 'searchDoctorList',
       component: searchDoctorList,
       meta: {
-        title: '搜索医生列表'
+        title: '搜索医生列表',
+        keepAlive:true
       }
     },
     //wang(个人中心)

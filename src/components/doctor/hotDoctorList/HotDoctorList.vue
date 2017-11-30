@@ -7,11 +7,17 @@
         <div class="doctor_info">
           <h2><span>{{item.doctorName}}</span><span>{{item.doctorTitle}}</span><span>{{item.departmentName}}</span></h2>
           <h4>{{item.hospitalName}}</h4>
-          <p>擅长：{{item.diseaseName?item.diseaseName:'发育不完整、发育缓慢、呼吸道感染、支气管感染'}}</p>
+          <p>擅长：{{item.diseaseName}}</p>
         </div>
         <ul class="server_item clearfix">
-          <li><img src='../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' ></li>
-          <li><img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></li>
+          <li>
+            <img src='../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png' alt="" v-if="item.isOpenPhone" />
+            <img src='../../../../static/imgs/hospital/index/tdf_hospital_jkzx_pre.png' alt="" v-else />
+          </li>
+          <li>
+            <img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt="" v-if="item.isOpenBespeak" />
+            <img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy_pre.png" alt="" v-else />
+          </li>
           <li><img src="../../../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png" alt=""></li>
         </ul>
       </router-link>
@@ -85,8 +91,8 @@ export default {
   .server_item {
     margin-left: 3.5rem;
     li {
-      width: 1.4rem;
-      height: 1.4rem;
+      width: 0.8rem;
+      height: 0.8rem;
       margin-right: 1.8rem;
       float: left;
       img {
