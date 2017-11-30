@@ -7,7 +7,7 @@
                     <span>手机号</span>
               </div>
               <div class="ico_right">
-                  <b>17071892627</b>
+                  <b>{{userInfo.mobilephone}}</b>
                     <i class="iconfont icon-right"></i>
               </div>
           </li>
@@ -27,7 +27,16 @@
 
 <script>
 export default {
-  name: "accountSecurity"
+  name: "accountSecurity",
+  data() {
+      return {
+          userInfo: {}
+      }
+  },
+  created() {
+      let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      this.userInfo = userInfo;
+  }
 };
 </script>
 

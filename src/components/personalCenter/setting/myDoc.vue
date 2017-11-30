@@ -1,20 +1,25 @@
 <template>
-  <div :is="componentsName" :list="[1,2,3]"></div>
+  <div :is="componentsName" :customerId="userInfo.id"></div>
 </template>
 
 <script>
-import pubDocList from '../pubComponents/pubDocList'
+import pubDocList from "../pubComponents/pubDocList";
 export default {
-    name: 'myDoc',
-    data() {
-        return {
-            componentsName: 'pubDocList'
-        }
-    },
-    components:{
-        pubDocList
-    }
-}
+  name: "myDoc",
+  data() {
+    return {
+      componentsName: "pubDocList",
+      userInfo: {}
+    };
+  },
+  created() {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.userInfo = userInfo;
+  },
+  components: {
+    pubDocList
+  }
+};
 </script>
 
 <style lang="less" scoped>

@@ -175,7 +175,7 @@ export default {
             messageCode: this.userCode
           })
           .then(res => {
-            console.log(res);
+            localStorage.setItem('userInfo',JSON.stringify(res.body.object));
             if (res.body.statusCode == 1) {
               this.successTextShow = true;
               setTimeout(()=>{

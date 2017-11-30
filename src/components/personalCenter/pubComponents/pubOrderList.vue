@@ -2,7 +2,7 @@
 <div>
   <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :autoFill="false">
   <ul v-if="!noOrderShow" class="order_list">
-        <li v-for='(item, index) in list' :key='index' >
+        <li v-for='(item, index) in list' :key='index' @click="goAboutOrder(item.orderid,item.servertype)">
             <div class="order_top">
                 <div>
                     <img :src="item.heardimage" alt="">
@@ -153,7 +153,6 @@ export default {
                 value.heardimage = this.baseImgUrl + value.heardimage;
                 this.list.push(value);
               }
-              this.list.concat(dataJson);
             } else {
               this.allLoaded = true;
               Toast("暂无更多数据");
@@ -165,6 +164,9 @@ export default {
           Indicator.close();
           this.$refs.loadmore.onBottomLoaded();
         });
+    },
+    goAboutOrder(id,type) {
+      this.$router.push({name: 'orderDetail',params: {orderId: id,category: type}});
     }
   }
 };

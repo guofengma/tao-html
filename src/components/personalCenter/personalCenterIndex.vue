@@ -7,22 +7,23 @@
         <i class="iconfont icon-mark"></i>
       </div>
       <router-link tag="div" :to="{name:'personalData'}" class="top_main">
+        <!-- 头像和昵称 -->
         <div>
-          <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png" alt="">
+          <img :src="userInfo.headerImage" alt="">
         </div>
-        <span>世界是你们的</span>
+        <span>{{userInfo.name}}</span>
       </router-link>
       <ul class="top_footer">
         <li>
-          <span>2000.00元</span>
+          <span>{{accountMoney}}元</span>
           <b>零钱</b>
         </li>
         <li>
-          <span>2000个</span>
-          <b>健康过</b>
+          <span>0个</span>
+          <b>健康果</b>
         </li>
         <li>
-          <span>17张</span>
+          <span>{{customerCoupons}}张</span>
           <b>优惠券</b>
         </li>
       </ul>
@@ -35,7 +36,7 @@
       </router-link>
       <ul class="order_main">
         <router-link tag="li" :to="{name: 'myOrder',params:{id: '2'}}">
-          <i>5</i>
+          <!-- <i>5</i> -->
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_obligation@2x.png" alt="">
           <span>待付款</span>
         </router-link>
@@ -55,13 +56,13 @@
     </div>
     <!-- 列表展示部分 -->
     <ul class="meau_list">
-      <li>
+      <router-link :to="{name: 'patienterIndex'}" tag="li">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_see_a_doctor@2x.png" alt="">
           <span>就诊人</span>
         </div>
         <i class="iconfont icon-right"></i>
-      </li>
+      </router-link>
       <router-link tag="li" :to="{name:'myDoc'}">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_doctor@2x.png" alt="">
@@ -104,15 +105,44 @@
 <script>
 export default {
   name: "personalCenterIndex",
+  data() {
+    return {
+      customerCoupons: 0,
+      accountMoney: 0,
+      userInfo: {}
+    };
+  },
   created() {
+    let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    this.userInfo = userInfo;
+    //全局存储customerId，作为中转参数（仅供测试）
+    localStorage.setItem('customerId', '880631824E9A482DBA94B6138A5F91B2');
+    //优惠券接口
+    this.$http
+      .post(this.baseUrl + "coupon/getMyCouponNumber", {
+        customerId: "880631824E9A482DBA94B6138A5F91B2"
+      })
+      .then(
+        res => {
+          let customerCoupons = res.body.object;
+          this.customerCoupons = customerCoupons;
+        },
+        res => {
+          console.log(res);
+        }
+      );
+    //零钱总额接口
     this.$http
       .post(
-        this.baseUrl + "DisplayTotalAccountController/findOrderInUseMoney",
-        { customerId: "880631824E9A482DBA94B6138A5F91B2" }
+        this.baseUrl + "DisplayTotalAccountController/DisplayTotalAccount",
+        {
+          customerId: "880631824E9A482DBA94B6138A5F91B2"
+        }
       )
       .then(
         res => {
-          console.log(res);
+          let accountMoney = res.body.object.accountMoney;
+          this.accountMoney = accountMoney / 100;
         },
         res => {
           console.log(res);
