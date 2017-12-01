@@ -96,17 +96,17 @@ export default {
           spinnerType: "fading-circle"
         });
         let formData = new FormData();
-        formData.append('customerId', customerId);
-        formData.append('name', name);
-        formData.append('cardId', cardId);
-        formData.append('file', this.file);
+        formData.append("customerId", customerId);
+        formData.append("name", name);
+        formData.append("cardId", cardId);
+        formData.append("file", this.file);
         this.$http
           .post(this.baseUrl + "allorder/updateCustomerInfo", formData)
           .then(
             res => {
               console.log(res);
               Indicator.close();
-              Toast('证件已成功上传，请等待审核');
+              Toast("证件已成功上传，请等待审核");
             },
             res => {
               console.log(res);
@@ -117,7 +117,21 @@ export default {
     //点击取消实名认证
     cancelBtn() {
       let customerId = this.customerId;
-      // this.$http.post(this)
+      this.$http
+        .post(this.baseUrl + "allorder/backCustomerInfo", { customerId })
+        .then(
+          res => {
+            console.log(res);
+            Toast("已取消实名认证");
+            this.cardObj = {};
+            setTimeout(function() {
+              window.history.go(-1);//跳转返回页面
+            }, 2000);
+          },
+          res => {
+            console.log(res);
+          }
+        );
     }
   }
 };

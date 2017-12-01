@@ -99,10 +99,12 @@
         <i class="iconfont icon-right"></i>
       </router-link>
     </ul>
+    <navbar />
   </div>
 </template>
 
 <script>
+import navbar from "../navbar";
 export default {
   name: "personalCenterIndex",
   data() {
@@ -112,11 +114,12 @@ export default {
       userInfo: {}
     };
   },
+  components: { navbar },
   created() {
-    let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     this.userInfo = userInfo;
     //全局存储customerId，作为中转参数（仅供测试）
-    localStorage.setItem('customerId', '880631824E9A482DBA94B6138A5F91B2');
+    localStorage.setItem("customerId", "880631824E9A482DBA94B6138A5F91B2");
     //优惠券接口
     this.$http
       .post(this.baseUrl + "coupon/getMyCouponNumber", {
@@ -158,6 +161,8 @@ export default {
   max-width: 640px;
   margin: 0 auto;
   background-color: rgb(239, 244, 250);
+  min-height: 100%;
+  padding-bottom: 3.5rem;
 }
 .top {
   background-color: #4da0ff;
@@ -176,7 +181,7 @@ export default {
     }
   }
   .top_main {
-    margin: 1.5rem 0;
+    margin: .8rem 0;
     display: flex;
     padding: 0 0.6rem;
     justify-content: flex-start;
@@ -213,7 +218,7 @@ export default {
       span {
         font-size: 0.9rem;
         padding-top: 0.15rem;
-        line-height: 1.4rem;
+        line-height: 1.2rem;
       }
       b {
         font-size: 0.7rem;

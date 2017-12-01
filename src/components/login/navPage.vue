@@ -7,10 +7,10 @@
           </span>
       </div>
       <ul class="nav">
-          <li>
+          <router-link tag="li" :to="{name: 'home'}">
               <img src="../../../static/imgs/login/tdf_ksrk_jrzhy.png" alt="">
               <span>进入主页</span>
-          </li>
+          </router-link>
           <li>
               <img src="../../../static/imgs/login/tdf_ksrk_kswzh.png" alt="">
               <span>快速问诊</span>

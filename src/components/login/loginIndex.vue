@@ -175,7 +175,9 @@ export default {
             messageCode: this.userCode
           })
           .then(res => {
-            localStorage.setItem('userInfo',JSON.stringify(res.body.object));
+            //在localStorage中存储用户的基本信息userInfo
+
+            // localStorage.setItem('userInfo',JSON.stringify(res.body.object));
             if (res.body.statusCode == 1) {
               this.successTextShow = true;
               setTimeout(()=>{

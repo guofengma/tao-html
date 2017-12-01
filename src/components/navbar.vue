@@ -12,10 +12,10 @@
       <div class="nav_icon"><img src="../../static/imgs/hospital/index/tdf_health.png" alt=""></div>
       <p>健康</p>
     </li>
-    <li>
+    <router-link tag="li" :to="{name: 'personalCenterIndex'}">
       <div class="nav_icon"><img src="../../static/imgs/hospital/index/tdf_me.png" alt=""></div>
       <p>我的</p>
-    </li>
+    </router-link>
 </ul>
 </template>
 
