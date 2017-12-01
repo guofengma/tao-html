@@ -104,19 +104,51 @@
       </div>
 
       <ul class="service">
-        <li>
-          <div class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png" alt=""></div>
-          <p>健康咨询</p>
-        </li>
-        <li>
-          <div class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></div>
-          <p>准时预约</p>
-        </li>
-        <li>
-          <div class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png" alt=""></div>
-          <p>家庭医生</p>
+        <li v-for="(item,index) in service" :key="index" @click="choiceService(index)">
+          <div class="service_icon"><img :src="item.img" alt=""></div>
+          <p>{{item.text}}</p>
         </li>
       </ul>
+      <div class="service_page" v-if="isService" @click.stop="closeService('close')">
+        <div class="service_inner" @click.stop="closeService('open')">
+          <!-- 服务tab切换栏 -->
+          <ul class="service_tab">
+            <li v-for="(item,index) in service" :key="index" @click="switchService(item,index)" :class="{'active':serviceid == 'service' + index}">
+              <div class="service_icon"><img :src="item.img" alt=""></div>
+              <p>{{item.text}}</p>
+            </li>
+          </ul>
+          <!-- 服务类型 -->
+          <ul class="server_container">
+            <li v-if="serviceid == 'service0'">
+              <h2 class="service_top">选择咨询方式</h2>
+              <ol class="service_item">
+                <li :class="{'active':isConsultation == 'consultation' + index}" v-for="(item,index) in consultation" :key="index">
+                  <p>{{item.title}}</p>
+                  <p>{{item.enable == 0 ? '暂无服务' : item.servicePrice}}</p>
+                </li>
+              </ol>
+            </li>
+            <li v-if="serviceid == 'service1'">
+              <ol class="service_sort service_week">
+                <li v-for="(item,index) in serviceWeek" :key="index">{{item}}</li>
+              </ol>
+              <ol class="service_sort service_date">
+                <li v-for="(item,index) in serviceDate" :key="index"><span @click="choiceServiceDate($event,item,index)" class="open" :class="{'active':today == 'today' + index}" >{{item}}</span></li>
+              </ol>
+              <ol class="service_time">
+                <li v-for="(item,index) in serviceTime[0]" :key="index" @click="choiceVisitTime($event,item,index)" :class="{'active':visit == 'visit' + index}">{{item}}</li>
+              </ol>
+
+            </li>
+            <li v-if="serviceid == 'service'">
+              功能开发中...
+            </li>
+          </ul>
+          <!-- 立即就诊 -->
+          <router-link tag="div" :to="{name:'fillOrder',params:{customerId:doctorId}}" class="go_visit">立即就诊</router-link>
+        </div>
+      </div>  
   </div>
 </template>
 
@@ -124,6 +156,7 @@
 import pubOrderList from "../../personalCenter/pubComponents/pubOrderList";
 import { formatDate } from "../formdate";
 import { Indicator } from "mint-ui";
+import { Toast } from 'mint-ui';
 export default {
   data() {
     return {
@@ -136,7 +169,21 @@ export default {
       doctorId: "", // 医生ID
       customerImpression: [], // 患者印象
       simpleContent: [], // 用户评价中患者印象
-      service:[], // 服务类型
+      service:[
+        {img:'../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png',text:'健康咨询'},
+        {img:'../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png',text:'准时预约'},
+        {img:'../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png',text:'家庭医生'},
+      ], // 服务类型
+      serviceid:"", // 切换服务类型id
+      isService:false, // 是否显示服务详情页面
+      consultation:[], // 咨询方式数据
+      isConsultation:'consultation', // 默认选择第一种咨询方式
+      today:'today0', // 是否是今天
+      visit:'visit0', // 选择就诊时间
+      serviceWeek:['三','四','五','六','日','一','二'], // 星期
+      serviceDate:['29','30','1','2','3','4','5'], // 日期
+      serviceTime:[['10:20~11:00','10:20~11:00','10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00']
+      ['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00']], // 开放时间
     };
   },
   components: {
@@ -182,6 +229,75 @@ export default {
           console.log("error");
         }
       );
+    },
+    // 选择服务
+    choiceService(index){
+      this.isService = true;
+      this.serviceid = "service" + index;
+      if(index == 0){
+        this.getHealthPrice(this.doctorId);
+      }else if(index == 1){
+        this.getpunctualBespeak(this.doctorId);
+      }else if(index == 2){
+        this.isService = false;
+        Toast({
+          message: '功能开发中...',
+          position: 'bottom',
+          duration: 3000
+        });
+      }
+    },
+    // 关闭服务界面
+    closeService(type){
+     if(type == 'close'){
+        this.isService = false;
+     }else{
+        this.isService = true;
+     }
+    },
+    // 选择服务类型切换
+    switchService(item,index){
+      this.serviceid = "service" + index;
+      if(index == 2){
+        Toast({
+          message: '功能开发中...',
+          position: 'bottom',
+          duration: 3000
+        });
+      }
+    },
+    // 选择服务时间
+    choiceServiceDate(e,item,index){
+      e.target.classList.remove('open');
+      this.today = 'today' + index;
+    },
+    // 选择就诊时间
+    choiceVisitTime(e,item,index){
+      this.visit = 'visit' + index;
+    },
+    // 获取健康咨询医生定价
+    getHealthPrice(doctorId){
+      var url = this.baseUrl + "allorder/getPlatformPrice2";
+      this.$http.post(url,{doctorId:doctorId}).then(res => {
+        console.log(res.data);
+        if(res.data.statusCode == 1){
+          this.consultation = res.data.obj;
+        }
+      },res => {
+        console.log("error");
+      })
+    },
+    // 获取准时预约开放时间
+    getpunctualBespeak(doctorId){
+      var url = this.baseUrl + 'doc/getDoctorOpenTime';
+      this.$http.post(url,{docid:doctorId}).then(res => {
+        console.log(res.data);
+        if(res.data.success){
+
+        }
+      },res => {
+        console.log("error");
+      });
     },
     // 获取用户评价
     getCustomerImpression() {
@@ -554,5 +670,175 @@ export default {
       color:@font1Color;
     }
   }
+}
+
+// 服务类型选择页面
+.service_page{
+  width:100%;
+  height:100vh;
+  background:rgba(0,0,0,0.5);
+  position: fixed;
+  left: 0;
+  top:0;
+  z-index: 9;
+  .service_inner{
+    width:100%;
+    height: 26rem;
+    background:#fff;
+    border-radius:0.5rem 0.5rem 0 0;
+    position: absolute;
+    bottom:0;
+    overflow: hidden;
+    .service_tab{
+      width:100%;
+      height:4rem;
+      background:rgb(239,244,250);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      li{
+        width:33.33%;
+        height:100%;
+        padding:0.6rem 0;
+        text-align:center;
+        position: relative;
+        &.active::after{
+          content:'';
+          display: block;
+          width:0;
+          height: 0;
+          border-bottom:0;
+          border-right:0.5rem solid transparent;
+          border-left:0.5rem solid transparent;
+          border-top:0.5rem solid rgb(239,244,250);
+          position: absolute;
+          bottom:-0.5rem;
+          left:50%;
+          margin-left:-0.5rem;
+        }
+        .service_icon{
+          width:1.6rem;
+          height:1.6rem;
+          margin:0 auto;
+          margin-bottom:0.45rem;
+          img{
+            width:100%;
+          }
+        }
+        p{
+          font-size:0.65rem;
+          color:@font1Color;
+        }
+      }
+    }
+    .server_container{
+      padding:1.2rem 0.6rem;
+    }
+  }
+}
+.service_top{
+  margin-bottom: 0.8rem;
+  font-size:0.75rem;
+  color:@fontColor;
+}
+.service_item{
+  display: flex;
+  justify-content: space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  li{
+    width:46%;
+    padding:0.8rem;
+    border:1px solid rgb(204,204,204);
+    border-radius:0.3rem;
+    margin-bottom: 0.8rem;
+    text-align:center;
+    &.active{
+      background:rgb(218,234,253);
+      border:1px solid rgb(82,163,255);
+    }
+    p{
+      font-size:0.75rem;
+      color:@fontColor;
+      &:first-child{
+        margin-bottom:0.4rem;
+      }
+    }
+  }
+}
+// 星期、日期、开放时间
+.service_sort{
+  padding:0 0 1.5rem;
+  font-size:0.75rem;
+  color:@fontColor;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  li{
+    width:14.2%;
+    text-align:center;
+  }
+}
+// 日期
+.service_date{
+  span{
+    position: relative;
+    padding:0.2rem;
+    width:1.2rem;
+    height: 1.2rem;
+    display: block;
+    margin:0 auto;
+    border-radius:100%;
+    &.open::before{
+      content:'';
+      display: block;
+      width:0.3rem;
+      height: 0.3rem;
+      border-radius:100%;
+      background:rgb(255,162,89);
+      position: absolute;
+      right: -0.2rem;
+      top:0;
+    }
+    &.active{
+      background:rgb(82,163,255);
+      color:#fff;
+    }
+  }
+}
+// 开放时间
+.service_time{
+  font-size:0.75rem;
+  color:@fontColor;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  li{
+    width:30%;
+    border:1px solid rgb(82,163,255);
+    border-radius:0.3rem;
+    padding:0.3rem;
+    text-align:center;
+    margin-bottom:0.8rem;
+    font-size:0.7rem;
+    color:rgb(82,163,255);
+    &.active{
+      background:rgb(218,234,253);
+    }
+  }
+}
+// 立即就诊
+.go_visit{
+  width:100%;
+  height: 2.25rem;
+  line-height: 2.25rem;
+  text-align:center;
+  color:#fff;
+  font-size:0.75rem;
+  background: #3794fe;
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
 </style>

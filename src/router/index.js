@@ -40,6 +40,9 @@ import departListPage from '@/components/doctor/departList/departListPage'
 import doctorList from '@/components/doctor/departList/doctorList'
 import searchPage from '@/components/doctor/searchPage/searchPage'
 import searchDoctorList from '@/components/doctor/searchPage/searchDoctorList'
+import addPatient from '@/components/doctor/order/addPatient'
+import fillOrder from '@/components/doctor/order/fillOrder'
+import buyService from '@/components/doctor/order/buyService'
 
 Vue.use(Router)
 
@@ -108,6 +111,31 @@ export default new Router({
       meta: {
         title: '搜索医生列表',
         keepAlive:true
+      }
+    },
+    {
+      path: '/fillOrder',
+      name: 'fillOrder',
+      component: fillOrder,
+      meta: {
+        title: '填写订单'
+      }
+    },
+    {
+      path: '/addPatient',
+      name: 'addPatient',
+      component: addPatient,
+      meta: {
+        title: '添加就诊人',
+        // keepAlive: true
+      }
+    },
+    {
+      path: '/buyService',
+      name: 'buyService',
+      component: buyService,
+      meta: {
+        title: '购买服务'
       }
     },
     //wang(个人中心)
