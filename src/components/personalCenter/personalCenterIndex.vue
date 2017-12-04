@@ -14,10 +14,10 @@
         <span>{{userInfo.name}}</span>
       </router-link>
       <ul class="top_footer">
-        <li>
+        <router-link tag="li" :to="{name: 'changeIndex'}">
           <span>{{accountMoney}}元</span>
           <b>零钱</b>
-        </li>
+        </router-link>
         <li>
           <span>0个</span>
           <b>健康果</b>
