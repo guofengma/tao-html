@@ -43,6 +43,7 @@ import searchDoctorList from '@/components/doctor/searchPage/searchDoctorList'
 import addPatient from '@/components/doctor/order/addPatient'
 import fillOrder from '@/components/doctor/order/fillOrder'
 import buyService from '@/components/doctor/order/buyService'
+import coupon from '@/components/doctor/order/coupon'
 
 Vue.use(Router)
 
@@ -77,7 +78,8 @@ export default new Router({
       name: 'doctorDetail',
       component: doctorDetail,
       meta: {
-        title: '医生详情'
+        title: '医生详情',
+        keepAlive: true
       }
     },
     {
@@ -136,6 +138,14 @@ export default new Router({
       component: buyService,
       meta: {
         title: '购买服务'
+      }
+    },
+    {
+      path: '/coupon',
+      name: 'coupon',
+      component: coupon,
+      meta: {
+        title: '优惠券'
       }
     },
     //wang(个人中心)

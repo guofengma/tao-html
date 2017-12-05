@@ -2,57 +2,229 @@
   <div>
     <div class="tips">温馨提示：急重病患者不适合在线咨询 / 诊疗，请立即前往当地医院就医。</div>  
     <div class="fill_order">
-        <!-- 选择就诊人 -->
-        <div class="add_personal">
-            <h2>选择就诊人</h2>
-            <ul class="patient_list">
-                <li>张大王</li>
-                <li>＋</li>
-            </ul>
+      <!-- 选择就诊人 -->
+      <div class="add_personal">
+        <h2>选择就诊人</h2>
+        <ul class="patient_list">
+          <li v-for="(item,index) in userInfo" :key="index" @click="choiceVisit($event,item,index)" :class="{'active':isVisit == 'visit' + index}">{{item.name}}</li>
+          <router-link tag="li" :to="{name:'addPatient',params:{customerId:customerId}}">＋</router-link>
+        </ul>
+      </div>
+      <div class="phone">
+        <h2>接听者电话</h2>
+        <div class="phone_num"><input type="text" value="18404984908" v-model="phone"></div>
+      </div>
+      <div class="patient_info">
+        <h2>请填写患者性别、年龄及症状等详细信息</h2>
+        <div class="patient_print">
+          <textarea v-model="description" name="" id="" placeholder="例：我今年40岁了，男。前一段时间出现了眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施。"></textarea>
+          <ul class="patient_pic">
+            <li v-for="(item,index) in viewImg" :key="index">
+              <img :src="item | preview" alt="">
+            </li>
+            <li class="control" v-if="isControl">
+              <label for="file"><img src="../../../../static/imgs/hospital/order/tdf_order_pic.png" alt=""></label>
+              <input name="file" type="file" id="file" @change="addImgs($event)">
+            </li>
+          </ul>
+          <p>可传患处照片、检查单等相关信息</p>
+          <p><span class='help_icon'><img src="../../../../static/imgs/hospital/order/tdf_order_why.png" alt=""></span> 如何拍照X光、CT等影像资料<span class="link_more">“点击了解”</span></p>
         </div>
-        <div class="phone">
-            <h2>接听者电话</h2>
-            <div class="phone_num">18404984908</div>
-        </div>
-        <div class="patient_info">
-            <h2>请填写患者性别、年龄及症状等详细信息</h2>
-            <div class="patient_print">
-                <textarea name="" id="" placeholder="例：我今年40岁了，男。前一段时间出现了眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施。"></textarea>
-                <ul class="patient_pic">
-                    <li></li>   
-                    <li></li>   
-                    <li>+</li>   
-                </ul>
-                <p>可传患处照片、检查单等相关信息</p>
-                <p><span class='help_icon'><img src="../../../../static/imgs/hospital/order/tdf_order_why.png" alt=""></span> 如何拍照X光、CT等影像资料<span class="link_more">“点击了解”</span></p>
-            </div>
-        </div>
-        <!-- 提交 -->
-        <div class="order_btn">确认提交</div>
+      </div>
+      <!-- 提交 -->
+      <div class="order_btn" @click="confirmSub">确认提交</div>
     </div>
   </div>
 </template>
 
 <script>
+import { Indicator } from "mint-ui";
+import { Toast } from "mint-ui";
 export default {
   data() {
-    return {};
+    return {
+      isVisit:'visit0',
+      isControl:true,
+      viewImg:[], // 预览图片
+      userInfo: [],
+      customerId:'',
+      uid:'',
+      phone:'18404984908',
+      description:'',
+      visitData:{},
+      isTel:false,
+    };
   },
-  created(){
-    // this.getCustomers(customerId);
+  created() {
+    var item = JSON.parse(localStorage.userInfo); // 从本地中读取用户id
+    this.customerId = item.id;
+    this.getCustomers(item.id); // 获取就诊人信息
+    this.getUuid();
+
+    this.visitData = this.$route.params;
+    console.log(this.visitData)
+  },
+  filters:{
+    // 解析预览地址
+    preview(src){
+      return window.URL.createObjectURL(src);
+    }
   },
   methods: {
     // 获取就诊人信息
     getCustomers(customerId) {
+      Indicator.open({
+        text: "加载中..."
+      });
       var url = this.baseUrl + "allorder/getCustomers";
       this.$http.post(url, { customerId: customerId }).then(
         res => {
           console.log(res.data);
+          if (res.data.statusCode == 1) {
+            this.userInfo = res.data.obj;
+            Indicator.close(); // 关闭loading动画
+          }
         },
         res => {
           console.log("error");
         }
       );
+    },
+    // 获取UID
+    getUuid(){
+      var url = this.baseUrl + "diseasedescription/getUUID";
+      this.$http.post(url).then(res => {
+        console.log(res.data)
+        this.uid = res.data.message;
+      },res => {
+        console.log("error")
+      })
+    },
+    // 选择就诊人
+    choiceVisit(e,item,index){
+      this.isVisit = 'visit' + index;
+      this.phone = item.mobilephone;
+      // console.log(item.mobilephone)
+    },
+    // 选择图片
+    addImgs(e){
+      console.log(this.viewImg.length)
+      if(this.viewImg.length > 3){
+        this.isControl = false;
+      }else{
+        this.viewImg.push(e.target.files[0]);
+      }
+      // console.log(e.target.files)
+    },
+    // 确认提交 进入购买服务页面
+    confirmSub(){
+      var regTel = /^1\d{10}$/; // 校验手机号码
+      var regCard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; // 校验身份证号
+      let isTel = regTel.test(this.phone);
+      // let isCard = regCard.test(this.)
+      let isDes = this.description.length;
+      if(isTel && isDes > 10){
+        // this.addDisease();
+        this.addHealth();
+        // this.$router.push({name:'buyService',params:this.userInfo.id})
+      }else if(!isTel){
+        Toast({
+          message: '联系人电话格式不正确',
+          position: 'bottom',
+          duration: 2000
+        });
+        return false;
+      }else if(isDes <= 0){
+        Toast({
+          message: '请填写病情描述',
+          position: 'bottom',
+          duration: 2000
+        });
+        return false;
+      }else if(isDes < 10){
+         Toast({
+          message: '病情描述少于10个字',
+          position: 'bottom',
+          duration: 2000
+        });
+        return false;
+      }
+    },
+    // 健康咨询病情描述
+    addDisease(){
+      // var url = this.baseUrl + "allorder/addDescriptionContent";
+      var url = "http://192.168.5.77:8080/taodoctor/rest/allorder/addDescriptionContent";
+      var data = {
+        id:this.uid,
+        customerId:this.customerId,
+        phone:this.phone,
+        // departmentId:'',
+        description:this.description,
+        isHaveFile:0,
+        serviceType:'phone'
+      };
+      console.log(data)
+      this.$http.post(url,data).then(res => {
+        console.log(res.data)
+        if(res.data.statusCode == 1){
+
+        }
+      },res => {
+        console.log("error")
+      })
+    },
+    // 准时预约病情描述
+    addHealth(){
+      var url = this.baseUrl + 'allorder/addVisitDescriptionContent';
+      var data = {
+        id:this.uid,
+        customerId:this.customerId,
+        phone:this.phone,
+        description:this.description,
+        isHaveFile:this.viewImg.length > 0 ? 1 : 0,
+        doctorId:this.visitData.docId,
+        visitDay:this.visitData.workday,
+        opentimeId:this.visitData.id,
+        num:this.visitData.num,
+        // serviceType:'visitTime'
+      };
+      console.log(data)
+      this.$http.post(url,data).then(res => {
+        console.log(res.data)
+        if(res.data.statusCode == 1){
+          if(data.isHaveFile == 1){
+            this.addFile();
+          }
+        }
+      },res => {
+        console.log("error")
+      })
+    },
+    // 上传附件
+    addFile(){
+      var url = this.baseUrl + "allorder/addDescriptionFile";
+      var data = {
+        diseaseId:this.uid,
+        isCancel:0,
+        file:'',
+        serviceType:'visitTime',
+      }
+      var formFile = new FormData();
+      formFile.append('diseaseId',data.diseaseId);
+      formFile.append('isCancel',data.isCancel);
+      formFile.append('serviceType',data.serviceType);
+      for(var i = 0;i<this.viewImg.length;i++){
+        formFile.set('file',this.viewImg[i]);
+        this.$http.post(url,formFile).then(res => {
+          console.log(res.data);
+        },res => {
+          console.log("error");
+        });  
+      }
+    },
+    // 删除图片
+    cancelFile(){
+
     }
   }
 };
@@ -93,6 +265,11 @@ export default {
         border: 1px solid rgb(204, 204, 204);
         border-radius: 0.3rem;
         margin-right: 0.6rem;
+        &.active{
+          background:#3794fe;
+          color:#fff;
+          border: 1px solid #3794fe;
+        }
       }
     }
   }
@@ -108,8 +285,12 @@ export default {
       padding: 0.6rem;
       background: @partbgColor;
       border-radius: 0.3rem;
-      font-size: 0.75rem;
-      color: @fontColor;
+      input{
+        width:90%;
+        font-size: 0.75rem;
+        color: @fontColor;
+        background:transparent;
+      }
     }
   }
   // 填写症状等信息
@@ -150,13 +331,35 @@ export default {
       // 患者照片
       .patient_pic {
         display: flex;
+        flex-wrap:wrap;
+        justify-content: space-between;
         margin-bottom: 0.6rem;
         li {
-          width: 3.75rem;
-          height: 3.75rem;
+          width: 22%;
+          height: 3.5rem;
           border-radius: 0.3rem;
-          margin-right: 0.4rem;
+          // margin-right: 0.4rem;
+          margin-bottom: 0.4rem;
           background: #ccc;
+          overflow:hidden;
+          img{
+            width:100%;
+            height: 100%;
+          }
+        }
+        .control{
+          label{
+            display: block;
+            width:100%;
+            height:100%;
+            img{
+              width:100%;
+              height:100%;
+            }
+          }
+          input{
+            display:none;
+          }
         }
       }
       p {

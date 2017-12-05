@@ -23,7 +23,7 @@ export default {
   },
   props:['area'],
   mounted: function() {
-    this.area_item = this.area[0].areainfoCustom; // 默认显示第一项
+    this.area_item != 0 ? this.area[0].areainfoCustom : []; // 默认显示第一项
   },
   methods: {
     choiceDepartment(item, index) {
