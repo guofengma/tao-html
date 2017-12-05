@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-      <conJiankangCom />
+      <div :is="componentName" :orderInfo="orderInfo" :imgUrl="imgUrl" />
       <ul class="money_list">
           <li>
               <span>健康咨询</span>
@@ -65,22 +65,59 @@
 
 <script>
 import conJiankangCom from "./conJiankangCom";
+import conYuyueCom from "./conYuyueCom";
 export default {
   name: "orderPay",
-  data () {
-      return {
-          popupVisible: false
-      }
+  data() {
+    return {
+      popupVisible: false,
+      componentName: "",
+      orderInfo: {},
+      imgUrl: []
+    };
+  },
+  created() {
+    let orderId = this.$route.params.orderId;
+    let category = this.$route.params.category;
+    category == "健康咨询"
+      ? (this.componentName = conJiankangCom)
+      : (this.componentName = conYuyueCom);
+    this.$http
+      .post(this.baseUrl + "orderList/getOrderDetail", {
+        orderId,
+        category
+      })
+      .then(
+        res => {
+          let orderDetail = res.body.obj;
+          if(orderDetail.patientPhoto){
+            orderDetail.patientPhoto = this.baseImgUrl + orderDetail.patientPhoto;
+          }
+          if(orderDetail.heardimage) {
+            orderDetail.heardimage = this.baseImgUrl + orderDetail.heardimage;
+          }
+          this.imgUrl = orderDetail.diseaseImg;
+          this.orderInfo = orderDetail;
+        },
+        res => {
+          console.log(res);
+        }
+      );
   },
   components: {
-    conJiankangCom
+    conJiankangCom,
+    conYuyueCom
   },
   mounted() {
     this.pushHistory();
     let that = this;
-    window.addEventListener("popstate", function(e) {
+    window.addEventListener(
+      "popstate",
+      function(e) {
         that.popupVisible = true;
-    }, false);
+      },
+      false
+    );
   },
   methods: {
     pushHistory() {
@@ -91,7 +128,7 @@ export default {
       window.history.pushState(state, state.title, state.url);
     },
     historyGo() {
-        window.history.go(-1);
+      window.history.go(-1);
     }
   }
 };
@@ -208,40 +245,40 @@ export default {
   }
 }
 .mint-popup {
-    border-radius: .3rem;
+  border-radius: 0.3rem;
 }
 .leave_msg {
-    background-color: #fff;
-    width: 15rem;
-    border-radius: .3rem;
-    padding: 0 .6rem;
-    h3 {
-        line-height: 2.8rem;
-        text-align: center;
+  background-color: #fff;
+  width: 15rem;
+  border-radius: 0.3rem;
+  padding: 0 0.6rem;
+  h3 {
+    line-height: 2.8rem;
+    text-align: center;
+    color: rgb(82, 163, 255);
+    font-size: 0.8rem;
+  }
+  p {
+    font-size: 0.75rem;
+    color: #393939;
+    padding-bottom: 0.5rem;
+  }
+  .btn_box {
+    border-top: 1px solid rgb(238, 238, 238);
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    a {
+      width: 100%;
+      text-align: center;
+      line-height: 2rem;
+      font-size: 0.75rem;
+      color: #393939;
+      &:first-of-type {
         color: rgb(82, 163, 255);
-        font-size: .8rem;
+        border-right: 1px solid rgb(238, 238, 238);
+      }
     }
-    p {
-        font-size: .75rem;
-        color: #393939;
-        padding-bottom: .5rem;
-    }
-    .btn_box {
-        border-top: 1px solid rgb(238,238,238); 
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        a {
-            width: 100%;
-            text-align: center;
-            line-height: 2rem;
-            font-size: .75rem;
-            color: #393939;
-            &:first-of-type {
-                color: rgb(82, 163, 255);
-                border-right: 1px solid rgb(238,238,238); 
-            }
-        }
-    }
+  }
 }
 </style>

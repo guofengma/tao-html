@@ -9,7 +9,7 @@
                       </li>
                       <li>
                           <p>昵称</p>
-                          <input type="text" placeholder="请输入昵称（不得超过10个字符）">
+                          <input type="text" placeholder="请输入昵称（不得超过10个字符）" v-model.trim="userName">
                       </li>
                       <li>
                           <p>选择头像</p>
@@ -21,14 +21,17 @@
                                 </div>
                             </li>
                             <li>
-                                <img src="../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_camera@2x.png" alt="">
-                                <form action="">
-                                    <input type="file" >
+                                <img v-if="!uploadFile.upLoadImgTrue" src="../../../static/imgs/personalCenterImgs/accountSecurity/tdf_my_set_camera@2x.png" alt="">
+                                <form v-if="!uploadFile.upLoadImgTrue" action="">
+                                    <input type="file" @change="uploadImg">
                                 </form>
+                                <div v-if="uploadFile.upLoadImgTrue" class="img_upload">
+                                  <img :src="uploadFile.headerImage" alt="">
+                                </div>
                             </li>
                         </ul>
                       </li>
-                      <li class="confirm_btn">
+                      <li class="confirm_btn" @click="saveBtn">
                           <a href="javascript:;">确定</a>
                       </li>
                   </ul>
@@ -39,11 +42,27 @@
 </template>
 
 <script>
+import { Toast } from "mint-ui";
+import { Indicator } from "mint-ui";
 export default {
   name: "settingNameLogo",
   data() {
     return {
       popupVisible: true,
+      userName: "",
+      upLoadList: [
+        "\\uploads\\sys_image\\head\\tdf_my_set_head1@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head2@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head3@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head4@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head5@2x.png",
+        "\\uploads\\sys_image\\head\\tdf_my_set_head6@2x.png"
+      ],
+      uploadFile: {
+        upLoadImgTrue: false,
+        headerImage: "",
+        file: []
+      },
       iconImg: require("../../../static/imgs/personalCenterImgs/index/tdf_my_set_nickname@3x.png"), //默认图像地址
       chooseImgList: [
         {
@@ -75,12 +94,92 @@ export default {
   },
   methods: {
     chooseIcon(index) {
+      //进行data里面赋值
+      this.uploadFile.upLoadImgTrue = false;
+      this.uploadFile.file = {};
+      this.uploadFile.headerImage = this.upLoadList[index];
       let imgBox = this.chooseImgList;
       for (let value of imgBox) {
         this.$set(value, "selected", false);
       }
       this.iconImg = imgBox[index].path;
       this.$set(imgBox[index], "selected", true);
+    },
+    uploadImg(e) {
+      let imgBox = this.chooseImgList;
+      for (let value of imgBox) {
+        this.$set(value, "selected", false);
+      }
+      let that = this;
+      this.uploadFile.upLoadImgTrue = true;
+      let file = e.target.files[0];
+      let formData = new FormData();
+      formData.append(
+        "customerId",
+        JSON.parse(localStorage.getItem("userInfo")).id
+      );
+      formData.append("file", file);
+      this.uploadFile.file = formData;
+
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function() {
+        that.uploadFile.headerImage = this.result;
+      };
+    },
+    //点击确定按钮
+    saveBtn() {
+      if (!this.uploadFile.headerImage || !this.userName) {
+        this.popupVisible = false;
+        setTimeout(() => {
+          this.popupVisible = true;
+        }, 2000);
+        Toast({
+          message: "您还有信息未完善,请完善相关信息"
+        });
+        return false;
+      }
+      this.popupVisible = false;
+      Indicator.open({
+        text: "信息上传中...",
+        spinnerType: "fading-circle"
+      });
+      if (this.uploadFile.upLoadImgTrue) {
+        //上传本地文件
+        let file = this.uploadFile.file;
+        file.append("customerName", this.userName);
+        this.$http
+          .post(this.baseUrl + "customer/updateCustomerHeader", file)
+          .then(
+            res => {
+              Indicator.close();
+              Toast("您的信息已更新成功");
+              this.$router.push({name: 'navPage'});
+              console.log(res);
+            },
+            res => {
+              console.log(res);
+            }
+          );
+      } else {
+        this.$http
+          .post(this.baseUrl + "customer/updateCustomerHeader", {
+            customerId: JSON.parse(localStorage.getItem("userInfo")).id,
+            headerImage: this.uploadFile.headerImage,
+            customerName: this.userName
+          })
+          .then(
+            res => {
+              Indicator.close();
+              Toast("您的信息已更新成功");
+              this.$router.push({name: 'navPage'});
+              console.log(res);
+            },
+            res => {
+              console.log(res);
+            }
+          );
+      }
     }
   }
 };
@@ -142,6 +241,15 @@ export default {
               margin-right: 5.3%;
               border-radius: 50%;
               position: relative;
+              height: 3rem;
+              width: 3rem;
+              @media screen and (max-width: 330px) {
+                & {
+                  margin-right: 2%;
+                  height: 2.5rem;
+                  width: 2.5rem;
+                }
+              }
               > div {
                 position: absolute;
                 top: 0;
@@ -162,25 +270,16 @@ export default {
               &.active {
                 background-color: rgba(0, 0, 0, 0.58);
               }
-              @media screen and (max-width: 330px) {
-                  & {
-                      margin-right: 2%; 
-                  }
-                  img {
-                      height: 2.5rem;
-                      width: 2.5rem;
-                  }
-              }
               img {
-                height: 3rem;
-                width: 3rem;
+                height: 100%;
+                width: 100%;
                 display: block;
               }
               &:nth-of-type(4n) {
                 margin-right: 0;
               }
               &:last-of-type {
-                  margin-right: 0;
+                margin-right: 0;
               }
               &:nth-of-type(n + 5) {
                 margin-top: 0.8rem;
@@ -197,27 +296,38 @@ export default {
                     opacity: 0;
                   }
                 }
+                .img_upload {
+                  position: absolute;
+                  height: 100%;
+                  width: 100%;
+                  img {
+                    height: 100%;
+                    width: 100%;
+                    display: block;
+                    border-radius: 50%;
+                  }
+                }
               }
             }
           }
         }
         .confirm_btn {
-            width: 80%;
-            line-height: 2.15rem;
-            margin: 0 auto;
-            margin-top: 2.5rem;
-            text-align: center;
-            background-color: #2c8dfe;
-            border-radius: .8rem;
-            @media screen and (max-width: 330px) {
-                & {
-                    margin-top: .5rem;
-                }
+          width: 80%;
+          line-height: 2.15rem;
+          margin: 0 auto;
+          margin-top: 2.5rem;
+          text-align: center;
+          background-color: #2c8dfe;
+          border-radius: 0.8rem;
+          @media screen and (max-width: 330px) {
+            & {
+              margin-top: 0.5rem;
             }
-            a {
-                color: #fff;
-                font-size: .75rem;
-            }
+          }
+          a {
+            color: #fff;
+            font-size: 0.75rem;
+          }
         }
       }
     }

@@ -31,6 +31,9 @@ import navPage from '@/components/login/navPage'
 /********************************订单详情（支付提醒）**********************************************************/
 import orderDetail from '@/components/personalCenter/aboutOrder/orderDetail.vue'
 import orderPay from '@/components/personalCenter/aboutOrder/orderPay.vue'
+/*************************************零钱查询************************************************/
+import changeIndex from '@/components/personalCenter/change/changeIndex.vue'
+import changeLog from '@/components/personalCenter/change/changeLog.vue'
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
@@ -312,7 +315,7 @@ export default new Router({
       }
     },
     {
-      path: '/orderPay',
+      path: '/orderPay/:orderId/:category',
       name: 'orderPay',
       component: orderPay,
       meta: {
@@ -358,6 +361,23 @@ export default new Router({
       component: fillInfomation,
       meta: {
         title: '填写资料'
+      }
+    },
+    //零钱查询
+    {
+      path: '/changeIndex',
+      name: 'changeIndex',
+      component: changeIndex,
+      meta: {
+        title: '零钱'
+      }
+    },
+    {
+      path: '/changeLog',
+      name: 'changeLog',
+      component: changeLog,
+      meta: {
+        title: '零钱明细'
       }
     }
   ]

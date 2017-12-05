@@ -7,7 +7,7 @@
           </li>
           <!-- <li>剩余4天23小时自动取消</li> -->
       </ul>
-      <div :is="comShow" :orderInfo="orderInfo"></div>
+      <div :is="comShow" :orderInfo="orderInfo" :imgUrl="imgUrl"></div>
       <ul class="money_box">
           <li>
               <span>{{orderInfo.servertype}}</span>
@@ -15,14 +15,14 @@
           </li>
           <li>
               <span>优惠券</span>
-              <span>{{orderInfo.couponMoney}}元抵扣券</span>
+              <span>{{orderInfo.couponName}}</span>
           </li>
           <li>
               <span>账户零钱</span>
-              <span>-10.00元</span>
+              <span>-{{orderInfo.accountMoney}}</span>
           </li>
           <li>
-              <span>需要支付： <i>{{orderInfo.threeMoney}}元</i></span>
+              <span>需要支付： <i>{{orderInfo.servermoney}}元</i></span>
           </li>
           <li>
               <span>支付方式</span>
@@ -38,10 +38,15 @@
           </li>
       </ul>
       <div class="pay_box">
-          <span class="pay_money">10.00元</span>
+          <span class="pay_money">{{orderInfo.status=='待付款' ? 'orderInfo.servermoney'+'元' : ''}}</span>
           <div class="btn_box">
-              <a href="javascritp:;">取消订单</a>
-              <a href="javascritp:;" class="go_pay">去支付</a>
+              <a v-if="orderInfo.status=='待付款'" href="javascritp:;">取消订单</a>
+              <a v-if="orderInfo.status=='待付款'" href="javascritp:;" class="go_pay">去支付</a>
+              <a v-else-if="orderInfo.status=='待服务'" href="javascritp:;" class="go_pay">去交流</a>
+              <a v-else-if="orderInfo.status=='服务中'" href="javascritp:;" class="go_pay">去交流</a>
+              <a v-else-if="orderInfo.status=='待评价'" href="javascritp:;" class="go_pay">去评价</a>
+              <a v-else-if="orderInfo.status=='已完成'" href="javascritp:;" class="go_pay">已完成</a>
+              <a v-else-if="orderInfo.status=='已取消'" href="javascritp:;" class="go_pay">已取消</a>
           </div>
       </div>
   </div>
@@ -55,7 +60,8 @@ export default {
   data() {
     return {
       comShow: "conYuyueCom",
-      orderInfo: ""
+      orderInfo: {},
+      imgUrl: []
     };
   },
   created() {
@@ -69,10 +75,14 @@ export default {
       .post(this.baseUrl + "orderList/getOrderDetail", { orderId, category })
       .then(
         res => {
-          console.log(JSON.stringify(res));
           let orderDetail = res.body.obj;
-          orderDetail.patientPhoto = this.baseImgUrl + orderDetail.patientPhoto;
-          orderDetail.heardimage = this.baseImgUrl + orderDetail.heardimage;
+          if(orderDetail.patientPhoto){
+            orderDetail.patientPhoto = this.baseImgUrl + orderDetail.patientPhoto;
+          }
+          if(orderDetail.heardimage) {
+            orderDetail.heardimage = this.baseImgUrl + orderDetail.heardimage;
+          }
+          this.imgUrl = orderDetail.diseaseImg;
           this.orderInfo = orderDetail;
         },
         res => {

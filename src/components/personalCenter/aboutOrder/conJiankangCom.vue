@@ -11,15 +11,20 @@
           </ul>
           <div class="health_main">
               <div class="main_top">
-                  <img class="icon_pic" :src="orderInfo.patientPhoto" alt="">
+                  <img v-if="!orderInfo.heardimage" class="icon_pic" src="../../../../static/imgs/aboutOrder/tdf_order_touxiang.png" alt="">
+                  <img v-else class="icon_pic" :src="orderInfo.patientPhoto" alt="">
                   <span>{{orderInfo.patientName}}</span>
                   <img src="../../../../static/imgs/aboutOrder/tdf_order_xintiao.png" alt="">
-                  <img class="icon_pic" :src="orderInfo.heardimage" alt="">
+                  <img v-if="orderInfo.heardimage==''" src="../../../../static/imgs/aboutOrder/tdf_order_touxiang.png" alt="">
+                  <img v-else class="icon_pic" :src="orderInfo.heardimage" alt="">
                   <span>{{orderInfo.doctorname}}</span>
               </div>
               <div class="main_text">
                   <h3>症状描述：</h3>
                   <p>{{orderInfo.description}}</p>
+                  <div class="img_box" v-show="imgUrl.length>0">
+                      <img v-for="(item, index) in imgUrl" :key="index" :src="item" alt="">
+                  </div>
               </div>
           </div>
       </div>
@@ -28,7 +33,16 @@
 <script>
 export default {
   name: "conJiankangCom",
-  props: ['orderInfo']
+  props: {
+      orderInfo: {
+          type: Object,
+          default: {}
+      },
+      imgUrl: {
+          type: Array,
+          default: []
+      }
+  }
 };
 </script>
 
@@ -98,6 +112,15 @@ export default {
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
                 overflow: hidden;
+            }
+            .img_box {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                img {
+                    width: 40%;
+                    margin: .4rem;
+                }
             }
         }
     }

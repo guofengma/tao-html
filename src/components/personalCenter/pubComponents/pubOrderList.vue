@@ -21,7 +21,12 @@
             </div>
             <div class="order_foot">
                 <div>
-                    <span>预约复诊</span>
+                  <span v-if="item.status=='待付款'">去支付</span>
+                  <span v-else-if="item.status=='待服务'">去交流</span>
+                  <span v-else-if="item.status=='服务中'">去交流</span>
+                  <span v-else-if="item.status=='待评价'">去评价</span>
+                  <span v-else-if="item.status=='已完成'">已完成</span>
+                  <span v-else-if="item.status=='已取消'">已取消</span>
                 </div>
             </div>
         </li>
