@@ -1,154 +1,153 @@
 <template>
   <div class="home">
-      <div class="doctor_top">
-        <!-- <div class="doctor_title  clearfix">
-          <a href="#" class="f_left"><img src="../../../../static/imgs/hospital/index/tdf_back.png" alt=""></a>
-          <a href="#" class="f_right"><img src="../../../../static/imgs/hospital/index/tdf_doctor_share.png" alt=""></a>
-          <a href="#" class="f_right"><img src="../../../../static/imgs/hospital/index/tdf_doctor_gzh.png" alt=""></a>
-        </div> -->
-        <div class="doctor_avatar"><img :src="imgUrl" alt=""></div>
+    <div class="doctor_top">
+      <div class="doctor_avatar"><img :src="imgUrl" alt=""></div>
+    </div>
+    <div class="doctor_info">
+      <div class="doctor_main">
+        <h2>{{doctorInfo.name}} <div class="order">接诊{{doctorInfo.orderCount}}例</div></h2>
+        <p>{{doctorInfo.hospitalName}}</p>
       </div>
-      <div class="doctor_info">
-        <div class="doctor_main">
-          <h2>{{doctorInfo.name}} <div class="order">接诊{{doctorInfo.orderCount}}例</div></h2>
-          <p>{{doctorInfo.hospitalName}}</p>
-        </div>
-        <ul class="doctor_minor">
-          <li>
-            <h2>{{doctorInfo.department}}</h2>
-            <p>所属科室</p>
-          </li>
-          <li>
-            <h2>{{doctorInfo.JobTitle}}</h2>
-            <p>医生职称</p>
-          </li>
-          <li>
-            <h2>{{doctorInfo.workTime}}</h2>
-            <p>临床经验</p>
-          </li>
-        </ul>
-      </div>
-      <div class="patient">
-        <h2>患者印象</h2>
-        <ul>
-          <li v-for="(item,index) in customerImpression" :key="index">{{item}}</li>
-        </ul>
-      </div>
-      <div class="tab">
-        <mt-button @click.native.prevent="showid = 'tab1'"><span :class="{'activeTab':showid == 'tab1'}">医生介绍</span></mt-button>
-        <mt-button @click.native.prevent="getCustomerImpression"><span :class="{'activeTab':showid == 'tab2'}">用户评价</span></mt-button>
-        <mt-button @click.native.prevent="getExpertArticle"><span :class="{'activeTab':showid == 'tab3'}">专家文章</span></mt-button>
-      </div>
-
-      <div class="tab_container">
-        <mt-tab-container v-model="showid">
-          <mt-tab-container-item id="tab1">
-            <ul class="doctor_introduce">
-              <li>
-                <h2>职业点</h2>
-                <p>{{doctorInfo.hospitalName}}&nbsp;&nbsp;{{doctorInfo.department}}</p>
-              </li>
-              <li>
-                <h2>简介</h2>
-                <p>{{doctorInfo.aboutDoctor}}</p>
-              </li>
-              <li>
-                <h2>擅长</h2>
-                <p>{{doctorInfo.beGoodAtAsDoctor}}</p>
-              </li>
-            </ul>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="tab2">
-            <div class="user_rating" v-for="(item,index) in customerAppraisal" :key="index">
-              <div class="user_left">
-                <div class="user_avatar">
-                  <img src="../../../../static/imgs/hospital/index/tdf_hospital_head.png" alt="">
-                </div>
-              </div>
-              <div class="user_right">
-                <ul class="user_info">
-                  <li><h2>{{item.customName}}</h2></li>
-                  <li><span>{{item.createTime}}</span></li>
-                  <li><p>{{item.content}}</p></li>
-                </ul>
-                <ul class="user_img">
-                  <li><img src="" alt=""></li>
-                  <li><img src="" alt=""></li>
-                </ul>
-                <ul class="user_sign">
-                  <li v-for="(item,index) in simpleContent" :key="index">{{item}}</li>
-                </ul>
-              </div>
-            </div>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="tab3">
-            <div class="expert_article" v-for="(item,index) in expertArticle" :key="index">
-              <div class="expert_left">
-                <div class="expert_img">
-                  <img :src="item.newsCoverimage" alt="">
-                </div>
-              </div>
-              <div class="expert_right">
-                <ul class="expert_info">
-                  <li><h2>{{item.newsTitle}}</h2></li>
-                  <li><p>{{item.description}}</p></li>
-                  <li class="expert_sign">
-                    <div><img src="../../../../static/imgs/hospital/index/tdf_doctor_tab.png" alt="">{{item.newsTage}}</div>
-                    <p>{{item.createTime | formatDate}}</p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </mt-tab-container-item>
-        </mt-tab-container>
-      </div>
-
-      <ul class="service">
-        <li v-for="(item,index) in service" :key="index" @click="choiceService(index)">
-          <div class="service_icon"><img :src="item.img" alt=""></div>
-          <p>{{item.text}}</p>
+      <ul class="doctor_minor">
+        <li>
+          <h2>{{doctorInfo.department}}</h2>
+          <p>所属科室</p>
+        </li>
+        <li>
+          <h2>{{doctorInfo.JobTitle}}</h2>
+          <p>医生职称</p>
+        </li>
+        <li>
+          <h2>{{doctorInfo.workTime}}</h2>
+          <p>临床经验</p>
         </li>
       </ul>
-      <div class="service_page" v-if="isService" @click.stop="closeService('close')">
-        <div class="service_inner" @click.stop="closeService('open')">
-          <!-- 服务tab切换栏 -->
-          <ul class="service_tab">
-            <li v-for="(item,index) in service" :key="index" @click="switchService(item,index)" :class="{'active':serviceid == 'service' + index}">
-              <div class="service_icon"><img :src="item.img" alt=""></div>
-              <p>{{item.text}}</p>
-            </li>
-          </ul>
-          <!-- 服务类型 -->
-          <ul class="server_container">
-            <li v-if="serviceid == 'service0'">
-              <h2 class="service_top">选择咨询方式</h2>
-              <ol class="service_item">
-                <li :class="{'active':isConsultation == 'consultation' + index}" v-for="(item,index) in consultation" :key="index">
-                  <p>{{item.title}}</p>
-                  <p>{{item.enable == 0 ? '暂无服务' : item.servicePrice}}</p>
-                </li>
-              </ol>
-            </li>
-            <li v-if="serviceid == 'service1'">
-              <ol class="service_sort service_week">
-                <li v-for="(item,index) in serviceWeek" :key="index">{{item}}</li>
-              </ol>
-              <ol class="service_sort service_date">
-                <li v-for="(item,index) in serviceDate" :key="index"><span @click="choiceServiceDate($event,item,index)" class="open" :class="{'active':today == 'today' + index}" >{{item}}</span></li>
-              </ol>
-              <ol class="service_time">
-                <li v-for="(item,index) in serviceTime[0]" :key="index" @click="choiceVisitTime($event,item,index)" :class="{'active':visit == 'visit' + index}">{{item}}</li>
-              </ol>
+    </div>
+    <div class="patient">
+      <h2>患者印象</h2>
+      <ul>
+        <li v-for="(item,index) in customerImpression" :key="index">{{item}}</li>
+      </ul>
+    </div>
+    <div class="tab">
+      <mt-button @click.native.prevent="showid = 'tab1'"><span :class="{'activeTab':showid == 'tab1'}">医生介绍</span></mt-button>
+      <mt-button @click.native.prevent="getCustomerImpression"><span :class="{'activeTab':showid == 'tab2'}">用户评价</span></mt-button>
+      <mt-button @click.native.prevent="getExpertArticle"><span :class="{'activeTab':showid == 'tab3'}">专家文章</span></mt-button>
+    </div>
 
+    <div class="tab_container">
+      <mt-tab-container v-model="showid">
+        <mt-tab-container-item id="tab1">
+          <ul class="doctor_introduce">
+            <li>
+              <h2>职业点</h2>
+              <p>{{doctorInfo.hospitalName}}&nbsp;&nbsp;{{doctorInfo.department}}</p>
             </li>
-            <li v-if="serviceid == 'service'">
-              功能开发中...
+            <li>
+              <h2>简介</h2>
+              <p>{{doctorInfo.aboutDoctor}}</p>
+            </li>
+            <li>
+              <h2>擅长</h2>
+              <p>{{doctorInfo.beGoodAtAsDoctor}}</p>
             </li>
           </ul>
-          <!-- 立即就诊 -->
-          <router-link tag="div" :to="{name:'fillOrder',params:{customerId:doctorId}}" class="go_visit">立即就诊</router-link>
-        </div>
-      </div>  
+        </mt-tab-container-item>
+        <mt-tab-container-item id="tab2">
+          <div class="user_rating" v-for="(item,index) in customerAppraisal" :key="index">
+            <div class="user_left">
+              <div class="user_avatar">
+                <img src="../../../../static/imgs/hospital/index/tdf_hospital_head.png" alt="">
+              </div>
+            </div>
+            <div class="user_right">
+              <ul class="user_info">
+                <li><h2>{{item.customName}}</h2></li>
+                <li><span>{{item.createTime}}</span></li>
+                <li><p>{{item.content}}</p></li>
+              </ul>
+              <ul class="user_img">
+                <li><img src="" alt=""></li>
+                <li><img src="" alt=""></li>
+              </ul>
+              <ul class="user_sign">
+                <li v-for="(item,index) in simpleContent" :key="index">{{item}}</li>
+              </ul>
+            </div>
+          </div>
+        </mt-tab-container-item>
+        <mt-tab-container-item id="tab3">
+          <div class="expert_article" v-for="(item,index) in expertArticle" :key="index">
+            <div class="expert_left">
+              <div class="expert_img">
+                <img :src="item.newsCoverimage" alt="">
+              </div>
+            </div>
+            <div class="expert_right">
+              <ul class="expert_info">
+                <li><h2>{{item.newsTitle}}</h2></li>
+                <li><p>{{item.description}}</p></li>
+                <li class="expert_sign">
+                  <div><img src="../../../../static/imgs/hospital/index/tdf_doctor_tab.png" alt="">{{item.newsTage}}</div>
+                  <p>{{item.createTime | formatDate}}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </mt-tab-container-item>
+      </mt-tab-container>
+    </div>
+
+    <ul class="service">
+      <li v-for="(item,index) in service" :key="index" @click="choiceService(index)">
+        <div class="service_icon"><img :src="item.img" alt=""></div>
+        <p>{{item.text}}</p>
+      </li>
+    </ul>
+    <div class="service_page" v-if="isService" @click.stop="closeService('close')">
+      <div class="service_inner" @click.stop="closeService('open')">
+        <!-- 服务tab切换栏 -->
+        <ul class="service_tab">
+          <li v-for="(item,index) in service" :key="index" @click="switchService(item,index)" :class="{'active':serviceid == 'service' + index}">
+            <div class="service_icon"><img :src="item.img" alt=""></div>
+            <p>{{item.text}}</p>
+          </li>
+        </ul>
+        <!-- 服务类型 -->
+        <ul class="server_container">
+          <li v-show="serviceid == 'service0'">
+            <h2 class="service_top">选择咨询方式</h2>
+            <ol class="service_item">
+              <li @click="choiceConsultation(item,index)" :class="{'active':isConsultation == 'consultation' + index && item.enable != 0}" v-for="(item,index) in consultation" :key="index">
+                <p>{{item.title}}</p>
+                <p>{{item.enable == 0 ? '暂无服务' : item.servicePrice}}</p>
+              </li>
+            </ol>
+          </li>
+          <li v-show="serviceid == 'service1'">
+            <ol class="service_sort service_week">
+              <li v-for="(item,index) in punctualBespeak" :key="index">{{item.subName | formatWeek}}</li>
+            </ol>
+            <ol class="service_sort service_date">
+              <li v-for="(item,index) in punctualBespeak" :key="index"><span @click="choiceServiceDate($event,item,index)" :class="[{'active':today == 'today' + index},{'open':item.item.length != 0}]" >{{item.subName | formatDay}}</span></li>
+            </ol>
+            <ol class="service_time">
+              <li v-for="(item,index) in serviceTime" :key="index" @click="choiceVisitTime($event,item,index)" :class="{'active':visit == 'visit' + index}">{{item.num | takeOver}}</li>
+              <div class='service_no' v-if='serviceTime.length == 0'>暂未开放时间</div>
+            </ol>
+            <div class="address" v-if="isAddress">
+              <h2><span></span>详细地址</h2>
+              <p>{{address}}</p>
+            </div>
+          </li>
+          <li v-show="serviceid == 'service'">
+            功能开发中...
+          </li>
+        </ul>
+        <!-- 立即就诊 -->
+        <div class="go_visit" @click="goVisit(visitType)">立即就诊</div>
+      </div>
+    </div>  
   </div>
 </template>
 
@@ -174,46 +173,90 @@ export default {
         {img:'../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png',text:'准时预约'},
         {img:'../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png',text:'家庭医生'},
       ], // 服务类型
+      visitType:'forbid', // 就诊类型
       serviceid:"", // 切换服务类型id
       isService:false, // 是否显示服务详情页面
       consultation:[], // 咨询方式数据
-      isConsultation:'consultation', // 默认选择第一种咨询方式
+      isConsultation:'consultation0', // 默认选择第一种咨询方式
       today:'today0', // 是否是今天
-      visit:'visit0', // 选择就诊时间
-      serviceWeek:['三','四','五','六','日','一','二'], // 星期
-      serviceDate:['29','30','1','2','3','4','5'], // 日期
-      serviceTime:[['10:20~11:00','10:20~11:00','10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00']
-      ['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00'],['10:20~11:00','10:20~11:00']], // 开放时间
+      visit:'', // 选择就诊时间
+      address:'', // 就诊地址
+      isAddress:false, // 默认不显示地址
+      punctualBespeak:[], // 准时预约数据信息
+      serviceDate:['29','30','1','2','3','4','5'], 
+      serviceTime:[], // 开放时间
+      visitTime:{},
     };
   },
   components: {
     pubOrderList
   },
   created() {
+    // var item = this.$route.params;
+    // this.doctorInfo = item;
+    // this.doctorId = item.doctorId;
+    this.getDoctorDetail(this.doctorId); //获取用户详细信息
+  },
+  activated(){
     var item = this.$route.params;
     this.doctorInfo = item;
     this.doctorId = item.doctorId;
-    this.getDoctorDetail(); //获取用户详细信息
+    if(item.doctorId){
+      this.doctorId = item.doctorId;
+      this.getDoctorDetail(item.doctorId); //获取用户详细信息
+      
+      this.getHealthPrice(this.doctorId);
+      this.getpunctualBespeak(this.doctorId);
+    }
   },
   filters: {
+    // 格式化时间戳
     formatDate(time) {
       let date = new Date(time);
       return formatDate(date, "yyyy-MM-dd hh:mm");
+    },
+    // 格式化星期
+    formatWeek(str){
+      let d = new Date(str);
+      let week = ['日','一','二','三','四','五','六'];
+      return week[d.getDay()];
+    },
+    // 格式化日期
+    formatDay(str){
+      let d = new Date(str);
+      return d.getDate();
+    },
+    // 格式化时间间隔
+    takeOver(obj) {
+      var a = "";
+      var optime = parseInt(obj);
+      var i = optime % 4;
+      var j = parseInt(optime / 4);
+      if (i == 0) {
+        a = j + ":00-" + j + ":15";
+      } else if (i == 1) {
+        a = j + ":15-" + j + ":30";
+      } else if (i == 2) {
+        a = j + ":30-" + j + ":45";
+      } else if (i == 3) {
+        a = j + ":45-" + (j + 1) + ":00";
+      }
+      return a;
     }
   },
   methods: {
     // 获取医生详细信息
-    getDoctorDetail() {
+    getDoctorDetail(doctorId) {
       var url = this.baseUrl + "newDoctorBaseInfo/getDoctorDetail";
       var data = {
-        doctorId: this.doctorId
+        doctorId:doctorId
       };
       Indicator.open({
         text:"加载中..."
       });
       this.$http.post(url, data).then(
         response => {
-          // console.log(response.data); 
+          console.log(response.data); 
           if (response.data.statusCode == 1) {
             this.doctorInfo = response.data.obj;
             var customerImpression = response.data.obj.customerImpression;
@@ -235,9 +278,11 @@ export default {
       this.isService = true;
       this.serviceid = "service" + index;
       if(index == 0){
-        this.getHealthPrice(this.doctorId);
+        this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
+        // this.visitType = 'health';
       }else if(index == 1){
-        this.getpunctualBespeak(this.doctorId);
+        this.punctualBespeak.length ? '' : this.getpunctualBespeak(this.doctorId);
+        // this.visitType = 'punctual';
       }else if(index == 2){
         this.isService = false;
         Toast({
@@ -258,7 +303,13 @@ export default {
     // 选择服务类型切换
     switchService(item,index){
       this.serviceid = "service" + index;
-      if(index == 2){
+      if(index == 0){
+        this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
+        // this.visitType = 'health';
+      }else if(index == 1){
+        this.punctualBespeak.length ? '' : this.getpunctualBespeak(this.doctorId);
+        // this.visitType = 'punctual';
+      }else if(index == 2){
         Toast({
           message: '功能开发中...',
           position: 'bottom',
@@ -266,22 +317,40 @@ export default {
         });
       }
     },
+    // 选择咨询方式
+    choiceConsultation(item,index){
+      if(item.enable == 0){
+        this.visitType = 'forbid';
+      }else{
+        this.visitType = 'health';
+      }
+    },
     // 选择服务时间
     choiceServiceDate(e,item,index){
       e.target.classList.remove('open');
+      // item.item.length = 1;
       this.today = 'today' + index;
+      this.serviceTime = this.punctualBespeak[index].item;
+      
     },
     // 选择就诊时间
     choiceVisitTime(e,item,index){
       this.visit = 'visit' + index;
+      this.address = item.address;
+      this.isAddress = true;
+      this.visitTime = item;
+      this.visitType = 'punctual';
+      // console.log(item)
     },
     // 获取健康咨询医生定价
     getHealthPrice(doctorId){
+      Indicator.open({text:'加载中...'});
       var url = this.baseUrl + "allorder/getPlatformPrice2";
       this.$http.post(url,{doctorId:doctorId}).then(res => {
         console.log(res.data);
         if(res.data.statusCode == 1){
           this.consultation = res.data.obj;
+          Indicator.close(); // 关闭loading动画
         }
       },res => {
         console.log("error");
@@ -290,14 +359,31 @@ export default {
     // 获取准时预约开放时间
     getpunctualBespeak(doctorId){
       var url = this.baseUrl + 'doc/getDoctorOpenTime';
+      // var url = "http://www.tdaifu.cn:8090/taodoctor/rest/doc/getDoctorOpenTime"
+      Indicator.open({text:'加载中...'});
       this.$http.post(url,{docid:doctorId}).then(res => {
         console.log(res.data);
         if(res.data.success){
-
+          this.punctualBespeak = res.data.data;
+          this.serviceTime = this.punctualBespeak[0].item;
+          Indicator.close(); // 关闭loading动画
         }
       },res => {
         console.log("error");
       });
+    },
+    // 立即就诊
+    goVisit(visitType){
+      console.log(visitType)
+      if(visitType == 'health'){
+        // console.log("woshi 1");
+         this.$router.push({name:'fillOrder',params:this.visitTime});
+      }else if(visitType == 'punctual'){
+        // console.log("woshi 2");
+        this.$router.push({name:'fillOrder',params:this.visitTime});
+      }else if(visitType == 'forbid'){
+        // console.log("all no")
+      }
     },
     // 获取用户评价
     getCustomerImpression() {
@@ -680,7 +766,6 @@ export default {
   position: fixed;
   left: 0;
   top:0;
-  z-index: 9;
   .service_inner{
     width:100%;
     height: 26rem;
@@ -781,7 +866,7 @@ export default {
 }
 // 日期
 .service_date{
-  span{
+  li>span{
     position: relative;
     padding:0.2rem;
     width:1.2rem;
@@ -808,14 +893,19 @@ export default {
 }
 // 开放时间
 .service_time{
+  height:10rem;
+  overflow-y: scroll;
+  overflow-x:hidden;
   font-size:0.75rem;
   color:@fontColor;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: space-between;
+  // align-items: flex-start;
   li{
     width:30%;
+    float: left;
+    margin-right: 0.55rem;
     border:1px solid rgb(82,163,255);
     border-radius:0.3rem;
     padding:0.3rem;
@@ -826,6 +916,40 @@ export default {
     &.active{
       background:rgb(218,234,253);
     }
+  }
+  .service_no{
+    width:100%;
+    height:5rem;
+    line-height:5rem;
+    background:#eee;
+    text-align:center;
+  }
+}
+.address{
+  width:100%;
+  font-size:0.75rem;
+  padding:0.3rem 0.6rem;
+  position: absolute;
+  left: 0;
+  bottom: 2.25rem;
+  h2{
+    font-size:0.7rem;
+    color:@fontColor;
+    margin-bottom:0.4rem;
+    span{
+      display:inline-block;
+      width:0.8rem;
+      height: 0.8rem;
+      margin-right:0.3rem;
+      img{
+        width:100%;
+      }
+    }
+  }
+  p{
+    font-size:0.65rem;
+    color:@font1Color;
+    padding-left:1.1rem;
   }
 }
 // 立即就诊

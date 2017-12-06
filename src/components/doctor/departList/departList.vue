@@ -24,7 +24,7 @@ export default {
   props:['department'],
   mounted: function() {
     var _this = this;
-    this.department_item = this.department[0].childDepartment; // 默认显示第一项
+    this.department_item.length != 0 ? this.department[0].childDepartment : []; // 默认显示第一项
   },
   methods: {
     choiceDepartment(item, index) {
