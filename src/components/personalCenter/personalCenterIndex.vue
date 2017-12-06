@@ -22,10 +22,10 @@
           <span>0个</span>
           <b>健康果</b>
         </li>
-        <li>
+        <router-link tag="li" :to="{name: 'couponIndex'}">
           <span>{{customerCoupons}}张</span>
           <b>优惠券</b>
-        </li>
+        </router-link>
       </ul>
     </div>
     <!-- 查看订单部分 -->

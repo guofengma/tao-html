@@ -34,6 +34,10 @@ import orderPay from '@/components/personalCenter/aboutOrder/orderPay.vue'
 /*************************************零钱查询************************************************/
 import changeIndex from '@/components/personalCenter/change/changeIndex.vue'
 import changeLog from '@/components/personalCenter/change/changeLog.vue'
+/************************************评价******************************************************************/
+import evaluate from '@/components/personalCenter/evaluate/evaluate.vue'
+/************************************优惠券******************************************************************/
+import couponIndex from '@/components/personalCenter/coupon/couponIndex.vue'
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
@@ -368,6 +372,24 @@ export default new Router({
       component: changeLog,
       meta: {
         title: '零钱明细'
+      }
+    },
+    //去评价页面
+    {
+      path: '/evaluate/:doctorId/:customerId/:orderId/:orderType',
+      name: 'evaluate',
+      component: evaluate,
+      meta: {
+        title: '评价医生'
+      }
+    },
+    //优惠券页面
+    {
+      path: '/couponIndex',
+      name: 'couponIndex',
+      component: couponIndex,
+      meta: {
+        title: '优惠券'
       }
     }
   ]

@@ -73,7 +73,6 @@ export default {
         )
         .then(
           res => {
-            console.log(JSON.stringify(res));
             let dataJson = res.body;
             let listAll = this.changeDetail;
             if (dataJson.statusCode == 1) {

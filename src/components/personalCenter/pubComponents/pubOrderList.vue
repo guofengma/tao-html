@@ -2,7 +2,7 @@
 <div>
   <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :autoFill="false">
   <ul v-if="!noOrderShow" class="order_list">
-        <li v-for='(item, index) in list' :key='index' @click="goAboutOrder(item.orderid,item.servertype)">
+        <li v-for='(item, index) in list' :key='index' @click="goAboutOrder(item.orderid,item.servertype=='健康咨询'?'jiankang':'yuyue')">
             <div class="order_top">
                 <div>
                     <img :src="item.heardimage" alt="">
@@ -24,7 +24,7 @@
                   <span v-if="item.status=='待付款'">去支付</span>
                   <span v-else-if="item.status=='待服务'">去交流</span>
                   <span v-else-if="item.status=='服务中'">去交流</span>
-                  <span v-else-if="item.status=='待评价'">去评价</span>
+                  <span v-else-if="item.status=='待评价'" @click.stop="goEva(item.doctorid,item.customerid,item.orderid,item.servertype=='健康咨询'?'010002':'010001')">去评价</span>
                   <span v-else-if="item.status=='已完成'">已完成</span>
                   <span v-else-if="item.status=='已取消'">已取消</span>
                 </div>
@@ -172,6 +172,9 @@ export default {
     },
     goAboutOrder(id,type) {
       this.$router.push({name: 'orderDetail',params: {orderId: id,category: type}});
+    },
+    goEva(doctorId,customerId,orderId,orderType) {
+      this.$router.push({name: 'evaluate',params: {doctorId,customerId,orderId,orderType}});
     }
   }
 };

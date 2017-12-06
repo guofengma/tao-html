@@ -5,7 +5,7 @@
               <img src="../../../../static/imgs/aboutOrder/tdf_order_time.png" alt="">
               <span>{{orderInfo.status}}</span>
           </li>
-          <!-- <li>剩余4天23小时自动取消</li> -->
+          <li v-if="countTrue">剩余{{countTimer}}自动取消</li>
       </ul>
       <div :is="comShow" :orderInfo="orderInfo" :imgUrl="imgUrl"></div>
       <ul class="money_box">
@@ -44,7 +44,7 @@
               <a v-if="orderInfo.status=='待付款'" href="javascritp:;" class="go_pay">去支付</a>
               <a v-else-if="orderInfo.status=='待服务'" href="javascritp:;" class="go_pay">去交流</a>
               <a v-else-if="orderInfo.status=='服务中'" href="javascritp:;" class="go_pay">去交流</a>
-              <a v-else-if="orderInfo.status=='待评价'" href="javascritp:;" class="go_pay">去评价</a>
+              <a v-else-if="orderInfo.status=='待评价'" href="javascritp:;" class="go_pay" @click.stop="goEva(orderInfo.doctorid,orderInfo.customerid,orderInfo.orderid,orderInfo.servertype=='健康咨询'?'010002':'010001')">去评价</a>
               <a v-else-if="orderInfo.status=='已完成'" href="javascritp:;" class="go_pay">已完成</a>
               <a v-else-if="orderInfo.status=='已取消'" href="javascritp:;" class="go_pay">已取消</a>
           </div>
@@ -59,6 +59,8 @@ export default {
   name: "orderDetail",
   data() {
     return {
+      countTrue: false, //倒计时
+      countTimer: 0,
       comShow: "conYuyueCom",
       orderInfo: {},
       imgUrl: []
@@ -67,6 +69,7 @@ export default {
   created() {
     let orderId = this.$route.params.orderId;
     let category = this.$route.params.category;
+    category = category == "jiankang" ? "健康咨询" : "准时预约";
     category == "健康咨询"
       ? (this.comShow = "conJiankangCom")
       : (this.comShow = "conYuyueCom");
@@ -76,14 +79,21 @@ export default {
       .then(
         res => {
           let orderDetail = res.body.obj;
-          if(orderDetail.patientPhoto){
-            orderDetail.patientPhoto = this.baseImgUrl + orderDetail.patientPhoto;
+          if (orderDetail.patientPhoto) {
+            orderDetail.patientPhoto =
+              this.baseImgUrl + orderDetail.patientPhoto;
           }
-          if(orderDetail.heardimage) {
+          if (orderDetail.heardimage) {
             orderDetail.heardimage = this.baseImgUrl + orderDetail.heardimage;
           }
           this.imgUrl = orderDetail.diseaseImg;
           this.orderInfo = orderDetail;
+          if (orderDetail.status == "待付款") {
+            this.showCount(
+              orderDetail.servertype,
+              +new Date(orderDetail.createtime)
+            );
+          }
         },
         res => {
           console.log(res);
@@ -93,6 +103,58 @@ export default {
   components: {
     conJiankangCom,
     conYuyueCom
+  },
+  methods: {
+    goEva(doctorId, customerId, orderId, orderType) {
+      this.$router.push({
+        name: "evaluate",
+        params: { doctorId, customerId, orderId, orderType }
+      });
+    },
+    showCount(text, creattime) {
+      this.$http.post(this.baseUrl + "orderList/getServiceTimeOut").then(
+        res => {
+          this.countTrue = true;
+          let dataJson = res.body.obj;
+          let timer = 0;
+          for (let value of dataJson) {
+            if (value.serviceName == text) {
+              timer = value.serviceTimeOut;
+              this.timerLess(timer);
+            }
+          }
+          let hadTime = +new Date() - creattime;
+          setInterval(() => {
+            if (+new Date() - creattime - hadTime > 2 * 60 * 1000) {
+              this.$router.push({ name: "myOrder", params: { id: "1" } });
+            }
+          }, 5000);
+        },
+        res => {
+          console.log(res);
+        }
+      );
+    },
+    timerLess(time) {
+      var newTime = time * 60;
+      let that = this;
+      var timer = setInterval(function() {
+        newTime--;
+        var hA = Math.floor(newTime / 3600);
+        var mA = Math.floor((newTime % 3600) / 60);
+        var sA = Math.floor(newTime % 60);
+        //时
+        var hs = Math.floor(hA / 10);
+        var hg = Math.floor(hA % 10);
+        //分
+        var ms = Math.floor(mA / 10);
+        var mg = Math.floor(mA % 10);
+        //秒
+        var ss = Math.floor(sA / 10);
+        var sg = Math.floor(sA % 10);
+        that.countTimer = hs + hg + "小时" + ms + mg + "分" + ss + sg;
+      }, 1000);
+    }
   }
 };
 </script>
@@ -168,8 +230,8 @@ export default {
     height: 1.8rem;
     overflow: hidden;
     span {
-        display: inline-block;
-        flex: 1;
+      display: inline-block;
+      flex: 1;
       line-height: 1.8rem;
       color: rgb(102, 102, 102);
       font-size: 0.7rem;
