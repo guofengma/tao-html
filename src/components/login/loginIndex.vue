@@ -28,7 +28,8 @@
                     <ul>
                         <li>
                             <img src="../../../static/imgs/login/tdf_login_logo.png" alt="">
-                            <span>验证手机号，涛大夫就可以帮您解答您的健康问题。</span>
+                            <span v-if="telLogin">验证手机号，涛大夫就可以帮您解答您的健康问题。</span>
+                            <span v-else-if="!telLogin">亲爱的{{userBase.nickname}}，请输入手机验证，涛大夫就可以帮您解答您的健康问题。</span>
                         </li>
                         <li v-if="wrongTel">
                             <img src="../../../static/imgs/login/tdf_login_logo.png" alt="">
@@ -99,10 +100,12 @@ export default {
   name: "loginIndex",
   data() {
     return {
+      userBase: {}, //微信授权获取到的用户信息
       popupVisible: false,
       noAggrementUrl: require("../../../static/imgs/login/tdf_login_select_pre.png"),
       hadAgree: true,
       //变量决定对话框显示
+      telLogin: true,
       telInputShow: true,
       wrongTel: false,
       hadTel: false,
@@ -114,6 +117,30 @@ export default {
       userTel: "",
       userCode: ""
     };
+  },
+  created() {
+    if (this.GetRequest()["code"]) {
+      //用户已经授权登录
+      this.$http
+        .post(this.baseAuthonUrl + "customer/getWechatAuthorizationInfo", {
+          code: this.GetRequest()["code"]
+        })
+        .then(
+          res => {
+            console.log(JSON.stringify(res));
+            let obj = res.body;
+            if (obj.statusCode == 1) {
+              //用户授权成功
+              this.popupVisible = true;
+              this.telLogin = false;
+              this.userBase = obj.object;
+            }
+          },
+          res => {
+            console.log(res);
+          }
+        );
+    }
   },
   methods: {
     popPage() {
@@ -135,9 +162,9 @@ export default {
     getCode() {
       //获取验证按
       let userTel = this.userTel;
-      if(!this.hadAgree) {
-          this.hadAgree = false;
-          return false;
+      if (!this.hadAgree) {
+        this.hadAgree = false;
+        return false;
       }
       if (!this.regTel.test(userTel)) {
         this.wrongTel = true;
@@ -169,29 +196,78 @@ export default {
       } else {
         this.codeWrong = false;
         this.codeTextShow = true;
-        this.$http
-          .post(this.baseUrl + "logInOut/login", {
-            mobilePhone: this.userTel,
-            messageCode: this.userCode
-          })
-          .then(res => {
-            //在localStorage中存储用户的基本信息userInfo
+        if (this.telLogin) {
+          //手机号登录
+          this.$http
+            .post(this.baseUrl + "logInOut/login", {
+              mobilePhone: this.userTel,
+              messageCode: this.userCode
+            })
+            .then(res => {
+              //在localStorage中存储用户的基本信息userInfo
 
-            // localStorage.setItem('userInfo',JSON.stringify(res.body.object));
-            if (res.body.statusCode == 1) {
-              this.successTextShow = true;
-              setTimeout(()=>{
-                  this.$router.push({name:'settingNameLogo'});
-              },1000);
-            }else if(res.body.statusCode == 0) {
+              if (res.body.statusCode == 1) {
+              localStorage.setItem('userInfo',JSON.stringify(res.body.object));
+                this.successTextShow = true;
+                Toast("手机号登录成功");
+                setTimeout(() => {
+                  this.$router.push({ name: "settingNameLogo" });
+                }, 1000);
+              } else if (res.body.statusCode == 0) {
                 this.codeWrong = true;
                 this.codeTextShow = false;
-            }
-          });
+              }
+            });
+        } else if (!this.telLogin) {
+          //微信登录
+          let userBase = this.userBase;
+          this.$http
+            .post(this.baseUrl + "logInOut/outsideLogin", {
+              openid: userBase.openid,
+              nickname: userBase.nickname,
+              headimgurl: userBase.headimgurl,
+              mobilePhone: this.userTel,
+              messageCode: this.userCode,
+              outsideType: "021001"
+            })
+            .then(
+              res => {
+                if (res.body.statusCode == 1) {
+                  localStorage.setItem('userInfo',JSON.stringify(res.body.object));
+                  this.successTextShow = true;
+                  Toast("微信登录成功");
+                  setTimeout(() => {
+                    this.$router.push({ name: "navPage" });
+                  }, 1000);
+                } else if (res.body.statusCode == 0) {
+                  this.codeWrong = true;
+                  this.codeTextShow = false;
+                }
+              },
+              res => {
+                console.log();
+              }
+            );
+        }
       }
     },
     wxPop() {
-        
+      window.location.href =
+        "http://wx.buchang.com/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
+        this.baseUpUrl +
+        "dist/loginIndex";
+    },
+    GetRequest() {
+      var url = location.search; //获取url中"?"符后的字串
+      var theRequest = new Object();
+      if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        var strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+          theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        }
+      }
+      return theRequest;
     }
   }
 };
@@ -335,22 +411,22 @@ export default {
             color: rgb(57, 57, 57);
           }
           input {
-              width: 10rem;
-              height: 1.5rem;
-              background-color: #eaeff5;
-              padding: 0 0.5rem;
-              border-radius: 0.4rem;
-            }
-            a {
-              width: 3rem;
-              height: 1.5rem;
-              line-height: 1.5rem;
-              text-align: center;
-              color: #fff;
-              font-size: 0.75rem;
-              background-color: #3090ff;
-              border-radius: 0.3rem;
-            }
+            width: 10rem;
+            height: 1.5rem;
+            background-color: #eaeff5;
+            padding: 0 0.5rem;
+            border-radius: 0.4rem;
+          }
+          a {
+            width: 3rem;
+            height: 1.5rem;
+            line-height: 1.5rem;
+            text-align: center;
+            color: #fff;
+            font-size: 0.75rem;
+            background-color: #3090ff;
+            border-radius: 0.3rem;
+          }
         }
       }
     }

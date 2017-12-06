@@ -99,7 +99,7 @@
         <i class="iconfont icon-right"></i>
       </router-link>
     </ul>
-    <navbar />
+    <navbar :index="3"/>
   </div>
 </template>
 
@@ -191,6 +191,7 @@ export default {
       height: 4rem;
       width: 4rem;
       padding: 0.15rem;
+      overflow: hidden;
       img {
         height: 100%;
         width: 100%;

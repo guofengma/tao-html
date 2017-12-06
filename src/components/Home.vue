@@ -37,7 +37,7 @@
       <hotDoctorList :list='doctorList'/>
     </div>
     <!-- 导航栏 -->
-    <navbar/>
+    <navbar :index="1"/>
   </div>
 </template>
 

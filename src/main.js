@@ -24,6 +24,10 @@ Vue.http.options.emulateJSON = true
 /*全局的baseUrl*/
 Vue.prototype.baseUrl = 'http://120.26.107.233:8080/taodoctor/rest/'
 Vue.prototype.baseImgUrl = 'http://www.tdaifu.cn:8090/taodoctor' 
+//暂定的微信授权链接(暂定)
+Vue.prototype.baseAuthonUrl = 'http://192.168.5.245:8080/taodoctor/rest/'
+//服务器上的访问路径
+Vue.prototype.baseUpUrl = 'http://120.26.107.233:8080/';
 //正则匹配
 Vue.prototype.regTel = /^(0|86|17951)?(13[0-9]|15[012356789]|17[0123456789]|18[0-9]|14[57])[0-9]{8}$/
 Vue.prototype.regCode = /^\d{4}$/

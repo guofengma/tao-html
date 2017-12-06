@@ -315,7 +315,7 @@ export default {
           width: 80%;
           line-height: 2.15rem;
           margin: 0 auto;
-          margin-top: 2.5rem;
+          margin-top: 1.5rem;
           text-align: center;
           background-color: #2c8dfe;
           border-radius: 0.8rem;

@@ -137,6 +137,7 @@ export default {
       let index = e.target.dataset.index;
       this.forLoop[index].imgUrl = "";
       this.forLoop[index].file = [];
+      this.forLoop[index].imgTrue = false;
       this.i--;
     }
   }
@@ -217,6 +218,7 @@ export default {
           width: 100%;
           height: 100%;
           opacity: 0;
+          z-index: 1001;
         }
         &:last-of-type {
           margin-right: 0;

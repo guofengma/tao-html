@@ -162,6 +162,7 @@ export default {
       flex: 4;
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       //   border-right: 8px dotted #eff4fa;
       height: 100%;
       //   &::before {
@@ -185,13 +186,13 @@ export default {
       //     content: "";
       //   }
       > span {
-        padding-left: 1.9rem;
         color: #ff5252;
         font-size: 1rem;
       }
       > b {
         color: #ff5252;
         font-size: 0.8rem;
+        padding-right: 2.3rem;
       }
     }
     .cou_right {
