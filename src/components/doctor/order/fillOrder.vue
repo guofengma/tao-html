@@ -24,11 +24,11 @@
             </li>
             <li class="control" v-if="isShowControl">
               <label for="file"><img src="../../../../static/imgs/hospital/order/tdf_order_pic.png" alt=""></label>
-              <input name="file" type="file" id="file" @change="addImgs($event)">
+              <input name="file" type="file" id="file" accept="image/*" @change="addImgs($event)">
             </li>
           </ul>
           <p>可传患处照片、检查单等相关信息</p>
-          <p><span class='help_icon'><img src="../../../../static/imgs/hospital/order/tdf_order_why.png" alt=""></span> 如何拍照X光、CT等影像资料<span class="link_more">“点击了解”</span></p>
+          <p><span class='help_icon'><img src="../../../../static/imgs/hospital/order/tdf_order_why.png" alt=""></span> 如何拍照X光、CT等影像资料<a href='http://www.tdaifu.cn:8090/taodoctor/statichtml/upImageTip.html' class="link_more">“点击了解”</a></p>
         </div>
       </div>
       <!-- 提交 -->
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { Tool } from '../floatTool.js';
 import { Indicator } from "mint-ui";
 import { Toast } from "mint-ui";
 import { MessageBox } from 'mint-ui';
@@ -66,7 +67,9 @@ export default {
     var resData = this.$route.params;
     this.visitData = resData.visitTime;
     this.visitType = resData.visitType; 
-    console.log(resData)
+    // console.log(resData)
+
+    console.log(Tool('subtract',10.22,2))
   },
   computed:{
     isShowControl(){
@@ -119,8 +122,13 @@ export default {
     },
     // 选择图片
     addImgs(e){
+      var type = e.target.files[0].type.split('/')[0];
       if(e.target.files[0]){
-        this.viewImg.push(e.target.files[0]);
+        if(type == 'image'){
+          this.viewImg.push(e.target.files[0]);
+        }else{
+          Toast('图片格式有误！');
+        }
       }
     },
     // 确认提交 进入购买服务页面
