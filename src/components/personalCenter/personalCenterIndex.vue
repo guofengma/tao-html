@@ -118,12 +118,10 @@ export default {
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     this.userInfo = userInfo;
-    //全局存储customerId，作为中转参数（仅供测试）
-    localStorage.setItem("customerId", "880631824E9A482DBA94B6138A5F91B2");
     //优惠券接口
     this.$http
       .post(this.baseUrl + "coupon/getMyCouponNumber", {
-        customerId: "880631824E9A482DBA94B6138A5F91B2"
+        customerId: userInfo.id
       })
       .then(
         res => {
@@ -139,7 +137,7 @@ export default {
       .post(
         this.baseUrl + "DisplayTotalAccountController/DisplayTotalAccount",
         {
-          customerId: "880631824E9A482DBA94B6138A5F91B2"
+          customerId: userInfo.id
         }
       )
       .then(

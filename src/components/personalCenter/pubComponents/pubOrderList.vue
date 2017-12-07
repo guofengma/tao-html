@@ -117,29 +117,30 @@ export default {
       Indicator.open();
       this.index += 1;
       let data = {};
+      let userInfo = JSON.parse(localStorage.getItem('userInfo'));
       if (this.category == "全部" && this.myKey == "我的订单") {
         data = {
-          customerId: "880631824E9A482DBA94B6138A5F91B2",
+          customerId: userInfo.id,
           index: this.index,
           pageSize: 10
         };
       } else if (this.category == "全部" && this.myKey != "我的订单") {
         data = {
-          customerId: "880631824E9A482DBA94B6138A5F91B2",
+          customerId: userInfo.id,
           index: this.index,
           pageSize: 10,
           key: this.myKey
         };
       } else if (this.category != "全部" && this.myKey == "我的订单") {
         data = {
-          customerId: "880631824E9A482DBA94B6138A5F91B2",
+          customerId: userInfo.id,
           index: this.index,
           pageSize: 10,
           category: this.category
         };
       } else {
         data = {
-          customerId: "880631824E9A482DBA94B6138A5F91B2",
+          customerId: userInfo.id,
           index: this.index,
           pageSize: 10,
           key: this.myKey,

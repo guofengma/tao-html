@@ -12,10 +12,10 @@
               <span>账户安全</span>
               <i class="iconfont icon-right"></i>
           </router-link>
-          <li>
+          <!-- <li>
               <span>通用</span>
               <i class="iconfont icon-right"></i>
-          </li>
+          </li> -->
           <li>
               <span>联系我们</span>
               <a href="tel:4008167576">400-816-7576</a>   
@@ -30,12 +30,13 @@
           </router-link>
       </ul>
       <div class="log_out">
-          <button>退出登录</button>
+          <button @click="quitOut">退出登录</button>
       </div>
   </div>
 </template>
 
 <script>
+import { Toast } from 'mint-ui';
 export default {
   name: "settingIndex",
   data() {
@@ -46,6 +47,29 @@ export default {
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     this.userInfo = userInfo;
+  },
+  methods: {
+    quitOut() {
+      //退出登录
+      this.$http
+        .post(this.baseUrl + "logInOut/logout", {
+          customerId: JSON.parse(localStorage.getItem("userInfo")).id
+        })
+        .then(
+          res => {
+            Toast({
+              message: res.body.message,
+              duration: 1000,
+              position: 'bottom'
+            });
+            localStorage.removeItem('userInfo');
+            this.$router.push({name: 'loginIndex'});
+          },
+          res => {
+            console.log(res);
+          }
+        );
+    }
   }
 };
 </script>

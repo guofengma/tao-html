@@ -45,7 +45,7 @@ export default {
   created() {
     this.$http
       .post(this.baseUrl + "allorder/getCustomers", {
-        customerId: "880631824E9A482DBA94B6138A5F91B2"
+        customerId: JSON.parse(localStorage.getItem('userInfo')).id
       })
       .then(
         res => {

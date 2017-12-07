@@ -37,7 +37,7 @@ import changeLog from '@/components/personalCenter/change/changeLog.vue'
 /************************************评价******************************************************************/
 import evaluate from '@/components/personalCenter/evaluate/evaluate.vue'
 /************************************优惠券******************************************************************/
-import couponIndex from '@/components/personalCenter/coupon/couponIndex.vue'
+// import couponIndex from '@/components/personalCenter/coupon/couponIndex.vue'
 /**********************************xu************************************************/
 import Home from '@/components/Home'
 import doctorDetail from '@/components/doctor/doctorDetail/doctorDetail'
@@ -61,7 +61,7 @@ export default new Router({
     //重定向
     {
       path: '/',
-      redirect: '/personalCenterIndex'
+      redirect: '/loginIndex'
     },
     //xu
     {
@@ -397,7 +397,7 @@ export default new Router({
     {
       path: '/couponIndex',
       name: 'couponIndex',
-      component: couponIndex,
+      component: resolve => require(['@/components/personalCenter/coupon/couponIndex.vue'], resolve),
       meta: {
         title: '优惠券'
       }

@@ -6,7 +6,7 @@
               Hi~恭喜您登录成功！请问有什么可以帮助您？
           </span>
       </div>
-      <ul class="nav">
+      <ul class="nav_box">
           <router-link tag="li" :to="{name: 'home'}">
               <img src="../../../static/imgs/login/tdf_ksrk_jrzhy.png" alt="">
               <span>进入主页</span>
@@ -31,7 +31,7 @@ export default {
   min-width: 320px;
   margin: 0 auto;
   background-color: #eff4fa;
-  height: 100%;
+  min-height: 100%;
   .top {
     display: flex;
     justify-content: flex-start;
@@ -61,8 +61,8 @@ export default {
       }
     }
   }
-  .nav {
-      margin-top: .7rem;
+  .nav_box {
+      padding-top: .7rem;
       display: flex;
       justify-content: center;
       li {

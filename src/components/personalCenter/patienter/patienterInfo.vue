@@ -81,7 +81,6 @@ export default {
       })
       .then(
         res => {
-          console.log(JSON.stringify(res));
           this.patientInfo = res.body.obj;
         },
         res => {
