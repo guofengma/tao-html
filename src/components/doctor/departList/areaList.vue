@@ -21,9 +21,28 @@ export default {
       area_item: []
     };
   },
-  props:['area'],
+  props:{'area':Array},
+  watch:{
+    'area':function(n){
+      this.setDefault = n[0];
+    }
+  },
+  computed: {
+   setDefault: {
+    set (value) {
+    //  this.update();
+     this.area_item = value.areainfoCustom;// 默认显示第一项
+    },
+    get () {
+     return this.area_item;
+    }
+   }
+  },
   mounted: function() {
-    this.area_item != 0 ? this.area[0].areainfoCustom : []; // 默认显示第一项
+    this.$nextTick(function () {
+      // Code that will run only after the
+      // entire view has been rendered
+    })
   },
   methods: {
     choiceDepartment(item, index) {

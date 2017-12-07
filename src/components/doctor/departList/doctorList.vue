@@ -56,6 +56,7 @@ export default {
       list:[],
       allLoaded:false,
       department:[], // 科室列表数据
+      department_item:[], // 二级科室第一项
       area:[], // 地区列表
     };
   },

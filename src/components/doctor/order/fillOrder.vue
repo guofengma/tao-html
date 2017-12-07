@@ -19,10 +19,10 @@
         <div class="patient_print">
           <textarea v-model="description" name="" id="" placeholder="例：我今年40岁了，男。前一段时间出现了眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施。"></textarea>
           <ul class="patient_pic">
-            <li v-for="(item,index) in viewImg" :key="index">
+            <li v-for="(item,index) in viewImg" :key="index" @click="cancelFile(item,index)">
               <img :src="item | preview" alt="">
             </li>
-            <li class="control" v-if="isControl">
+            <li class="control" v-if="isShowControl">
               <label for="file"><img src="../../../../static/imgs/hospital/order/tdf_order_pic.png" alt=""></label>
               <input name="file" type="file" id="file" @change="addImgs($event)">
             </li>
@@ -40,6 +40,7 @@
 <script>
 import { Indicator } from "mint-ui";
 import { Toast } from "mint-ui";
+import { MessageBox } from 'mint-ui';
 export default {
   data() {
     return {
@@ -52,6 +53,7 @@ export default {
       phone:'18404984908',
       description:'',
       visitData:{},
+      visitType:'',
       isTel:false,
     };
   },
@@ -60,9 +62,16 @@ export default {
     this.customerId = item.id;
     this.getCustomers(item.id); // 获取就诊人信息
     this.getUuid();
-
-    this.visitData = this.$route.params;
-    console.log(this.visitData)
+    
+    var resData = this.$route.params;
+    this.visitData = resData.visitTime;
+    this.visitType = resData.visitType; 
+    console.log(resData)
+  },
+  computed:{
+    isShowControl(){
+      return this.viewImg.length >= 4 ? false : true;
+    }
   },
   filters:{
     // 解析预览地址
@@ -94,8 +103,10 @@ export default {
     getUuid(){
       var url = this.baseUrl + "diseasedescription/getUUID";
       this.$http.post(url).then(res => {
-        console.log(res.data)
-        this.uid = res.data.message;
+        // console.log(res.data)
+        if(res.data.statusCode == 1){
+          this.uid = res.data.message;
+        }
       },res => {
         console.log("error")
       })
@@ -108,13 +119,9 @@ export default {
     },
     // 选择图片
     addImgs(e){
-      console.log(this.viewImg.length)
-      if(this.viewImg.length > 3){
-        this.isControl = false;
-      }else{
+      if(e.target.files[0]){
         this.viewImg.push(e.target.files[0]);
       }
-      // console.log(e.target.files)
     },
     // 确认提交 进入购买服务页面
     confirmSub(){
@@ -123,10 +130,13 @@ export default {
       let isTel = regTel.test(this.phone);
       // let isCard = regCard.test(this.)
       let isDes = this.description.length;
-      if(isTel && isDes > 10){
-        // this.addDisease();
-        this.addHealth();
-        // this.$router.push({name:'buyService',params:this.userInfo.id})
+      if(isTel && isDes >= 10){
+        if(this.visitType == "health"){
+          this.addHealth(); // 健康咨询
+        }else if(this.visitType == "punctual"){
+          // this.addPunctual(); // 准时预约
+          this.$router.push({name:'buyService',params:this.userInfo})
+        }
       }else if(!isTel){
         Toast({
           message: '联系人电话格式不正确',
@@ -151,9 +161,9 @@ export default {
       }
     },
     // 健康咨询病情描述
-    addDisease(){
-      // var url = this.baseUrl + "allorder/addDescriptionContent";
-      var url = "http://192.168.5.77:8080/taodoctor/rest/allorder/addDescriptionContent";
+    addHealth(){
+      var url = this.baseUrl + "allorder/addDescriptionContent";
+      // var url = "http://192.168.5.77:8080/taodoctor/rest/allorder/addDescriptionContent";
       var data = {
         id:this.uid,
         customerId:this.customerId,
@@ -174,7 +184,7 @@ export default {
       })
     },
     // 准时预约病情描述
-    addHealth(){
+    addPunctual(){
       var url = this.baseUrl + 'allorder/addVisitDescriptionContent';
       var data = {
         id:this.uid,
@@ -188,12 +198,14 @@ export default {
         num:this.visitData.num,
         // serviceType:'visitTime'
       };
-      console.log(data)
+      // console.log(data)
       this.$http.post(url,data).then(res => {
         console.log(res.data)
         if(res.data.statusCode == 1){
           if(data.isHaveFile == 1){
             this.addFile();
+          }else{
+            this.$router.push({name:'buyService',params:{id:this.userInfo.id}})
           }
         }
       },res => {
@@ -215,16 +227,34 @@ export default {
       formFile.append('serviceType',data.serviceType);
       for(var i = 0;i<this.viewImg.length;i++){
         formFile.set('file',this.viewImg[i]);
-        this.$http.post(url,formFile).then(res => {
-          console.log(res.data);
-        },res => {
-          console.log("error");
-        });  
+        this.uploadImg(i,url,formFile); 
       }
     },
+    uploadImg(n,url,formFile){
+      this.$http.post(url,formFile).then(res => {
+        console.log(res.data);
+        if(res.data.statusCode == 1){
+          if(n == this.viewImg.length - 1){
+            this.$router.push({name:'buyService',params:this.userInfo.id})
+          }
+        }
+      },res => {
+        console.log("error");
+      }); 
+    },
     // 删除图片
-    cancelFile(){
-
+    cancelFile(item,index){
+      MessageBox({
+        title: '提示',
+        message: '确定删除这张图片',
+        showCancelButton: true
+      }).then(action => {
+        if(action == 'confirm'){
+          this.viewImg.splice(index,1);
+        }else if(action == "cancel"){
+          console.log('cancel',item);
+        }
+      });
     }
   }
 };
@@ -262,6 +292,7 @@ export default {
         font-size: 0.7rem;
         color: @font1Color;
         text-align: center;
+        margin-bottom:0.6rem;
         border: 1px solid rgb(204, 204, 204);
         border-radius: 0.3rem;
         margin-right: 0.6rem;
@@ -332,13 +363,12 @@ export default {
       .patient_pic {
         display: flex;
         flex-wrap:wrap;
-        justify-content: space-between;
         margin-bottom: 0.6rem;
         li {
           width: 22%;
           height: 3.5rem;
           border-radius: 0.3rem;
-          // margin-right: 0.4rem;
+          margin-right: 0.4rem;
           margin-bottom: 0.4rem;
           background: #ccc;
           overflow:hidden;

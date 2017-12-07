@@ -169,9 +169,9 @@ export default {
       customerImpression: [], // 患者印象
       simpleContent: [], // 用户评价中患者印象
       service:[
-        {img:'../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png',text:'健康咨询'},
-        {img:'../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png',text:'准时预约'},
-        {img:'../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png',text:'家庭医生'},
+        {img:require('../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png'),text:'健康咨询'},
+        {img:require('../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png'),text:'准时预约'},
+        {img:require('../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png'),text:'家庭医生'},
       ], // 服务类型
       visitType:'forbid', // 就诊类型
       serviceid:"", // 切换服务类型id
@@ -376,11 +376,9 @@ export default {
     goVisit(visitType){
       console.log(visitType)
       if(visitType == 'health'){
-        // console.log("woshi 1");
          this.$router.push({name:'fillOrder',params:this.visitTime});
       }else if(visitType == 'punctual'){
-        // console.log("woshi 2");
-        this.$router.push({name:'fillOrder',params:this.visitTime});
+        this.$router.push({name:'fillOrder',params:{visitTime:this.visitTime,visitType:this.visitType}});
       }else if(visitType == 'forbid'){
         // console.log("all no")
       }

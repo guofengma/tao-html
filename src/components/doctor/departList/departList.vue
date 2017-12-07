@@ -5,7 +5,7 @@
         <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index.toString()}" @click="choiceDepartment(item,index)">{{item.name}}</li>
       </ul>
       <ul class="department_right">
-        <li @click="transferDepart($event,item,index)" :class="{'active':departid == showid.toString() + index}" v-for="(item,index) in department_item" :key="index">{{item.name}}</li>
+        <li v-for="(item,index) in department_item" :key="index" :class="{'active':departid == showid.toString() + index}" @click="transferDepart($event,item,index)">{{item.name}}</li>
       </ul>
     </div>
   </div>
@@ -18,17 +18,39 @@ export default {
       // department: [], // 一级科室列表
       department_item: [], // 二级科室列表
       departid:'',
-      showid: "0" // 判断是否选中当前科室
+      showid: "0", // 判断是否选中当前科室
+      isOne:true,
     };
   },
-  props:['department'],
+  props:{
+    'department':Array
+  },
+  watch:{
+    'department':function(n){
+      this.setDefault = n[0];
+    }
+  },
+  computed: {
+   setDefault: {
+    set (value) {
+    //  this.update();
+     this.department_item = value.childDepartment;// 默认显示第一项
+    },
+    get () {
+     return this.department_item;
+    }
+   }
+  },
   mounted: function() {
     var _this = this;
-    this.department_item.length != 0 ? this.department[0].childDepartment : []; // 默认显示第一项
   },
   methods: {
+    update () {
+      // console.log(this.department);
+    },
     choiceDepartment(item, index) {
       // console.log(item,index);
+      this.isOne = false;
       this.showid = index.toString(); // 添加当前状态
       this.department_item = item.childDepartment; // 二级科室列表数据
     },

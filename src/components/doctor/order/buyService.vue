@@ -18,13 +18,13 @@
         <li>
           <span>健康咨询</span><span>29.90元</span>
         </li>
-        <router-link tag="li" :to="{name:'coupon'}">
+        <router-link tag="li" :to="{name:'couponIndex'}">
           <span>优惠券</span> 
           <div class="coupon">使用优惠券<span class="coupon_icon"><img src="../../../../static/imgs/hospital/order/tdf_back_r.png" alt=""></span></div>
         </router-link>
         <li>
           <span>账户零钱</span>
-          <div class="coupon">29.90元<span class="dib_icon active"></span></div>
+          <div class="coupon">{{accountMoney | fen2yuan}}<span class="dib_icon" @click="useBalance($event)"></span></div>
         </li>
       </ul>
       <div class="payment_method">
@@ -54,27 +54,60 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      accountMoney:'', // 用户余额
+    };
   },
   created() {
-    console.log(this.takeOver(18));
+    console.log(this.$route.params)
+    this.getCoupon();
+    this.getBalances();
+  },
+  filters:{
+    // 分转元
+    fen2yuan(num){
+      if ( typeof num !== "number" || isNaN( num ) ) return null;
+      return ( num / 100 ).toFixed( 2 ) + " 元";
+    }
   },
   methods: {
-    takeOver(obj) {
-      var a = "";
-      var optime = parseInt(obj);
-      var i = optime % 4;
-      var j = parseInt(optime / 4);
-      if (i == 0) {
-        a = j + ":00-" + j + ":15";
-      } else if (i == 1) {
-        a = j + ":15-" + j + ":30";
-      } else if (i == 2) {
-        a = j + ":30-" + j + ":45";
-      } else if (i == 3) {
-        a = j + ":45-" + (j + 1) + ":00";
+    // 获取优惠券
+    getCoupon(){
+      var url = this.baseUrl + 'diseasedescription/getCustomerCoupons';
+      var data = {
+        customerId:'880631824E9A482DBA94B6138A5F91B2',
+        // useType:'088002' // 008001健康咨询优惠券  008002 准时预约优惠券 不传-获取所有
       }
-      return a;
+      this.$http.post(url,data).then(res => {
+        console.log(res.data);
+      },res => {
+        console.log("error");
+      });
+    },
+    // 获取余额
+    getBalances(){
+      var url = this.baseUrl + 'DisplayTotalAccountController/DisplayTotalAccount';
+      var data = {
+        customerId:'880631824E9A482DBA94B6138A5F91B2'
+      }
+      this.$http.post(url,data).then(res => {
+        console.log(res.data);
+        if(res.data.statusCode == 1){
+          console.log(res.data.object.accountMoney)
+          this.accountMoney = res.data.object.accountMoney;
+        }
+      },res => {
+        console.log("error");
+      });
+    },
+    useBalance(e){
+      console.log(e.target.className)
+      e.target.classList.toggle('active');
+      // if(e.target.className.indexOf('active') == -1){
+      //   e.target.classList.add('active');
+      // }else{
+      //   e.target.classList.remove('active');
+      // }
     }
   }
 };
