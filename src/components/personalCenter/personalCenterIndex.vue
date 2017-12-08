@@ -117,6 +117,7 @@ export default {
   components: { navbar },
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    userInfo.headerImage = this.baseImgUrl + userInfo.headerImage;
     this.userInfo = userInfo;
     //优惠券接口
     this.$http

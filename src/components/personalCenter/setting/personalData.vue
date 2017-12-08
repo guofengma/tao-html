@@ -121,7 +121,7 @@ export default {
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     this.userInfo = userInfo;
-    this.iconImg = this.userInfo.headerImage;
+    this.iconImg = this.baseImgUrl + this.userInfo.headerImage;
   },
   methods: {
     pop() {
