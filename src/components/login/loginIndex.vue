@@ -135,6 +135,8 @@ export default {
         .then(
           res => {
             let obj = res.body;
+            console.log(JSON.stringify(obj));
+            localStorage.setItem('wxBaseInfo',JSON.stringify(obj.object));
             if (obj.statusCode == 1) {
               //用户授权成功
               this.popupVisible = true;
@@ -220,6 +222,7 @@ export default {
                  *根据用户的头像和昵称去判断用户是否已经存在
                  */
                 let dataObj = res.body.object;
+
                 console.log(JSON.stringify(res));
                 localStorage.setItem(
                   "userInfo",
@@ -234,7 +237,7 @@ export default {
                   if(!dataObj.name&&!dataObj.headerImage) {//该用户是新注册的
                     this.$router.push({ name: "settingNameLogo" });
                   }else {
-                    this.$router.push({name: 'home'});
+                    this.$router.push({name: 'navPage'});
                   }
                 }, 1000);
               } else if (res.body.statusCode == 0) {
@@ -282,7 +285,7 @@ export default {
       window.location.href =
         "http://wx.buchang.com/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
         this.baseUpUrl +
-        "dist/loginIndex";
+        "dist/#/loginIndex";
     },
     GetRequest() {
       var url = location.search; //获取url中"?"符后的字串

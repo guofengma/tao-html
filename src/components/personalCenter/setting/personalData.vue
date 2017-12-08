@@ -155,6 +155,9 @@ export default {
         that.forLoop.imgUrl = this.result;
         that.iconImg = this.result;
       };
+      for(let value of this.chooseImgList) {
+          value.selected = false;
+        }
       this.i++;
       formFile.append("file", file);
       formFile.append(
@@ -188,9 +191,11 @@ export default {
           )
           .then(
             res => {
-              console.log(JSON.stringify(res));
-              let userInfo = res.body.object;
-              userInfo.headerImage = this.baseImgUrl + userInfo.headerImage;
+              //该服务器
+              let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+              let headerImage = res.body.object.headerImage;
+              userInfo.headerImage = headerImage;
+              localStorage.removeItem('userInfo');
               localStorage.setItem('userInfo',JSON.stringify(userInfo));
               Indicator.close();
               Toast('设置头像成功');
@@ -210,7 +215,12 @@ export default {
           })
           .then(
             res => {
-              console.log(res);
+              let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+              let headerImage = res.body.object.headerImage;
+              userInfo.headerImage = headerImage;
+              localStorage.removeItem('userInfo');
+              localStorage.setItem('userInfo',JSON.stringify(userInfo));
+              Indicator.close();
               Toast('设置头像成功');
             },
             res => {

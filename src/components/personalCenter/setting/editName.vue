@@ -40,10 +40,12 @@ export default {
         })
         .then(
           res => {
-            res.body.object.headerImage =
-              this.baseImgUrl + res.body.object.headerImage;
-            localStorage.setItem("userInfo", JSON.stringify(res.body.object));
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            userInfo.name = this.nameText;
+            localStorage.removeItem('userInfo');
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
             Toast("成功修改昵称");
+            this.$router.push({name: 'personalData'});
           },
           res => {
             console.log(res);

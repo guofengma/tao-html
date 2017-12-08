@@ -132,7 +132,7 @@ export default {
       window.history.go(-1);
     },
     onBridgeReady() {},
-    nowPay() {}
+    
   }
 };
 </script>

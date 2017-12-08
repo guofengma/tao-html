@@ -18,17 +18,19 @@ export default {
   created() {
     //调用后台接口，请求相关数据，对wxconfig进行相关配置
     this.$http
-      .post(this.baseUrl + "", {
+      .post("https://www.tdaifu.cn:8443/taodoctor-pay-server/wx/app/getTokenByH5", {
         url: window.location.href.split("#")[0]
       })
       .then(
         res => {
+          console.log(JSON.stringify(res));
+          let dataJson = res.body.object;
           wx.config({
             debug: true,
             appId: "wx5b95d4f216a65e2d",
-            timestamp: 1512628779,
-            nonceStr: "3d43cd2ecb664fa2a9495cf129537d",
-            signature: "7C4358A08A982ED5A89403F1C045BA6F",
+            timestamp: dataJson.timestamp,
+            nonceStr: dataJson.nonceStr,
+            signature: dataJson.signature,
             jsApiList: ["chooseWXPay"]
           });
           
