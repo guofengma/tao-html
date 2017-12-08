@@ -31,6 +31,12 @@ export default {
     return {};
   },
   props: ["list"],
+  beforeRouteLeave(to, from, next) {
+    // 设置下一个路由的 meta
+    console.log(to,from,next,1);
+    to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
+    next();
+  }
 };
 </script>
 

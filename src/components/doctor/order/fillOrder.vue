@@ -55,19 +55,23 @@ export default {
       description:'',
       visitData:{},
       visitType:'',
+      doctorInfo:{}, // 医生信息
+      visitInfo:{}, // 用户信息
       isTel:false,
     };
   },
   created() {
     var item = JSON.parse(localStorage.userInfo); // 从本地中读取用户id
     this.customerId = item.id;
+    this.visitInfo = item[0];
     this.getCustomers(item.id); // 获取就诊人信息
     this.getUuid();
     
     var resData = this.$route.params;
     this.visitData = resData.visitTime;
     this.visitType = resData.visitType; 
-    // console.log(resData)
+    this.doctorInfo = resData.doctorInfo;
+    console.log(resData)
 
     console.log(Tool('subtract',10.22,2))
   },
@@ -81,6 +85,11 @@ export default {
     preview(src){
       return window.URL.createObjectURL(src);
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    // 设置下一个路由的 meta
+    to.meta.keepAlive = true;  // 让 A 缓存，即不刷新
+    next();
   },
   methods: {
     // 获取就诊人信息
@@ -106,7 +115,7 @@ export default {
     getUuid(){
       var url = this.baseUrl + "diseasedescription/getUUID";
       this.$http.post(url).then(res => {
-        // console.log(res.data)
+        console.log(res.data)
         if(res.data.statusCode == 1){
           this.uid = res.data.message;
         }
@@ -118,6 +127,7 @@ export default {
     choiceVisit(e,item,index){
       this.isVisit = 'visit' + index;
       this.phone = item.mobilephone;
+      this.visitInfo = item; // 就诊人信息
       // console.log(item.mobilephone)
     },
     // 选择图片
@@ -142,8 +152,8 @@ export default {
         if(this.visitType == "health"){
           this.addHealth(); // 健康咨询
         }else if(this.visitType == "punctual"){
-          // this.addPunctual(); // 准时预约
-          this.$router.push({name:'buyService',params:this.userInfo})
+          this.addPunctual(); // 准时预约
+          // this.$router.push({name:'buyService',params:{description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}})
         }
       }else if(!isTel){
         Toast({
@@ -220,6 +230,17 @@ export default {
         console.log("error")
       })
     },
+    saveOrder(){
+      var url = this.baseUrl + 'diseasedescription/saveOrder';
+      var id = '4F20E4FE9C5D45118B296B125012AEC2'
+      var data = {
+        diseaseId:id,
+        priceId:0.01,
+        payMoney:0,
+        payType:'005001',
+        accountPay:783059
+      }
+    },
     // 上传附件
     addFile(){
       var url = this.baseUrl + "allorder/addDescriptionFile";
@@ -243,7 +264,8 @@ export default {
         console.log(res.data);
         if(res.data.statusCode == 1){
           if(n == this.viewImg.length - 1){
-            this.$router.push({name:'buyService',params:this.userInfo.id})
+            // this.$router.push({name:'buyService',params:this.userInfo.id})
+            this.$router.push({name:'buyService',params:{ui:this.uid,description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}})
           }
         }
       },res => {

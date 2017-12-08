@@ -39,6 +39,11 @@ export default {
       );
     });
   },
+  beforeRouteLeave(to, from, next) {
+    // 设置下一个路由的 meta
+    to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
+    next();
+  },
   methods: {
     choiceDepartment(item, index) {
       // console.log(item,index);

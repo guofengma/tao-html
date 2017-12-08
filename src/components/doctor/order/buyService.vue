@@ -2,29 +2,29 @@
   <div>
     <ul class="service_type">
       <li><span class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png" alt=""></span>健康咨询</li>
-      <li><span class="service_price">19.90元</span></li>
+      <li><span class="service_price">{{yusheprice}} 元</span></li>
     </ul>
     <div class="service_bg">
       <ul class="service_obj">
-        <li><span><img src="../../../../static/imgs/hospital/order/tdf_order_touxiang.png" alt=""></span> 徐亮</li>
+        <li><span><img src="../../../../static/imgs/hospital/order/tdf_order_touxiang.png" alt=""></span> {{visitInfo.name}}</li>
         <li><img src="../../../../static/imgs/hospital/order/tdf_order_xintiao.png" alt=""></li>
-        <li><span><img src="../../../../static/imgs/hospital/order/tdf_order_touxiang.png" alt=""></span> 儿科医生</li>
+        <li><span><img src="../../../../static/imgs/hospital/order/tdf_order_touxiang.png" alt=""></span> {{doctorInfo.name}}</li>
       </ul>
       <div class="symptom">
         <h2>症状描述：</h2>
-        <p>例：我今年40岁了，男。前一段时间出现了眩晕的症状，到医院诊断为高血压，希望进一步咨询专家，后续预防措施。</p>
+        <p>{{description}}</p>
       </div>
       <ul class="service_list">
         <li>
-          <span>健康咨询</span><span>29.90元</span>
+          <span>健康咨询</span><span>{{yusheprice}} 元</span>
         </li>
         <router-link tag="li" :to="{name:'couponIndex'}">
           <span>优惠券</span> 
           <div class="coupon">使用优惠券<span class="coupon_icon"><img src="../../../../static/imgs/hospital/order/tdf_back_r.png" alt=""></span></div>
         </router-link>
-        <li>
+        <li @click="useBalance($event)">
           <span>账户零钱</span>
-          <div class="coupon">{{accountMoney | fen2yuan}}<span class="dib_icon" @click="useBalance($event)"></span></div>
+          <div class="coupon">{{accountMoney | fen2yuan}}<span class="dib_icon" :class="{'active':useSmall}"></span></div>
         </li>
       </ul>
       <div class="payment_method">
@@ -43,31 +43,70 @@
     </div>
     <div class="bottom_bar">
       <ul class="bottom_left">
-        <li>已优惠9.90元</li>
-        <li>待支付<span>20.00元</span></li>
+        <li>已优惠 {{calDiscount}} 元</li>
+        <li>待支付<span> {{paid}} 元</span></li>
       </ul>
-      <div class="bottom_right">立即支付</div>
+      <div class="bottom_right" @click="saveOrder">立即支付</div>
     </div>
   </div>
 </template>
 
 <script>
+import { Tool } from '../floatTool.js';
 export default {
   data() {
     return {
+      discount:0, // 优惠
+      paid:0, // 支付
+      useSmall:false,
       accountMoney:'', // 用户余额
+      doctorInfo:{}, // 医师详情
+      visitInfo:{}, // 就诊人信息
+      description:'',
+      uid:'',
     };
   },
   created() {
+    var data = this.$route.params;
     console.log(this.$route.params)
-    this.getCoupon();
-    this.getBalances();
+    this.doctorInfo = data.doctorInfo;
+    this.yusheprice = this.transferUnit(data.doctorInfo.yusheprice);
+    this.visitInfo = data.visitInfo;
+    this.visitType = data.visitType;
+    this.description = data.description;
+    this.uid = data.ui;
+    this.getCoupon(); // 获取优惠券
+    this.getBalances(); // 获取余额
   },
   filters:{
     // 分转元
     fen2yuan(num){
       if ( typeof num !== "number" || isNaN( num ) ) return null;
       return ( num / 100 ).toFixed( 2 ) + " 元";
+    },
+    // 
+    fenTyuan2(num){
+      
+    }
+  },
+  computed:{
+    calDiscount(){
+      if(this.useSmall){
+        var price = Tool("subtract",this.yusheprice,this.accountMoney / 100);
+        console.log(price)
+        
+        if(price >= 0){
+          this.discount = this.accountMoney / 100;
+          this.paid = price;
+        }else{
+          this.discount = this.yusheprice;
+          this.paid = 0;
+        }
+      }else{
+        this.discount = 0;
+        this.paid = this.yusheprice;
+      }
+      return this.discount;
     }
   },
   methods: {
@@ -78,11 +117,40 @@ export default {
         customerId:'880631824E9A482DBA94B6138A5F91B2',
         // useType:'088002' // 008001健康咨询优惠券  008002 准时预约优惠券 不传-获取所有
       }
+
       this.$http.post(url,data).then(res => {
         console.log(res.data);
       },res => {
         console.log("error");
       });
+    },
+    // 保存订单
+    saveOrder(){
+      var url = this.baseUrl + 'diseasedescription/saveOrder';
+      var id = '8D2E514AABBC4ADBA1088B610D74CDCF'
+      var data = {
+        diseaseId:this.uid,
+        priceId:this.yusheprice,
+        payMoney:this.paid.toFixed(2),
+        payType:'005001',
+        accountPay:this.yusheprice
+      }
+      this.$http.post(url,data).then(res => {
+        console.log(res.data);
+      },res => {
+        console.log("error");
+      });
+    },
+    // 转换单位
+    transferUnit(num){
+      var result = parseFloat(num) / 100 + '';
+      var n = result.substr(result.indexOf(".")+3,1);
+      if(n == 0){
+        result = parseFloat(result);
+      }else{
+        result = parseFloat(result) + 0.01;
+      }
+      return result.toFixed(2);
     },
     // 获取余额
     getBalances(){
@@ -101,13 +169,8 @@ export default {
       });
     },
     useBalance(e){
-      console.log(e.target.className)
-      e.target.classList.toggle('active');
-      // if(e.target.className.indexOf('active') == -1){
-      //   e.target.classList.add('active');
-      // }else{
-      //   e.target.classList.remove('active');
-      // }
+      this.useSmall = !this.useSmall;
+      
     }
   }
 };

@@ -115,7 +115,7 @@
         </ul>
         <!-- 服务类型 -->
         <ul class="server_container">
-          <li v-show="serviceid == 'service0'">
+          <li v-if="serviceid == 'service0'">
             <h2 class="service_top">选择咨询方式</h2>
             <ol class="service_item">
               <li @click="choiceConsultation(item,index)" :class="{'active':isConsultation == 'consultation' + index && item.enable != 0}" v-for="(item,index) in consultation" :key="index">
@@ -124,7 +124,7 @@
               </li>
             </ol>
           </li>
-          <li v-show="serviceid == 'service1'">
+          <li v-if="serviceid == 'service1'">
             <ol class="service_sort service_week">
               <li v-for="(item,index) in punctualBespeak" :key="index">{{item.subName | formatWeek}}</li>
             </ol>
@@ -140,7 +140,7 @@
               <p>{{address}}</p>
             </div>
           </li>
-          <li v-show="serviceid == 'service'">
+          <li v-if="serviceid == 'service'">
             功能开发中...
           </li>
         </ul>
@@ -183,6 +183,7 @@ export default {
       address:'', // 就诊地址
       isAddress:false, // 默认不显示地址
       punctualBespeak:[], // 准时预约数据信息
+      punctualBackstage:{}, // 准时预约后台字段信息
       serviceDate:['29','30','1','2','3','4','5'], 
       serviceTime:[], // 开放时间
       visitTime:{},
@@ -192,22 +193,26 @@ export default {
     pubOrderList
   },
   created() {
-    // var item = this.$route.params;
-    // this.doctorInfo = item;
-    // this.doctorId = item.doctorId;
-    this.getDoctorDetail(this.doctorId); //获取用户详细信息
-  },
-  activated(){
     var item = this.$route.params;
     this.doctorInfo = item;
     this.doctorId = item.doctorId;
-    if(item.doctorId){
-      this.doctorId = item.doctorId;
-      this.getDoctorDetail(item.doctorId); //获取用户详细信息
+    this.getDoctorDetail(this.doctorId); //获取用户详细信息
+  },
+  activated(){
+    // var item = this.$route.params;
+    // this.doctorInfo = item;
+    // this.doctorId = item.doctorId;
+    // if(item.doctorId){
+    //   this.doctorId = item.doctorId;
+    //   this.getDoctorDetail(item.doctorId); //获取用户详细信息
       
-      this.getHealthPrice(this.doctorId);
-      this.getpunctualBespeak(this.doctorId);
-    }
+    //   this.getHealthPrice(this.doctorId);
+    //   this.getpunctualBespeak(this.doctorId);
+    // }
+  },
+  deactivated(){
+    this.isService = false;
+    console.log('left')
   },
   filters: {
     // 格式化时间戳
@@ -329,6 +334,8 @@ export default {
     choiceServiceDate(e,item,index){
       e.target.classList.remove('open');
       // item.item.length = 1;
+      this.visitType = 'forbid';
+      this.visit = '';
       this.today = 'today' + index;
       this.serviceTime = this.punctualBespeak[index].item;
       
@@ -340,7 +347,7 @@ export default {
       this.isAddress = true;
       this.visitTime = item;
       this.visitType = 'punctual';
-      // console.log(item)
+      console.log(item)
     },
     // 获取健康咨询医生定价
     getHealthPrice(doctorId){
@@ -376,9 +383,9 @@ export default {
     goVisit(visitType){
       console.log(visitType)
       if(visitType == 'health'){
-         this.$router.push({name:'fillOrder',params:this.visitTime});
+        this.$router.push({name:'fillOrder',params:this.visitTime});
       }else if(visitType == 'punctual'){
-        this.$router.push({name:'fillOrder',params:{visitTime:this.visitTime,visitType:this.visitType}});
+        this.$router.push({name:'fillOrder',params:{visitTime:this.visitTime,visitType:this.visitType,doctorInfo:this.doctorInfo}});
       }else if(visitType == 'forbid'){
         // console.log("all no")
       }

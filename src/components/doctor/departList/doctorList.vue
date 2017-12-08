@@ -65,7 +65,7 @@ export default {
     var option = {
       getDataModule: "hotDepartment",
       idx: 0,
-      pagesize: 10,
+      pagesize: 20,
       region: "",
       department: item.id
     };

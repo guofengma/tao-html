@@ -67,6 +67,11 @@ export default {
     // 获取热门医生列表
     this.getHotDoctor(baseUrl + "doc/getDoctorListForInternatHospital");
   },
+  beforeRouteLeave(to, from, next) {
+    // 设置下一个路由的 meta
+    to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
+    next();
+  },
   methods: {
     // 获取热门科室
     getHotDepartment(url) {
@@ -126,6 +131,7 @@ export default {
   padding-bottom: 0.5rem;
   .title {
     width: 100%;
+    height: 3.2rem;
     padding: 1rem 0.5rem;
     background: #3794fe;
     position: fixed;
