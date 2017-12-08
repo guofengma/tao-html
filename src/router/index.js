@@ -55,7 +55,7 @@ import coupon from '@/components/doctor/order/coupon'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',//使用html5
+  // mode: 'history',//使用html5
   base: '/dist/',
   routes: [
     //重定向
@@ -319,7 +319,7 @@ export default new Router({
       }
     },
     {
-      path: '/orderPay/:orderId/:category',
+      path: '/orderPay',
       name: 'orderPay',
       component: orderPay,
       meta: {

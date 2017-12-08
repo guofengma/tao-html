@@ -126,13 +126,14 @@ export default {
     },
     // 保存订单
     saveOrder(){
-      var url = this.baseUrl + 'diseasedescription/saveOrder';
+      var url = this.baseUrl + 'allorder/saveOrder';
       var id = '8D2E514AABBC4ADBA1088B610D74CDCF'
       var data = {
         diseaseId:this.uid,
-        priceId:this.yusheprice,
-        payMoney:this.paid.toFixed(2),
+        // priceId:this.yusheprice,
         payType:'005001',
+        payMoney:this.paid.toFixed(2),
+        serviceType:'visitTime',
         accountPay:this.yusheprice
       }
       this.$http.post(url,data).then(res => {

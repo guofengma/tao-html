@@ -47,7 +47,7 @@
           </li>
           <li>
               <b>待支付<em>20.00元</em></b>
-              <a href="javascript:;">立即支付</a>
+              <a href="javascript:;" @click="nowPay">立即支付</a>
           </li>
       </ul>
     <mt-popup v-model="popupVisible" popup-transition="popup-fade">
@@ -90,10 +90,11 @@ export default {
       .then(
         res => {
           let orderDetail = res.body.obj;
-          if(orderDetail.patientPhoto){
-            orderDetail.patientPhoto = this.baseImgUrl + orderDetail.patientPhoto;
+          if (orderDetail.patientPhoto) {
+            orderDetail.patientPhoto =
+              this.baseImgUrl + orderDetail.patientPhoto;
           }
-          if(orderDetail.heardimage) {
+          if (orderDetail.heardimage) {
             orderDetail.heardimage = this.baseImgUrl + orderDetail.heardimage;
           }
           this.imgUrl = orderDetail.diseaseImg;
@@ -129,7 +130,9 @@ export default {
     },
     historyGo() {
       window.history.go(-1);
-    }
+    },
+    onBridgeReady() {},
+    
   }
 };
 </script>
