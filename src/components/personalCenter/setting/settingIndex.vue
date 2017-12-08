@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { Toast } from 'mint-ui';
+import { Toast } from "mint-ui";
 export default {
   name: "settingIndex",
   data() {
@@ -46,6 +46,7 @@ export default {
   },
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    userInfo.headerImage = this.baseImgUrl + userInfo.headerImage;
     this.userInfo = userInfo;
   },
   methods: {
@@ -60,10 +61,10 @@ export default {
             Toast({
               message: res.body.message,
               duration: 1000,
-              position: 'bottom'
+              position: "bottom"
             });
-            localStorage.removeItem('userInfo');
-            this.$router.push({name: 'loginIndex'});
+            localStorage.removeItem("userInfo");
+            this.$router.push({ name: "loginIndex" });
           },
           res => {
             console.log(res);

@@ -21,7 +21,21 @@
 
 <script>
 export default {
-  name: "navPage"
+  name: "navPage",
+  methods: {
+    GetRequest() {
+      var url = location.search; //获取url中"?"符后的字串
+      var theRequest = new Object();
+      if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        var strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+          theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        }
+      }
+      return theRequest;
+    }
+  }
 };
 </script>
 
@@ -36,7 +50,7 @@ export default {
     display: flex;
     justify-content: flex-start;
     padding-top: 0.5rem;
-    padding-left: .5rem;
+    padding-left: 0.5rem;
     align-items: center;
     img {
       width: 2rem;
@@ -62,32 +76,32 @@ export default {
     }
   }
   .nav_box {
-      padding-top: .7rem;
-      display: flex;
-      justify-content: center;
-      li {
-          background-color: #fff;
-          height: 6rem;
-          width: 5rem;
-          border-radius: .3rem;
-          img {
-              height: 3.6rem;
-              width: 3.6rem;
-              display: block;
-              margin: 0 auto;
-              margin-top: .6rem;
-          }
-          span {
-              font-size: .75rem;
-              color: rgb(57,57,57);
-              display: block;
-              width: 100%;
-              text-align: center;
-          }
+    padding-top: 0.7rem;
+    display: flex;
+    justify-content: center;
+    li {
+      background-color: #fff;
+      height: 6rem;
+      width: 5rem;
+      border-radius: 0.3rem;
+      img {
+        height: 3.6rem;
+        width: 3.6rem;
+        display: block;
+        margin: 0 auto;
+        margin-top: 0.6rem;
       }
-      li:first-of-type {
-          margin-right: 1.25rem;
+      span {
+        font-size: 0.75rem;
+        color: rgb(57, 57, 57);
+        display: block;
+        width: 100%;
+        text-align: center;
       }
+    }
+    li:first-of-type {
+      margin-right: 1.25rem;
+    }
   }
 }
 </style>

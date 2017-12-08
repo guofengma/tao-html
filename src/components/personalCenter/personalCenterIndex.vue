@@ -70,7 +70,7 @@
         </div>
         <i class="iconfont icon-right"></i>
       </router-link>
-      <li>
+      <li @click="nowPay">
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_recipe@2x.png" alt="">
           <span>我的处方</span>
@@ -117,6 +117,7 @@ export default {
   components: { navbar },
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    userInfo.headerImage = this.baseImgUrl + userInfo.headerImage;
     this.userInfo = userInfo;
     //优惠券接口
     this.$http
@@ -149,6 +150,53 @@ export default {
           console.log(res);
         }
       );
+  },
+  methods: {
+    nowPay() {
+      this.$http
+        .post(
+          "https://www.tdaifu.cn:8443/taodoctor-pay-server/wx/app/old/doWXPAYRequest",
+          {
+            diseaseId: "BA9EA03795BF42478E87573882039283",
+            clentType: "PATIENT",
+            payType: "005001",
+            osType: "WEB",
+            openId: "oHn1Xv3ZrQ1lZ-UNQdw5p1_veBSo",
+            serviceType: "010002"
+          }
+        )
+        .then(
+          res => {
+            console.log(JSON.stringify(res));
+            let objJson = res.body.object;
+            wx.ready(function() {
+              wx.chooseWXPay({
+                timestamp: objJson.timetamp,
+                nonceStr: objJson.noncestr, // 支付签名随机串，不长于 32 位
+                package: objJson.packages, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+                signType: objJson.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                paySign: objJson.sign, // 支付签名
+                success: function(res) {
+                  // 支付成功后的回调函数
+                  if (res.errMsg == "chooseWXPay:ok") {
+                    //支付成功
+                    alert("支付成功");
+                  } else {
+                    console.log(res.errMsg);
+                  }
+                },
+                cancel: function(res) {
+                  //支付取消
+                  console.log("支付取消");
+                }
+              });
+            });
+          },
+          res => {
+            console.log(res);
+          }
+        );
+    }
   }
 };
 </script>
@@ -179,7 +227,7 @@ export default {
     }
   }
   .top_main {
-    margin: .8rem 0;
+    margin: 0.8rem 0;
     display: flex;
     padding: 0 0.6rem;
     justify-content: flex-start;
