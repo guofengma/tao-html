@@ -171,7 +171,6 @@ export default {
             let objJson = res.body.object;
             wx.ready(function() {
               wx.chooseWXPay({
-                appId: objJson.appid,
                 timestamp: objJson.timetamp,
                 nonceStr: objJson.noncestr, // 支付签名随机串，不长于 32 位
                 package: objJson.packages, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
