@@ -130,26 +130,29 @@ export default {
   created() {
     if (this.GetRequest()["code"]) {
       //用户已经授权登录
-      this.$http
-        .post(this.baseAuthonUrl + "customer/getWechatAuthorizationInfo", {
-          code: this.GetRequest()["code"]
-        })
-        .then(
-          res => {
-            let obj = res.body;
-            console.log(JSON.stringify(obj));
-            localStorage.setItem("wxBaseInfo", JSON.stringify(obj.object));
-            if (obj.statusCode == 1) {
-              //用户授权成功
-              this.popupVisible = true;
-              this.telLogin = false;
-              this.userBase = obj.object;
-            }
-          },
-          res => {
-            console.log(res);
-          }
-        );
+      // this.$http
+      //   .post(this.baseAuthonUrl + "customer/getWechatAuthorizationInfo", {
+      //     code: this.GetRequest()["code"]
+      //   })
+      //   .then(
+      //     res => {
+      //       let obj = res.body;
+      //       console.log(JSON.stringify(obj));
+      //       localStorage.setItem("wxBaseInfo", JSON.stringify(obj.object));
+      //       if (obj.statusCode == 1) {
+      //         //用户授权成功
+      //         this.popupVisible = true;
+      //         this.telLogin = false;
+      //         this.userBase = obj.object;
+      //       }
+      //     },
+      //     res => {
+      //       console.log(res);
+      //     }
+      //   );
+      console.log('查询默认程序是否执行');
+
+      
     }
   },
   watch: {
