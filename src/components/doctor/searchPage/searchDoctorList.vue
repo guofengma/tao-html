@@ -95,17 +95,18 @@ export default {
     diseaseList // 疾病列表组件
   },
   created() {
-    this.getKeywords(this.keywords);
-  },
-  activated(){
-    var item = this.$route.params;
+    var item = this.$route.query;
+    console.log(item.key)
     if(item.key){
       this.keywords = item.key; // 获取搜索关键词
       this.getKeywords(item.key);
     }
   },
+  activated(){
+    
+  },
   deactivated(){
-    console.log('level')
+    // console.log('level')
   },
   watch:{
     keywordsFn(){
@@ -114,11 +115,6 @@ export default {
       }
     }
   },
-  // beforeRouteLeave(to, from, next) {
-  //   // 设置下一个路由的 meta
-  //   to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
-  //   next();
-  // },
   computed:{
     
   },

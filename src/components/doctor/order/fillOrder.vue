@@ -145,7 +145,6 @@ export default {
           this.addHealth(); // 健康咨询
         }else if(this.visitType == "punctual"){
           this.addPunctual(); // 准时预约
-          // this.$router.push({name:'buyService',params:{description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}})
         }
       }else if(!isTel){
         Toast({
@@ -172,22 +171,31 @@ export default {
     },
     // 健康咨询病情描述
     addHealth(){
+      Indicator.open({
+        text: "加载中..."
+      });
       var url = this.baseUrl + "allorder/addDescriptionContent";
-      // var url = "http://192.168.5.77:8080/taodoctor/rest/allorder/addDescriptionContent";
       var data = {
         id:this.uid,
         customerId:this.customerId,
         phone:this.phone,
         // departmentId:'',
         description:this.description,
-        isHaveFile:0,
+        isHaveFile:this.viewImg.length > 0 ? 1 : 0,
         serviceType:'phone'
       };
-      console.log(data)
+      // console.log(data)
       this.$http.post(url,data).then(res => {
         console.log(res.data)
         if(res.data.statusCode == 1){
-
+          Indicator.close();
+          // 判断是否有附件
+          if(data.isHaveFile == 1){
+            this.addFile(); // 上传附件
+          }else{
+            // 没有附件直接跳转
+            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitInfo:this.visitInfo}});
+          }
         }
       },res => {
         console.log("error")
@@ -221,7 +229,7 @@ export default {
             this.addFile(); // 上传附件
           }else{
             // 没有附件直接跳转
-            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}});
+            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitInfo:this.visitInfo}});
           }
         }
       },res => {
@@ -251,7 +259,7 @@ export default {
         console.log(res.data);
         if(res.data.statusCode == 1){
           if(n == this.viewImg.length - 1){
-            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}});
+            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitInfo:this.visitInfo}});
           }
         }
       },res => {

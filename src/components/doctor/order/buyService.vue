@@ -1,9 +1,20 @@
 <template>
   <div>
-    <ul class="service_type">
-      <li><span class="service_icon"><img src="" alt=""></span>{{visitType == "punctual" ? "准时预约" : "健康咨询"}}</li>
+    <div v-if="visitType == 'punctual'">
+      <ul class="service_type">
+        <li><span class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png" alt=""></span>准时预约</li>
+        <li><span class="service_price">{{yusheprice}} 元</span></li>
+      </ul>
+      <ul class="visitInfo">
+        <li>预约时间：<span>{{visitTime.workday}}</span> <span>{{visitTime.num | takeOver}}</span></li>
+        <li>预约地点：{{visitTime.address}}</li>
+      </ul>
+    </div>
+    <ul class="service_type" v-else>
+      <li><span class="service_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png" alt=""></span>健康咨询</li>
       <li><span class="service_price">{{yusheprice}} 元</span></li>
     </ul>
+    
     <div class="service_bg">
       <ul class="service_obj">
         <li><span><img src="../../../../static/imgs/hospital/order/tdf_order_touxiang.png" alt=""></span> {{visitInfo.name}}</li>
@@ -64,24 +75,28 @@ export default {
       accountMoney:'', // 用户余额
       doctorInfo:{}, // 医师详情
       visitInfo:{}, // 就诊人信息
-      description:'',
-      visitType:'',
+      description:'', // 病情描述
+      visitType:'', // 服务类型
+      uid:'', // Uuid
+      visitTime:{}, // 准时预约信息
       siviTypeIcon:{
         img1:require("../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png"),
         img2:require("../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png"),
       },
-      uid:'',
+     
     };
   },
   created() {
     var data = this.$route.params;
     console.log(this.$route.params)
-    this.doctorInfo = data.doctorInfo;
-    this.yusheprice = this.transferUnit(data.doctorInfo.yusheprice);
-    this.visitInfo = data.visitInfo;
-    this.visitType = data.visitType;
-    this.description = data.description;
-    this.uid = data.uid;
+
+    this.visitTime = JSON.parse(localStorage.getItem('visitTime'));
+    this.visitType = localStorage.getItem('visitType'); // 服务类型
+    this.doctorInfo = JSON.parse(localStorage.getItem('doctorInfo')); // 医生详情
+    this.yusheprice = this.transferUnit(this.doctorInfo.yusheprice); // 服务价格
+    this.visitInfo = data.visitInfo; // 就诊人信息
+    this.description = data.description; // 病情描述
+    this.uid = data.uid; // Uuid
     this.getCoupon(); // 获取优惠券
     this.getBalances(); // 获取余额
   },
@@ -90,6 +105,23 @@ export default {
     fen2yuan(num){
       if ( typeof num !== "number" || isNaN( num ) ) return null;
       return ( num / 100 ).toFixed( 2 ) + " 元";
+    },
+    // 格式化时间间隔
+    takeOver(obj) {
+      var a = "";
+      var optime = parseInt(obj);
+      var i = optime % 4;
+      var j = parseInt(optime / 4);
+      if (i == 0) {
+        a = j + ":00-" + j + ":15";
+      } else if (i == 1) {
+        a = j + ":15-" + j + ":30";
+      } else if (i == 2) {
+        a = j + ":30-" + j + ":45";
+      } else if (i == 3) {
+        a = j + ":45-" + (j + 1) + ":00";
+      }
+      return a;
     }
   },
   computed:{
@@ -149,7 +181,7 @@ export default {
     getCoupon(){
       var url = this.baseUrl + 'diseasedescription/getCustomerCoupons';
       var data = {
-        customerId:'880631824E9A482DBA94B6138A5F91B2',
+        customerId:'8D2E514AABBC4ADBA1088B610D74CDCF',
         // useType:'088002' // 008001健康咨询优惠券  008002 准时预约优惠券 不传-获取所有
       }
       this.$http.post(url,data).then(res => {
@@ -191,6 +223,7 @@ export default {
   background: #fff;
   font-size: 0.75rem;
   color: @fontColor;
+  border-bottom:1px solid #f1f1f1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -206,6 +239,15 @@ export default {
   .service_price {
     font-size: 0.8rem;
     color: rgb(82, 162, 255);
+  }
+}
+.visitInfo{
+  padding:0.3rem 0.6rem;
+  background:#fff;
+  li{
+    font-size: 0.65rem;
+    color: @fontColor;
+    line-height:1.2rem;
   }
 }
 .service_bg {

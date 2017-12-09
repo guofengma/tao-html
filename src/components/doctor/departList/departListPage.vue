@@ -4,7 +4,7 @@
       <li v-for="(item,index) in department" :key="index" :class="{'activeDep':showid == index}" @click="choiceDepartment(item,index)">{{item.name}}</li>
     </ul>
     <ul class="department_right">
-      <router-link tag="li" :to="{name:'doctorList',params:item}" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
+      <router-link tag="li" :to="{path:'/doctorList',query:{id:item.id}}" v-for="(item,index) in department_item" :key="index">{{item.name}}</router-link>
     </ul>
   </div>
 </template>

@@ -56,7 +56,7 @@ export default {
     };
   },
   created() {
-    let item = this.$route.params;
+    let item = this.$route.query;
     var option = {
       getDataModule: "hotDepartment",
       idx: 0,

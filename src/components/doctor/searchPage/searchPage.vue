@@ -1,30 +1,30 @@
 <template>
   <div class="home">
     <div class="search_box">
-        <ul class="search_top">
-          <li class="search">
-            <div class="search_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_search.png" alt=""></div>
-            <input type="text" placeholder="医生 医院 科室 疾病" @keydown="Enter($event)">
-          </li>
-          <router-link tag="li" to="/home">取消</router-link>
+      <ul class="search_top">
+        <li class="search">
+          <div class="search_icon"><img src="../../../../static/imgs/hospital/index/tdf_hospital_search.png" alt=""></div>
+          <input type="text" placeholder="医生 医院 科室 疾病" @keydown="Enter($event)">
+        </li>
+        <router-link tag="li" to="/home">取消</router-link>
+      </ul>
+      <div class="history_search" v-if="isHistory">
+        <div class="item_top">
+          <h2>历史搜索</h2>
+          <div class="del" @click="Delhistory"><img src="../../../../static/imgs/hospital/index/tdf_search_clean.png" alt="del"></div>
+        </div>
+        <ul>
+          <li v-for="(item,index) in historySearch" :key="index" @click="clickOption(item)">{{item}}</li>
         </ul>
-        <div class="history_search" v-if="isHistory">
-          <div class="item_top">
-            <h2>历史搜索</h2>
-            <div class="del" @click="Delhistory"><img src="../../../../static/imgs/hospital/index/tdf_search_clean.png" alt="del"></div>
-          </div>
-          <ul>
-            <router-link tag="li" :to="{name:'searchDoctorList',params:{key:item}}" v-for="(item,index) in historySearch" :key="index">{{item}}</router-link>
-          </ul>
+      </div>
+      <div class="hot_search">
+        <div class="item_top">
+          <h2>热门搜索</h2>
         </div>
-        <div class="hot_search">
-          <div class="item_top">
-            <h2>热门搜索</h2>
-          </div>
-          <ul>
-            <router-link tag="li" :to="{name:'searchDoctorList',params:{key:item}}" v-for="(item,index) in hotSearch" :key="index">{{item}}</router-link>
-          </ul>
-        </div>
+        <ul>
+          <li v-for="(item,index) in hotSearch" :key="index" @click="clickOption(item)">{{item}}</li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -43,6 +43,11 @@ export default {
   created(){
     this.historySearch = this.getSearchHistory();
   },
+  beforeRouteLeave(to, from, next) {
+    // 设置下一个路由的 meta
+    to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
+    next();
+  },
   methods: {
     Delhistory: function() {
       this.isHistory = !this.isHistory;
@@ -56,6 +61,11 @@ export default {
     saveSearchHistory(data){
       localStorage.searchHistory = JSON.stringify(data);
     },
+    // 点击查询
+    clickOption(key){
+      this.$router.push({path:'/searchDoctorList',query:{key:key}});
+    },
+    // 回车查询
     Enter(e) {
       var _this = this;
       if (e.keyCode == 13) {
@@ -66,7 +76,7 @@ export default {
           _this.saveSearchHistory(_this.historySearch);
         }
         // window.location.href = "searchDoctorList?keywords=" + encodeURI(encodeURI(keywords));
-        this.$router.push({name:'searchDoctorList',params:{key:keywords}});
+        this.$router.push({path:'/searchDoctorList',query:{key:keywords}});
         // this.$router.replace({name:'searchDoctorList',params:{key:keywords}})
       }
     }

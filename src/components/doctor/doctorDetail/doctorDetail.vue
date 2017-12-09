@@ -186,7 +186,6 @@ export default {
       punctualBackstage:{}, // 准时预约后台字段信息
       serviceDate:['29','30','1','2','3','4','5'], 
       serviceTime:[], // 开放时间
-      visitTime:{},
     };
   },
   components: {
@@ -280,6 +279,7 @@ export default {
     choiceService(index){
       this.isService = true; // 选择服务弹窗显示、隐藏
       this.serviceid = "service" + index;
+      this.visitType = 'forbid';
       if(index == 0){
         this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
       }else if(index == 1){
@@ -341,8 +341,7 @@ export default {
       this.address = item.address;
       this.isAddress = true;
       this.visitType = 'punctual';
-      // this.visitTime = item;
-      // console.log(item)
+      console.log(item)
       // 存储就诊时间对象
       localStorage.setItem('visitTime',JSON.stringify(item))
     },
@@ -382,11 +381,17 @@ export default {
       // 存储医生信息
       localStorage.setItem('doctorInfo',JSON.stringify(this.doctorInfo));
       if(visitType == 'health'){
-        this.$router.push({name:'fillOrder',params:this.visitTime});
+        this.$router.push({name:'fillOrder'});
       }else if(visitType == 'punctual'){
         this.$router.push({name:'fillOrder'});
       }else if(visitType == 'forbid'){
         // 没有选择服务是禁止页面跳转
+        // if(this.consultation[0].enable == 1){
+        //   // 默认健康咨询选第一种服务
+        //   this.$router.push({name:'fillOrder'});
+        // }else{
+          
+        // }
         return false;
       }
     },
