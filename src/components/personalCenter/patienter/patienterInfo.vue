@@ -111,7 +111,6 @@ export default {
     let userInfoId = JSON.parse(localStorage.getItem("userInfo")).id;
     let patienterId = this.$route.params.id;
     userInfoId == patienterId ? (this.onlyYou = true) : (this.onlyYou = false);
-    console.log(this.onlyYou);
     let defaultCustomer = this.$route.params.defaultCustomer;
     this.defaultCustomerTrue = defaultCustomer;
     this.patienterId = patienterId;
@@ -121,7 +120,6 @@ export default {
       })
       .then(
         res => {
-          console.log(JSON.stringify(res));
           this.patientInfo = res.body.obj;
           let peoData = res.body.obj;
           if(!peoData.name||!peoData.sex||!peoData.birthday2||!peoData.mobilephone||!peoData.cardId||!peoData.nation||!peoData.maritalStatus||!peoData.homeAddress) {
@@ -224,7 +222,31 @@ export default {
      */
     //更新本人的基本信息
     uploadPatient() {
-
+      let patientInfo = this.patientInfo;
+      let userName = !patientInfo.name ? this.userName : patientInfo.name;
+      let userSCode = !patientInfo.cardId ? this.userSCode : patientInfo.cardId;
+      let sex = patientInfo.sex;
+      let birthday2 = patientInfo.birthday2;
+      let nation = !patientInfo.nation ? this.popSelectedZu : patientInfo.nation;
+      let maritalStatus = !patientInfo.maritalStatus ? this.popSelectedHun : patientInfo.maritalStatus;
+      let homeAddress = !patientInfo.homeAddress ? this.userAdress : patientInfo.homeAddress;
+      let mobilephone = !patientInfo.mobilephone ? this.userTel : patientInfo.mobilephone;
+      if(!userName) {
+        Toast('请输入就诊人的真实姓名');
+      }else if(!this.regSCode.test(userSCode)) {
+        Toast('请输入就诊人的真实身份证号');
+      }else if(!nation) {
+        Toast('请选择就诊人的民族');
+      }else if(!maritalStatus) {
+        Toast('请选择就诊人的婚姻状态');
+      }else if(!homeAddress) {
+        Toast('请输入就诊人的详细地址');
+      }else if(!mobilephone) {
+        Toast('请输入就诊人的真实手机号');
+      }else {
+        //更新本人（就诊人）的基本信息
+        
+      }
     }
   }
 };

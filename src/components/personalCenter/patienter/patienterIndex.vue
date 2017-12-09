@@ -50,7 +50,6 @@ export default {
       .then(
         
         res => {
-          console.log(JSON.stringify(res));
           let patienters = res.body.obj;
           let patientersNum = patienters.length;
           this.noPatient = patientersNum > 0 ? false : true;
