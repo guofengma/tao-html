@@ -151,8 +151,10 @@ export default {
       //关注医生
       this.focusTrue = !this.focusTrue;
       if (this.focusTrue) {
+        Toast('成功关注该医生');
         this.focusDocImg = require("../../../../static/imgs/evaluate/tdf_pingjia_gzh_pre.png");
       } else {
+        Toast('已取消关注该医生');
         this.focusDocImg = require("../../../../static/imgs/evaluate/tdf_pingjia_gzh.png");
       }
       this.$http

@@ -1,7 +1,7 @@
 <template>
  <div class="wrap">
      <div v-if="noPatient" class="no_patient">
-         <img src="../../../../static/imgs/patienter/tdf_family_add.png" alt="">
+         <img src="../../../../static/imgs/patienter/tdf_family_add.png" alt="" @click.stop="addPatienter">
          <p>您还未添加就诊人</p>
      </div>
      <ul v-else-if="!noPatient" class="patient_list">
@@ -48,7 +48,9 @@ export default {
         customerId: JSON.parse(localStorage.getItem('userInfo')).id
       })
       .then(
+        
         res => {
+          console.log(JSON.stringify(res));
           let patienters = res.body.obj;
           let patientersNum = patienters.length;
           this.noPatient = patientersNum > 0 ? false : true;

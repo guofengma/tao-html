@@ -81,9 +81,9 @@
                     <div class="bot_input" v-if="telInputShow">
                         <span>CNN +86</span>
                             <input type="tel" v-model.trim="userTel" placeholder="请输入手机号">
-                            <a href="javascript:;" @click="getCode">发送</a>
+                            <button @click="getCode" :disabled="disabledTrue">{{codeBtnText}}</button>
                     </div>
-                    <div class="bot_input" v-if="!telInputShow">
+                    <div class="bot_input bot_input_end" v-if="!telInputShow">
                             <input type="tel" v-model.trim="userCode" placeholder="请输入验证码">
                             <a href="javascript:;" @click="codeConfirm">发送</a>
                     </div>
@@ -100,6 +100,8 @@ export default {
   name: "loginIndex",
   data() {
     return {
+      disabledTrue: false,
+      codeBtnText: "发送",
       userBase: {}, //微信授权获取到的用户信息
       popupVisible: false,
       noAggrementUrl: require("../../../static/imgs/login/tdf_login_select_pre.png"),
@@ -136,7 +138,7 @@ export default {
           res => {
             let obj = res.body;
             console.log(JSON.stringify(obj));
-            localStorage.setItem('wxBaseInfo',JSON.stringify(obj.object));
+            localStorage.setItem("wxBaseInfo", JSON.stringify(obj.object));
             if (obj.statusCode == 1) {
               //用户授权成功
               this.popupVisible = true;
@@ -148,6 +150,11 @@ export default {
             console.log(res);
           }
         );
+    }
+  },
+  watch: {
+    userCode() {
+      
     }
   },
   methods: {
@@ -178,6 +185,16 @@ export default {
         this.wrongTel = true;
         this.userTel = "";
       } else {
+        let sCount = 59;
+        let timer = setInterval(() => {
+          this.codeBtnText = sCount-- + "s";
+          this.disabledTrue = true;
+        }, 1000);
+        setTimeout(() => {
+          clearInterval(timer);
+          this.disabledTrue = false;
+          this.codeBtnText = "重新发送";
+        }, 60000);
         this.wrongTel = false;
         this.hadTel = true;
         this.$http
@@ -186,8 +203,8 @@ export default {
           })
           .then(res => {
             if (res.body.statusCode == 1) {
-              this.codeMsg = true;
-              this.telInputShow = false;
+                this.codeMsg = true;
+                this.telInputShow = false;
             }
           });
       }
@@ -215,8 +232,6 @@ export default {
               //在localStorage中存储用户的基本信息userInfo
 
               if (res.body.statusCode == 1) {
-
-
                 /**
                  *根据状态判断用户是否已经存在
                  *根据用户的头像和昵称去判断用户是否已经存在
@@ -224,20 +239,18 @@ export default {
                 let dataObj = res.body.object;
 
                 console.log(JSON.stringify(res));
-                localStorage.setItem(
-                  "userInfo",
-                  JSON.stringify(dataObj)
-                );
+                localStorage.setItem("userInfo", JSON.stringify(dataObj));
                 this.successTextShow = true;
                 Toast({
                   message: "手机号登录成功",
-                  position: 'bottom'
+                  position: "bottom"
                 });
                 setTimeout(() => {
-                  if(!dataObj.name&&!dataObj.headerImage) {//该用户是新注册的
+                  if (!dataObj.name && !dataObj.headerImage) {
+                    //该用户是新注册的
                     this.$router.push({ name: "settingNameLogo" });
-                  }else {
-                    this.$router.push({name: 'navPage'});
+                  } else {
+                    this.$router.push({ name: "navPage" });
                   }
                 }, 1000);
               } else if (res.body.statusCode == 0) {
@@ -447,8 +460,9 @@ export default {
             padding: 0 0.5rem;
             border-radius: 0.4rem;
           }
-          a {
-            width: 3rem;
+          a,
+          button {
+            width: 3.5rem;
             height: 1.5rem;
             line-height: 1.5rem;
             text-align: center;
@@ -456,6 +470,12 @@ export default {
             font-size: 0.75rem;
             background-color: #3090ff;
             border-radius: 0.3rem;
+          }
+        }
+        .bot_input_end {
+          justify-content: flex-end;
+          input {
+            margin-right: 1rem;
           }
         }
       }

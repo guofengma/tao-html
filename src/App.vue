@@ -23,10 +23,9 @@ export default {
       })
       .then(
         res => {
-          console.log(JSON.stringify(res));
           let dataJson = res.body.object;
           wx.config({
-            debug: true,
+            debug: false,
             appId: "wx5b95d4f216a65e2d",
             timestamp: dataJson.timestamp,
             nonceStr: dataJson.nonceStr,
