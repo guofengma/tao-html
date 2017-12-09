@@ -2,7 +2,7 @@
   <div class="wrap">
       <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :autoFill="autoFill">
       <ul>
-          <router-link tag="li" :to="{name: 'doctorDetail',params:{doctorId: item.id}}" v-for="(item, index) in list" :key="index">
+          <router-link tag="li" :to="{path: '/doctorDetail',query:{doctorId: item.id}}" v-for="(item, index) in list" :key="index">
               <img :src="item.header" alt="">
               <div class="hosptail">
                   <p>{{item.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.title}}&nbsp;&nbsp;&nbsp;&nbsp;{{item.departmentName}}</p>

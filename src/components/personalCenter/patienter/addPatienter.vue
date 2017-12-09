@@ -10,7 +10,7 @@
           </li>
           <li>
               <span>身份证号</span>
-              <input type="text" v-model.trim="userSNum" placeholder="请输入真实的手机号">
+              <input type="text" v-model.trim="userSNum" placeholder="请输入真实的身份证号">
           </li>
           <li class="no_open">
               <span>性别</span>
@@ -85,12 +85,24 @@ export default {
   },
   watch: {
     userSNum(newV, old) {
-      if(newV.length == 15) {
-        this.birthDay = newV.substring(6, 10) + "年" + newV.substring(10, 12) + "月" + newV.substring(12, 14) + "日";
-        this.sex = parseInt(newV.substr(16, 1)) % 2 == 1 ? '男' : '女';
-      }else if (newV.length == 18) {
-        this.birthDay = newV.substring(6, 10) + "年" + newV.substring(10, 12) + "月" + newV.substring(12, 14) + "日";
-        this.sex = parseInt(newV.substr(16, 1)) % 2 == 1 ? '男' : '女';
+      if (newV.length == 15) {
+        this.birthDay =
+          newV.substring(6, 10) +
+          "年" +
+          newV.substring(10, 12) +
+          "月" +
+          newV.substring(12, 14) +
+          "日";
+        this.sex = parseInt(newV.substr(16, 1)) % 2 == 1 ? "男" : "女";
+      } else if (newV.length == 18) {
+        this.birthDay =
+          newV.substring(6, 10) +
+          "年" +
+          newV.substring(10, 12) +
+          "月" +
+          newV.substring(12, 14) +
+          "日";
+        this.sex = parseInt(newV.substr(16, 1)) % 2 == 1 ? "男" : "女";
       }
     }
   },
@@ -140,15 +152,18 @@ export default {
       let popChooseTextHun = this.popChooseTextHun;
       let sex = this.sex;
       let birthDay = this.birthDay;
-      if (
-        !userName ||
-        !userSNum ||
-        !userAdress ||
-        !userTel ||
-        !popChooseTextZu ||
-        !popChooseTextHun
-      ) {
-        Toast("您还有信息未完善");
+      if (!userName) {
+        Toast("请填写您的真实姓名");
+      } else if (!this.regSCode.test(userSNum)) {
+        Toast("请填写您的真实身份证号");
+      } else if (!userAdress) {
+        Toast("请输入您的详细地址");
+      } else if (!this.regTel.test(userTel)) {
+        Toast("请输入您的正确手机号");
+      } else if (!popChooseTextZu) {
+        Toast("请选择您的民族");
+      } else if (!popChooseTextHun) {
+        Toast("请选择您的婚姻情况");
       } else {
         this.$http
           .post(this.baseUrl + "allorder/addCustomer", {
@@ -162,7 +177,7 @@ export default {
             nation: popChooseTextZu,
             isMarried: popChooseTextHun == "已婚" ? "1" : "0",
             homeAddress: userAdress,
-            sex: sex == '男' ? '1' : '0',
+            sex: sex == "男" ? "1" : "0",
             birthday: birthDay
           })
           .then(
@@ -243,6 +258,9 @@ export default {
     }
     input {
       flex: 8;
+      font-size: 0.75rem;
+      color: #393939;
+      line-height: 2.25rem;
     }
     &:last-of-type {
       margin-top: 0.6rem;

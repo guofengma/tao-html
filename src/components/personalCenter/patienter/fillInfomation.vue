@@ -18,7 +18,7 @@
             <img v-if="!cardObj.cardImage" src="../../../../static/imgs/patienter/tdf_family_shchzj.png" alt="">
             <p v-if="!cardObj.cardImage">请上传清晰的身份证或者户口本照片</p>
             <input v-if="!cardObj.cardImage" type="file" @change="chooseCardImg">
-            <div v-if="cardObj.cardImage" class="card_img">
+            <div v-else class="card_img">
               <img :src="cardObj.cardImage" alt="">
               <i class="iconfont icon-close" @click="cancelImg"></i>
             </div>
@@ -60,7 +60,10 @@ export default {
       })
       .then(
         res => {
-          res.body.obj.cardImage = this.baseImgUrl + res.body.obj.cardImage;
+          console.log(JSON.stringify(res));
+          if(res.body.obj.cardImage) {
+            res.body.obj.cardImage = this.baseImgUrl + res.body.obj.cardImage;
+          }
           this.cardObj = res.body.obj;
         },
         res => {
@@ -88,8 +91,12 @@ export default {
       let customerId = this.customerId;
       let name = this.cardObj.name;
       let cardId = this.cardObj.cardId;
-      if (!name || !cardId || !this.cardObj.cardImage) {
-        Toast("您还有信息未完善");
+      if (!name) {
+        Toast("请填写您的真实姓名");
+      }else if(!this.regSCode.test(cardId)) {
+        Toast('请填写您的真实身份证号');
+      }else if(!this.cardObj.cardImage) {
+        Toast('请上传您的真实身份证照片');
       } else {
         Indicator.open({
           text: "证件上传中...",
