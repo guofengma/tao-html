@@ -102,7 +102,8 @@ export default new Router({
       name: 'doctorList',
       component: doctorList,
       meta: {
-        title: '医生列表'
+        title: '医生列表',
+        keepAlive: true
       }
     },
     {

@@ -193,9 +193,8 @@ export default {
     pubOrderList
   },
   created() {
-    var item = this.$route.params;
-    this.doctorInfo = item;
-    this.doctorId = item.doctorId;
+    var item = this.$route.query;
+    this.doctorId = item.dotorId;
     this.getDoctorDetail(this.doctorId); //获取用户详细信息
   },
   activated(){
@@ -211,8 +210,7 @@ export default {
     // }
   },
   deactivated(){
-    this.isService = false;
-    console.log('left')
+    this.isService = false; // 离开页面关闭服务选择弹窗
   },
   filters: {
     // 格式化时间戳
@@ -261,15 +259,15 @@ export default {
       });
       this.$http.post(url, data).then(
         response => {
-          console.log(response.data); 
+          // console.log(response.data); 
           if (response.data.statusCode == 1) {
-            this.doctorInfo = response.data.obj;
-            var customerImpression = response.data.obj.customerImpression;
-            var imgUrl = response.data.obj.photo;
+            this.doctorInfo = response.data.obj; // 医生详情
+            var customerImpression = response.data.obj.customerImpression; // 患者印象
+            var imgUrl = response.data.obj.photo; // 医生头像
             if (customerImpression) {
               this.customerImpression = customerImpression.split(",");
             }
-            this.imgUrl = imgUrl ? this.baseImgUrl + imgUrl : "../../../../static/imgs/hospital/index/tdf_hospital_head.png";
+            this.imgUrl = imgUrl ? this.baseImgUrl + imgUrl : "../../../../static/imgs/hospital/index/tdf_hospital_head.png"; // 没有头像时显示默认头像
             Indicator.close(); // 关闭loading动画  
           }
         },
@@ -280,16 +278,14 @@ export default {
     },
     // 选择服务
     choiceService(index){
-      this.isService = true;
+      this.isService = true; // 选择服务弹窗显示、隐藏
       this.serviceid = "service" + index;
       if(index == 0){
         this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
-        // this.visitType = 'health';
       }else if(index == 1){
         this.punctualBespeak.length ? '' : this.getpunctualBespeak(this.doctorId);
-        // this.visitType = 'punctual';
       }else if(index == 2){
-        this.isService = false;
+        this.isService = false; // 选择服务弹窗显示、隐藏
         Toast({
           message: '功能开发中...',
           position: 'bottom',
@@ -300,21 +296,22 @@ export default {
     // 关闭服务界面
     closeService(type){
      if(type == 'close'){
-        this.isService = false;
+        this.isService = false;// 选择服务弹窗显示、隐藏
      }else{
-        this.isService = true;
+        this.isService = true;// 选择服务弹窗显示、隐藏
      }
     },
     // 选择服务类型切换
     switchService(item,index){
-      this.serviceid = "service" + index;
+      // this.serviceid = "service" + index;
       if(index == 0){
+        this.serviceid = "service" + index;
         this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
-        // this.visitType = 'health';
       }else if(index == 1){
+        this.serviceid = "service" + index;
         this.punctualBespeak.length ? '' : this.getpunctualBespeak(this.doctorId);
-        // this.visitType = 'punctual';
       }else if(index == 2){
+        this.serviceid = this.serviceid; // 家庭医生功能待开发
         Toast({
           message: '功能开发中...',
           position: 'bottom',
@@ -324,6 +321,7 @@ export default {
     },
     // 选择咨询方式
     choiceConsultation(item,index){
+      // 判断是否开启健康咨询服务
       if(item.enable == 0){
         this.visitType = 'forbid';
       }else{
@@ -332,22 +330,21 @@ export default {
     },
     // 选择服务时间
     choiceServiceDate(e,item,index){
-      e.target.classList.remove('open');
-      // item.item.length = 1;
-      this.visitType = 'forbid';
-      this.visit = '';
-      this.today = 'today' + index;
+      this.visitType = 'forbid'; // 切换时关闭立即就诊跳转
+      this.visit = ''; // 切换时取消就诊时间选中状态
+      this.today = 'today' + index; // 选中当前状态
       this.serviceTime = this.punctualBespeak[index].item;
-      
     },
     // 选择就诊时间
     choiceVisitTime(e,item,index){
       this.visit = 'visit' + index;
       this.address = item.address;
       this.isAddress = true;
-      this.visitTime = item;
       this.visitType = 'punctual';
-      console.log(item)
+      // this.visitTime = item;
+      // console.log(item)
+      // 存储就诊时间对象
+      localStorage.setItem('visitTime',JSON.stringify(item))
     },
     // 获取健康咨询医生定价
     getHealthPrice(doctorId){
@@ -366,10 +363,9 @@ export default {
     // 获取准时预约开放时间
     getpunctualBespeak(doctorId){
       var url = this.baseUrl + 'doc/getDoctorOpenTime';
-      // var url = "http://www.tdaifu.cn:8090/taodoctor/rest/doc/getDoctorOpenTime"
       Indicator.open({text:'加载中...'});
       this.$http.post(url,{docid:doctorId}).then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         if(res.data.success){
           this.punctualBespeak = res.data.data;
           this.serviceTime = this.punctualBespeak[0].item;
@@ -381,13 +377,17 @@ export default {
     },
     // 立即就诊
     goVisit(visitType){
-      console.log(visitType)
+      // 存储当前选择的就诊类型
+      localStorage.setItem("visitType",visitType);
+      // 存储医生信息
+      localStorage.setItem('doctorInfo',JSON.stringify(this.doctorInfo));
       if(visitType == 'health'){
         this.$router.push({name:'fillOrder',params:this.visitTime});
       }else if(visitType == 'punctual'){
-        this.$router.push({name:'fillOrder',params:{visitTime:this.visitTime,visitType:this.visitType,doctorInfo:this.doctorInfo}});
+        this.$router.push({name:'fillOrder'});
       }else if(visitType == 'forbid'){
-        // console.log("all no")
+        // 没有选择服务是禁止页面跳转
+        return false;
       }
     },
     // 获取用户评价

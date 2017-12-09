@@ -92,9 +92,10 @@ export default {
     color: @fontColor;
     font-size: 0.65rem;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     &.search {
-      width: 15.5rem;
+      width: 15rem;
       height: 1.6rem;
       border-radius: 1rem;
       background: @bgColor;

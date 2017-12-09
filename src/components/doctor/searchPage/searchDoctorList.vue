@@ -13,7 +13,7 @@
           </div>
           <div class="list_item" v-if="isDoctorInfo">
             <hotdoctorList :list="doctorInfo" /> 
-            <div class="more" @click='viewDoctor(1)'>查看更多相关医生和团队</div>
+            <div class="more" @click='viewDoctor(2)'>查看更多相关医生和团队</div>
           </div>
         </div>
         <div class="lists" v-if="hospitalInfo.length>0">
@@ -23,7 +23,7 @@
           </div>
           <div class="list_item" v-if="ishospitalInfo">
             <hospitalList :list="hospitalInfo" /> 
-            <div class="more" @click='viewDoctor(2)'>查看更多相关医院</div>
+            <div class="more" @click='viewDoctor(1)'>查看更多相关医院</div>
           </div>
         </div>
         <div class="lists" v-if="diseaseInfo.length>0">
@@ -38,13 +38,16 @@
         </div>
       </mt-tab-container-item>
       <mt-tab-container-item id="tab1">
-        <div class="lists"><hotdoctorList :list="doctorInfo" /></div>
+        <div class="lists"><hospitalList :list="hospitalInfo" /></div>
+        <p @click="loadMore('hospital')" class='loadmore'>加载更多</p>
       </mt-tab-container-item>
       <mt-tab-container-item id="tab2">
-        <div class="lists"><hospitalList :list="hospitalInfo" /></div>
+        <div class="lists"><hotdoctorList :list="doctorInfo" /></div>
+        <p @click="loadMore('doctor')" class='loadmore'>加载更多</p>
       </mt-tab-container-item>
       <mt-tab-container-item id="tab3">
         <div class="lists"><diseaseList :list="diseaseInfo" /></div>
+        <p @click="loadMore('disease')" class='loadmore'>加载更多</p>
       </mt-tab-container-item>
       <mt-tab-container-item id="tab4">
         <p class="no-data">暂无数据</p> 
@@ -58,13 +61,16 @@ import hotdoctorList from "../hotDoctorList/hotDoctorList";
 import hospitalList from "../hospitalList/hospitalList";
 import diseaseList from "../diseaseList/diseaseList";
 import { getRequest } from "../getRequest";
-// import { Toast } from "mint-ui";
+import { Toast } from "mint-ui";
 import { Indicator } from "mint-ui";
 export default {
   data() {
     return {
       showid: "tab0",
       keywords: this.$route.params.key,
+      hospitalIdx:0,
+      doctorIdx:0,
+      diseaseIdx:0,
       tabList: [
         { name: "全部", key: "all" },
         { name: "医院", key: "hospital" },
@@ -108,11 +114,11 @@ export default {
       }
     }
   },
-  beforeRouteLeave(to, from, next) {
-    // 设置下一个路由的 meta
-    to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
-    next();
-  },
+  // beforeRouteLeave(to, from, next) {
+  //   // 设置下一个路由的 meta
+  //   to.meta.keepAlive = false; // 让 doctorDetail 不缓存，即刷新
+  //   next();
+  // },
   computed:{
     
   },
@@ -127,6 +133,27 @@ export default {
     // 查看更多
     viewDoctor(index){
       this.showid = 'tab' + index;
+    },
+    loadMore(type){
+      
+      if(this.keywords){
+        switch (type) {
+          case "hospital":
+            this.hospitalIdx++;console.log(this.hospitalIdx)
+            this.getMore(type,this.hospitalIdx);
+            break;
+
+          case "doctor":
+            this.doctorIdx++;console.log(this.doctorIdx)
+            this.getMore(type,this.doctorIdx);
+            break;
+
+          case "disease":
+            this.diseaseIdx++;console.log(this.diseaseIdx)
+            this.getMore(type,this.diseaseIdx);
+            break;
+        }
+      }
     },
     // 根据关键词搜索列表数据
     getKeywords(keywords) {
@@ -157,7 +184,75 @@ export default {
           console.log("error");
         }
       );
+    },
+    // 加载更多
+    getMore(type,idx){
+      Indicator.open({
+        text: '加载中...'
+      });
+      var that = this;
+      var url = this.baseUrl + "doc/getDataListForSearch";
+      var id = 0;
       
+      switch (type) {
+        case "hospital":
+          id = this.hospitalIdx;
+          break;
+
+        case "doctor":
+          id = this.doctorIdx;
+          break;
+
+        case "disease":
+          id = this.diseaseIdx;
+          break;
+      }
+
+      var data = {
+        getDataType: type,
+        idx: id,
+        pagesize: 20,
+        region: "",
+        key: this.keywords
+      };
+      this.$http.post(url,data).then(res => {
+        console.log(res.data);
+        if(res.data.statusCode){
+          switch (type) {
+            case 'hospital':
+              var list = res.data.data.hospitalInfo.item;
+              if(list.length > 0){
+                list.map(function(v,i){
+                  that.hospitalInfo.push(v); // 医生
+                });
+              }
+              break;
+            case 'doctor' :
+              var list = res.data.data.doctorInfo.item;
+              if(list.length > 0){
+                list.map(function(v,i){
+                  that.doctorInfo.push(v); // 医生
+                });
+              }else{
+                Toast('暂无更多数据')
+              }
+              break;
+            case 'disease':
+              var list = res.data.data.diseaseInfo.item;
+              if(list.length > 0){
+                list.map(function(v,i){
+                  that.diseaseInfo.push(v); // 医生
+                });
+              }else{
+                Toast('暂无更多数据')
+              }
+              break;
+          }
+          Indicator.close(); // 关闭加载动画
+        }
+      },res => {
+        console.log("error");
+      })
     },
     // 医生列表展开关闭
     openUpDoctor(e) {
@@ -259,5 +354,9 @@ export default {
   text-align: center;
   border-top: 1px solid @borderColor;
   margin-bottom: 0.35rem;
+}
+.loadmore{
+  padding:0.6rem;
+  text-align:center;
 }
 </style>

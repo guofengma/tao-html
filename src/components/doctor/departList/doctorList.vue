@@ -14,7 +14,7 @@
     </div>
     <div class="shadow_box" @click="closeShadow" @touchmove="closeShadow" v-if="isShowShadow"></div>
     <div class="hot_doctor_list">
-      <mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
+      <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
         <hotDoctorList :list='departList'/>
       </mt-loadmore>
     </div>
@@ -47,13 +47,8 @@ export default {
       isShowShadow: false, // 是否显示遮罩
       departmentId:'', // 科室ID(已选择科室增加地区等条件是需要存储)
       region:'', // 地区(已选择地区增加筛选等条件是需要存储)
-      item: {
-        getDataModule: "hotDoctor",
-        idx: 0, // 页码
-        pagesize: 2, // 请求数量
-        region: "" // 城市
-      },
       list:[],
+      idx:0,
       allLoaded:false,
       department:[], // 科室列表数据
       department_item:[], // 二级科室第一项
@@ -69,10 +64,7 @@ export default {
       region: "",
       department: item.id
     };
-    Indicator.open({
-      text:"加载中...",
-      spinnerType: 'circle'
-    });
+    Indicator.open({ text:"加载中..." });
     var doctorUrl = this.baseUrl + "doc/getDoctorListForInternatHospital";
     this.$http.post(doctorUrl, option).then(
       response => {
@@ -132,17 +124,17 @@ export default {
     // 获取查询医生列表
     getDoctorList() {
       var url = this.baseUrl + 'doc/getDoctorListForInternatHospital';
-      this.$http.post(url, this.item).then(
-        (response) => {
-          // console.log(response.data);
-          if (response.data.statusCode == 1) {
-            this.list.push(response.data.data.doctorInfo.item);
-          }
-        },
-        (response) => {
-          console.log("error");
-        }
-      );
+      // this.$http.post(url, this.item).then(
+      //   (response) => {
+      //     // console.log(response.data);
+      //     if (response.data.statusCode == 1) {
+      //       this.list.push(response.data.data.doctorInfo.item);
+      //     }
+      //   },
+      //   (response) => {
+      //     console.log("error");
+      //   }
+      // );
     },
     loadTop() {
       // 下拉刷新
@@ -151,7 +143,7 @@ export default {
     },
     loadBottom() {
       // 上拉加载更多数据
-      this.item.idx++;
+      this.idx++;
       this.getDoctorList();
       this.allLoaded = true; // 若数据已全部获取完毕
       this.$refs.loadmore.onBottomLoaded();
@@ -240,10 +232,7 @@ export default {
         serviceType:serviceType,
         doctorTitle:doctorTitle
       };
-      Indicator.open({
-        text:"加载中...",
-        spinnerType: 'circle'
-      });
+      Indicator.open({ text:"加载中..." });
       var url = this.baseUrl + "doc/getDoctorListForInternatHospital";
       this.$http.post(url, option).then(
         response => {

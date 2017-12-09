@@ -63,17 +63,14 @@ export default {
   created() {
     var item = JSON.parse(localStorage.userInfo); // 从本地中读取用户id
     this.customerId = item.id;
-    this.visitInfo = item[0];
+    this.visitInfo = item; // 默认就诊人
+    this.phone = item.mobilephone; // 默认就诊人电话
     this.getCustomers(item.id); // 获取就诊人信息
-    this.getUuid();
-    
-    var resData = this.$route.params;
-    this.visitData = resData.visitTime;
-    this.visitType = resData.visitType; 
-    this.doctorInfo = resData.doctorInfo;
-    console.log(resData)
-
-    console.log(Tool('subtract',10.22,2))
+    this.getUuid(); // 获取Uuid
+    // 获取到表单填写的必要信息
+    this.visitData = JSON.parse(localStorage.getItem('visitTime'));
+    this.visitType = localStorage.getItem('visitType'); 
+    this.doctorInfo = JSON.parse(localStorage.getItem('doctorInfo'));
   },
   computed:{
     isShowControl(){
@@ -86,11 +83,6 @@ export default {
       return window.URL.createObjectURL(src);
     }
   },
-  beforeRouteLeave(to, from, next) {
-    // 设置下一个路由的 meta
-    to.meta.keepAlive = true;  // 让 A 缓存，即不刷新
-    next();
-  },
   methods: {
     // 获取就诊人信息
     getCustomers(customerId) {
@@ -100,9 +92,10 @@ export default {
       var url = this.baseUrl + "allorder/getCustomers";
       this.$http.post(url, { customerId: customerId }).then(
         res => {
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data.statusCode == 1) {
-            this.userInfo = res.data.obj;
+            this.userInfo = res.data.obj; // 就诊人信息
+            console.log(this.userInfo)
             Indicator.close(); // 关闭loading动画
           }
         },
@@ -128,7 +121,6 @@ export default {
       this.isVisit = 'visit' + index;
       this.phone = item.mobilephone;
       this.visitInfo = item; // 就诊人信息
-      // console.log(item.mobilephone)
     },
     // 选择图片
     addImgs(e){
@@ -203,6 +195,10 @@ export default {
     },
     // 准时预约病情描述
     addPunctual(){
+      Indicator.open({
+        text: "加载中..."
+      });
+      var _this = this;
       var url = this.baseUrl + 'allorder/addVisitDescriptionContent';
       var data = {
         id:this.uid,
@@ -214,32 +210,23 @@ export default {
         visitDay:this.visitData.workday,
         opentimeId:this.visitData.id,
         num:this.visitData.num,
-        // serviceType:'visitTime'
       };
       // console.log(data)
       this.$http.post(url,data).then(res => {
         console.log(res.data)
         if(res.data.statusCode == 1){
+          Indicator.close();
+          // 判断是否有附件
           if(data.isHaveFile == 1){
-            this.addFile();
+            this.addFile(); // 上传附件
           }else{
-            this.$router.push({name:'buyService',params:{id:this.userInfo.id}})
+            // 没有附件直接跳转
+            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}});
           }
         }
       },res => {
         console.log("error")
       })
-    },
-    saveOrder(){
-      var url = this.baseUrl + 'diseasedescription/saveOrder';
-      var id = '4F20E4FE9C5D45118B296B125012AEC2'
-      var data = {
-        diseaseId:id,
-        priceId:0.01,
-        payMoney:0,
-        payType:'005001',
-        accountPay:783059
-      }
     },
     // 上传附件
     addFile(){
@@ -264,8 +251,7 @@ export default {
         console.log(res.data);
         if(res.data.statusCode == 1){
           if(n == this.viewImg.length - 1){
-            // this.$router.push({name:'buyService',params:this.userInfo.id})
-            this.$router.push({name:'buyService',params:{ui:this.uid,description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}})
+            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitType:this.visitType,visitInfo:this.visitInfo,doctorInfo:this.doctorInfo}});
           }
         }
       },res => {
