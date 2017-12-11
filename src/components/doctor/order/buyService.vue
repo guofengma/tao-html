@@ -156,7 +156,7 @@ export default {
   methods: {
     // 保存订单
     saveOrder(){
-      // Indicator.open({ text:'加载中...'});
+      Indicator.open({ text:'加载中...'});
       var url = this.baseUrl + 'allorder/saveOrder';
       var serviceType = this.visitType == "punctual" ? "visitTime" : "phone";
       var data;
