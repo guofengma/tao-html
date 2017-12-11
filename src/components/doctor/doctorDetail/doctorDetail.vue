@@ -123,29 +123,36 @@
                 <p>{{item.enable == 0 ? '暂无服务' : item.servicePrice}}</p>
               </li>
             </ol>
+            <!-- 立即就诊 -->
+            <div class="go_visit" @click="goVisitHealth(visitType)">立即就诊</div>
           </li>
           <li v-if="serviceid == 'service1'">
+            <!-- 星期 -->
             <ol class="service_sort service_week">
               <li v-for="(item,index) in punctualBespeak" :key="index">{{item.subName | formatWeek}}</li>
             </ol>
+            <!-- 日期 -->
             <ol class="service_sort service_date">
               <li v-for="(item,index) in punctualBespeak" :key="index"><span @click="choiceServiceDate($event,item,index)" :class="[{'active':today == 'today' + index},{'open':item.item.length != 0}]" >{{item.subName | formatDay}}</span></li>
             </ol>
+            <!-- 开放时间 -->
             <ol class="service_time">
               <li v-for="(item,index) in serviceTime" :key="index" @click="choiceVisitTime($event,item,index)" :class="{'active':visit == 'visit' + index}">{{item.num | takeOver}}</li>
               <div class='service_no' v-if='serviceTime.length == 0'>暂未开放时间</div>
             </ol>
+            <!-- 地址 -->
             <div class="address" v-if="isAddress">
-              <h2><span></span>详细地址</h2>
+              <h2><span><img src="../../../../static/imgs/hospital/index/tdf_doctor_dw.png" alt=""></span>详细地址</h2>
               <p>{{address}}</p>
             </div>
+            <!-- 立即就诊 -->
+            <div class="go_visit" @click="goVisitPunctual(visitType)">立即就诊</div>
           </li>
           <li v-if="serviceid == 'service'">
             功能开发中...
           </li>
         </ul>
-        <!-- 立即就诊 -->
-        <div class="go_visit" @click="goVisit(visitType)">立即就诊</div>
+        
       </div>
     </div>  
   </div>
@@ -186,7 +193,6 @@ export default {
       punctualBackstage:{}, // 准时预约后台字段信息
       serviceDate:['29','30','1','2','3','4','5'], 
       serviceTime:[], // 开放时间
-      visitTime:{},
     };
   },
   components: {
@@ -281,6 +287,7 @@ export default {
     choiceService(index){
       this.isService = true; // 选择服务弹窗显示、隐藏
       this.serviceid = "service" + index;
+      this.visitType = 'forbid';
       if(index == 0){
         this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
       }else if(index == 1){
@@ -327,6 +334,7 @@ export default {
         this.visitType = 'forbid';
       }else{
         this.visitType = 'health';
+        localStorage.setItem("healthInfo",JSON.stringify(item));
       }
     },
     // 选择服务时间
@@ -334,6 +342,7 @@ export default {
       this.visitType = 'forbid'; // 切换时关闭立即就诊跳转
       this.visit = ''; // 切换时取消就诊时间选中状态
       this.today = 'today' + index; // 选中当前状态
+      this.isAddress = false;
       this.serviceTime = this.punctualBespeak[index].item;
     },
     // 选择就诊时间
@@ -342,8 +351,7 @@ export default {
       this.address = item.address;
       this.isAddress = true;
       this.visitType = 'punctual';
-      // this.visitTime = item;
-      // console.log(item)
+      // console.log(item);
       // 存储就诊时间对象
       localStorage.setItem('visitTime',JSON.stringify(item))
     },
@@ -352,7 +360,7 @@ export default {
       Indicator.open({text:'加载中...'});
       var url = this.baseUrl + "allorder/getPlatformPrice2";
       this.$http.post(url,{doctorId:doctorId}).then(res => {
-        console.log(res.data);
+        // console.log("健康咨询",res.data);
         if(res.data.statusCode == 1){
           this.consultation = res.data.obj;
           Indicator.close(); // 关闭loading动画
@@ -376,21 +384,36 @@ export default {
         console.log("error");
       });
     },
-    // 立即就诊
-    goVisit(visitType){
-      // 存储当前选择的就诊类型
-      localStorage.setItem("visitType",visitType);
-      // 存储医生信息
-      localStorage.setItem('doctorInfo',JSON.stringify(this.doctorInfo));
+    // 立即就诊[健康咨询]
+    goVisitHealth(visitType){
+      // console.log("jiankang",visitType)
+      localStorage.setItem("visitType",visitType);// 存储当前选择的就诊类型
+      localStorage.setItem('doctorInfo',JSON.stringify(this.doctorInfo));// 存储医生信息
       if(visitType == 'health'){
-        this.$router.push({name:'fillOrder',params:this.visitTime});
-      }else if(visitType == 'punctual'){
         this.$router.push({name:'fillOrder'});
       }else if(visitType == 'forbid'){
-        // 没有选择服务是禁止页面跳转
+        if(this.consultation[0].enable == 1){
+          localStorage.setItem("visitType",'health');
+          localStorage.setItem("healthInfo",JSON.stringify(this.consultation[0]));
+          // 默认健康咨询选第一种服务
+          this.$router.push({name:'fillOrder'});
+        }else{
+          return false;
+        }
+      }
+    },
+    // 立即就诊[准时预约]
+    goVisitPunctual(visitType){
+      // console.log("zhunshi",visitType)
+      localStorage.setItem("visitType",visitType);// 存储当前选择的就诊类型
+      localStorage.setItem('doctorInfo',JSON.stringify(this.doctorInfo));// 存储医生信息
+      if(visitType == 'punctual'){
+        this.$router.push({name:'fillOrder'});
+      }else if(visitType == 'forbid'){
         return false;
       }
     },
+    
     // 获取用户评价
     getCustomerImpression() {
       this.showid = "tab2";
@@ -401,7 +424,7 @@ export default {
       };
       this.$http.post(url, data).then(
         response => {
-          console.log("doctorDetail", response.data);
+          // console.log("用户评价", response.data);
           if (response.data.statusCode == 1) {
             this.customerAppraisal = response.data.obj;
             var simpleContent = response.data.obj.simpleContent;
@@ -429,7 +452,7 @@ export default {
       };
       this.$http.post(url, data).then(
         response => {
-          console.log("专家文章", response.data);
+          // console.log("专家文章", response.data);
           if (response.data.statusCode == 1) {
             var expertArticle = response.data.obj;
             this.expertArticle = expertArticle;
@@ -944,8 +967,8 @@ export default {
     margin-bottom:0.4rem;
     span{
       display:inline-block;
-      width:0.8rem;
-      height: 0.8rem;
+      width:0.5rem;
+      height: 0.5rem;
       margin-right:0.3rem;
       img{
         width:100%;
