@@ -327,7 +327,7 @@ export default {
   height: 100%;
   position: relative;
   img {
-    height: 100%;
+    height: auto;
     width: 100%;
     display: block;
   }
