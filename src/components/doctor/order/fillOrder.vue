@@ -138,8 +138,8 @@ export default {
       var regTel = /^1\d{10}$/; // 校验手机号码
       var regCard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; // 校验身份证号
       let isTel = regTel.test(this.phone);
-      // let isCard = regCard.test(this.)
       let isDes = this.description.length;
+      console.log(isTel,isDes,this.visitType)
       if(isTel && isDes >= 10){
         if(this.visitType == "health"){
           this.addHealth(); // 健康咨询
