@@ -172,8 +172,6 @@ export default {
             name: userName,
             defaultCustomer: this.defaultCustomerTrue,
             idCard: userSNum,
-            sex: "1",
-            birthday: "",
             nation: popChooseTextZu,
             isMarried: popChooseTextHun == "已婚" ? "1" : "0",
             homeAddress: userAdress,

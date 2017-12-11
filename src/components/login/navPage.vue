@@ -22,6 +22,31 @@
 <script>
 export default {
   name: "navPage",
+  created() {
+    console.log("navPage的created事件已执行");
+    if (!this.GetRequest().code) {
+      window.location.href =
+        "http://wx.buchang.com/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_base&state=wangyiyang&redirect_uri=" +
+        this.baseUpUrl +
+        "dist/#/navPage";
+    } else {
+      let code = this.GetRequest().code;
+      http: this.$http
+        .post(this.baseAuthonUrl + "customer/getWechatOpenid", {
+          code
+        })
+        .then(
+          res => {
+            let taoOpenid = res.body.object;
+            localStorage.setItem('taoOpenid',taoOpenid);
+            //通过静默授权获取用户的openid
+          },
+          res => {
+            console.log(res);
+          }
+        );
+    }
+  },
   methods: {
     GetRequest() {
       var url = location.search; //获取url中"?"符后的字串

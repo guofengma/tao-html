@@ -38,9 +38,9 @@
           </li>
       </ul>
       <div class="pay_box">
-          <span class="pay_money">{{orderInfo.status=='待付款' ? 'orderInfo.servermoney'+'元' : ''}}</span>
+          <span class="pay_money">{{orderInfo.status=='待付款' ? orderInfo.servermoney+'元' : ''}}</span>
           <div class="btn_box">
-              <a v-if="orderInfo.status=='待付款'" href="javascritp:;">取消订单</a>
+              <a v-if="orderInfo.status=='待付款'" @click="cancelOrder(orderInfo.orderid,orderInfo.servertype)" href="javascritp:;">取消订单</a>
               <a v-if="orderInfo.status=='待付款'" href="javascritp:;" class="go_pay">去支付</a>
               <a v-else-if="orderInfo.status=='待服务'" href="javascritp:;" class="go_pay">去交流</a>
               <a v-else-if="orderInfo.status=='服务中'" href="javascritp:;" class="go_pay">去交流</a>
@@ -55,6 +55,7 @@
 <script>
 import conJiankangCom from "./conJiankangCom";
 import conYuyueCom from "./conYuyueCom";
+import { Toast } from "mint-ui";
 export default {
   name: "orderDetail",
   data() {
@@ -78,6 +79,7 @@ export default {
       .post(this.baseUrl + "orderList/getOrderDetail", { orderId, category })
       .then(
         res => {
+          console.log(JSON.stringify(res));
           let orderDetail = res.body.obj;
           if (orderDetail.patientPhoto) {
             orderDetail.patientPhoto =
@@ -128,7 +130,7 @@ export default {
             if (+new Date() - creattime - hadTime > 2 * 60 * 1000) {
               this.$router.push({ name: "myOrder", params: { id: "1" } });
             }
-          }, 5000);
+          }, 50000);
         },
         res => {
           console.log(res);
@@ -154,6 +156,71 @@ export default {
         var sg = Math.floor(sA % 10);
         that.countTimer = hs + hg + "小时" + ms + mg + "分" + ss + sg;
       }, 1000);
+    },
+    //点击取消订单
+    cancelOrder(orderId, orderType) {
+      this.$http
+        .post(this.baseUrl + "orderList/cancelOrder", {
+          orderId,
+          orderType,
+          userType: "Customer"
+        })
+        .then(
+          res => {
+            Toast('取消订单成功');
+            this.$router.push({name: 'myOrder',id: 2})
+            console.log(res);
+          },
+          res => {
+            console.log(res);
+          }
+        );
+    },
+    nowPay() {
+      let openid = localStorage.getItem('taoOpenid');
+      this.$http
+        .post(
+          "https://www.tdaifu.cn:8443/taodoctor-pay-server/wx/app/old/doWXPAYRequest",
+          {
+            diseaseId: "BA9EA03795BF42478E87573882039283",
+            clentType: "PATIENT",
+            payType: "005001",
+            osType: "WEB",
+            openId: openid,
+            serviceType: "010002"
+          }
+        )
+        .then(
+          res => {
+            console.log(JSON.stringify(res));
+            let objJson = res.body.object;
+            wx.ready(function() {
+              wx.chooseWXPay({
+                timestamp: objJson.timetamp,
+                nonceStr: objJson.noncestr, // 支付签名随机串，不长于 32 位
+                package: objJson.packages, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+                signType: objJson.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                paySign: objJson.sign, // 支付签名
+                success: function(res) {
+                  // 支付成功后的回调函数
+                  if (res.errMsg == "chooseWXPay:ok") {
+                    //支付成功
+                    alert("支付成功");
+                  } else {
+                    console.log(res.errMsg);
+                  }
+                },
+                cancel: function(res) {
+                  //支付取消
+                  console.log("支付取消");
+                }
+              });
+            });
+          },
+          res => {
+            console.log(res);
+          }
+        );
     }
   }
 };

@@ -195,6 +195,7 @@ export default {
   created() {
     var item = this.$route.query;
     this.doctorId = item.dotorId;
+    console.log(this.doctorId);
     this.getDoctorDetail(this.doctorId); //获取用户详细信息
   },
   activated(){

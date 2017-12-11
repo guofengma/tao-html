@@ -83,28 +83,28 @@ export default {
   data() {
     return {
       //本人的信息完善
-      userName: '',
-      userSCode: '',
-      userAdress: '',
-      userTel: '',
-
+      userName: "",
+      userSCode: "",
+      userAdress: "",
+      userTel: "",
+      //就诊人的id，用于更新用户的基本信息
+      patientId: '',
 
       popupVisible: false, //设为默认就诊人弹框显隐的变量
       popText: ["设为默认就诊人", "删除", "取消"],
       popupVisibleZu: false,
       popTextZu: ["汉族", "少数民族"],
-      popSelectedZu: '',
+      popSelectedZu: "",
       popupVisibleHun: false,
       popTextHun: ["未婚", "已婚"],
-      popSelectedHun: '',
-
+      popSelectedHun: "",
 
       defaultCustomerTrue: "0", //是否为默认就诊人
       patienterId: "", //就诊人的id
       patientInfo: {},
 
       onlyYou: false, //判断是否为本人
-      hadNoData: false//判断用户还缺少基本信息
+      hadNoData: false //判断用户还缺少基本信息
     };
   },
   created() {
@@ -120,9 +120,19 @@ export default {
       })
       .then(
         res => {
+          this.patientId = res.body.obj.id;
           this.patientInfo = res.body.obj;
           let peoData = res.body.obj;
-          if(!peoData.name||!peoData.sex||!peoData.birthday2||!peoData.mobilephone||!peoData.cardId||!peoData.nation||!peoData.maritalStatus||!peoData.homeAddress) {
+          if (
+            !peoData.name ||
+            !peoData.sex ||
+            !peoData.birthday2 ||
+            !peoData.mobilephone ||
+            !peoData.cardId ||
+            !peoData.nation ||
+            !peoData.maritalStatus ||
+            !peoData.homeAddress
+          ) {
             this.hadNoData = true;
           }
         },
@@ -133,12 +143,26 @@ export default {
   },
   watch: {
     userSCode(newV, old) {
-      if(newV.length == 15) {
-        this.patientInfo.birthday2 = newV.substring(6, 10) + "年" + newV.substring(10, 12) + "月" + newV.substring(12, 14) + "日";
-        this.patientInfo.sex = parseInt(newV.substr(16, 1)) % 2 == 1 ? '001001' : '001002';
-      }else if (newV.length == 18) {
-        this.patientInfo.birthday2 = newV.substring(6, 10) + "年" + newV.substring(10, 12) + "月" + newV.substring(12, 14) + "日";
-        this.patientInfo.sex = parseInt(newV.substr(16, 1)) % 2 == 1 ? '001001' : '001002';
+      if (newV.length == 15) {
+        this.patientInfo.birthday2 =
+          newV.substring(6, 10) +
+          "年" +
+          newV.substring(10, 12) +
+          "月" +
+          newV.substring(12, 14) +
+          "日";
+        this.patientInfo.sex =
+          parseInt(newV.substr(16, 1)) % 2 == 1 ? "001001" : "001002";
+      } else if (newV.length == 18) {
+        this.patientInfo.birthday2 =
+          newV.substring(6, 10) +
+          "年" +
+          newV.substring(10, 12) +
+          "月" +
+          newV.substring(12, 14) +
+          "日";
+        this.patientInfo.sex =
+          parseInt(newV.substr(16, 1)) % 2 == 1 ? "001001" : "001002";
       }
     }
   },
@@ -227,25 +251,53 @@ export default {
       let userSCode = !patientInfo.cardId ? this.userSCode : patientInfo.cardId;
       let sex = patientInfo.sex;
       let birthday2 = patientInfo.birthday2;
-      let nation = !patientInfo.nation ? this.popSelectedZu : patientInfo.nation;
-      let maritalStatus = !patientInfo.maritalStatus ? this.popSelectedHun : patientInfo.maritalStatus;
-      let homeAddress = !patientInfo.homeAddress ? this.userAdress : patientInfo.homeAddress;
-      let mobilephone = !patientInfo.mobilephone ? this.userTel : patientInfo.mobilephone;
-      if(!userName) {
-        Toast('请输入就诊人的真实姓名');
-      }else if(!this.regSCode.test(userSCode)) {
-        Toast('请输入就诊人的真实身份证号');
-      }else if(!nation) {
-        Toast('请选择就诊人的民族');
-      }else if(!maritalStatus) {
-        Toast('请选择就诊人的婚姻状态');
-      }else if(!homeAddress) {
-        Toast('请输入就诊人的详细地址');
-      }else if(!mobilephone) {
-        Toast('请输入就诊人的真实手机号');
-      }else {
+      let nation = !patientInfo.nation
+        ? this.popSelectedZu
+        : patientInfo.nation;
+      let maritalStatus = !patientInfo.maritalStatus
+        ? this.popSelectedHun
+        : patientInfo.maritalStatus;
+      let homeAddress = !patientInfo.homeAddress
+        ? this.userAdress
+        : patientInfo.homeAddress;
+      let mobilephone = !patientInfo.mobilephone
+        ? this.userTel
+        : patientInfo.mobilephone;
+      if (!userName) {
+        Toast("请输入就诊人的真实姓名");
+      } else if (!this.regSCode.test(userSCode)) {
+        Toast("请输入就诊人的真实身份证号");
+      } else if (!nation) {
+        Toast("请选择就诊人的民族");
+      } else if (!maritalStatus) {
+        Toast("请选择就诊人的婚姻状态");
+      } else if (!homeAddress) {
+        Toast("请输入就诊人的详细地址");
+      } else if (!mobilephone) {
+        Toast("请输入就诊人的真实手机号");
+      } else {
         //更新本人（就诊人）的基本信息
-        
+        this.$http
+          .post(this.baseUrl + "customer/updatePatienInfo", {
+            mobilephone: mobilephone,
+            patientId: this.patientId,
+            name: userName,
+            cardId: userSCode,
+            sex: sex == "001001" ? "1" : "2",
+            birthday: birthday2,
+            nation: nation,
+            maritalStatus: maritalStatus,
+            homeAddress: homeAddress
+          })
+          .then(
+            res => {
+              console.log(res);
+              Toast(res.body.message);
+            },
+            res => {
+              console.log(res);
+            }
+          );
       }
     }
   }
@@ -353,7 +405,7 @@ export default {
   background-color: #459bff;
   text-align: center;
   margin-top: 1rem;
-  border-radius: .4rem;
+  border-radius: 0.4rem;
 }
 //弹出框样式
 .mint-popup {

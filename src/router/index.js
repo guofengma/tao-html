@@ -61,7 +61,7 @@ export default new Router({
     //重定向
     {
       path: '/',
-      redirect: '/loginIndex'
+      redirect: '/navPage'
     },
     //xu
     {

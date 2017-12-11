@@ -122,14 +122,18 @@ export default {
   },
   beforeCreate() {
     //如果用户已经存储了userInfo则直接跳转到首页
-    let userInfo = localStorage.getItem("userInfo");
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (!!userInfo) {
+      //已经登录过涛大夫
       this.$router.push({ name: "home" });
     }
   },
   created() {
-    if (this.GetRequest()["code"]) {
+    let parameterObj = this.GetRequest();
+    console.log('检验是否执行loginIndex中的created');
+    if (parameterObj["code"]) {
       //用户已经授权登录
+      //得到用户的基本信息（必须用户同意）
       // this.$http
       //   .post(this.baseAuthonUrl + "customer/getWechatAuthorizationInfo", {
       //     code: this.GetRequest()["code"]
@@ -150,15 +154,11 @@ export default {
       //       console.log(res);
       //     }
       //   );
-      console.log('查询默认程序是否执行');
-
-      
+      console.log("查询默认程序是否执行");
     }
   },
   watch: {
-    userCode() {
-      
-    }
+    userCode() {}
   },
   methods: {
     popPage() {
@@ -206,8 +206,8 @@ export default {
           })
           .then(res => {
             if (res.body.statusCode == 1) {
-                this.codeMsg = true;
-                this.telInputShow = false;
+              this.codeMsg = true;
+              this.telInputShow = false;
             }
           });
       }
