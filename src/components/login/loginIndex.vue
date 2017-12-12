@@ -130,31 +130,29 @@ export default {
   },
   created() {
     let parameterObj = this.GetRequest();
-    console.log('检验是否执行loginIndex中的created');
     if (parameterObj["code"]) {
       //用户已经授权登录
       //得到用户的基本信息（必须用户同意）
-      // this.$http
-      //   .post(this.baseAuthonUrl + "customer/getWechatAuthorizationInfo", {
-      //     code: this.GetRequest()["code"]
-      //   })
-      //   .then(
-      //     res => {
-      //       let obj = res.body;
-      //       console.log(JSON.stringify(obj));
-      //       localStorage.setItem("wxBaseInfo", JSON.stringify(obj.object));
-      //       if (obj.statusCode == 1) {
-      //         //用户授权成功
-      //         this.popupVisible = true;
-      //         this.telLogin = false;
-      //         this.userBase = obj.object;
-      //       }
-      //     },
-      //     res => {
-      //       console.log(res);
-      //     }
-      //   );
-      console.log("查询默认程序是否执行");
+      this.$http
+        .post(this.baseAuthonUrl + "customer/getWechatAuthorizationInfo", {
+          code: this.GetRequest()["code"]
+        })
+        .then(
+          res => {
+            let obj = res.body;
+            console.log(JSON.stringify(obj));
+            localStorage.setItem("wxBaseInfo", JSON.stringify(obj.object));
+            if (obj.statusCode == 1) {
+              //用户授权成功
+              this.popupVisible = true;
+              this.telLogin = false;
+              this.userBase = obj.object;
+            }
+          },
+          res => {
+            console.log(res);
+          }
+        );
     }
   },
   watch: {
@@ -301,7 +299,7 @@ export default {
       window.location.href =
         "http://wx.buchang.com/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
         this.baseUpUrl +
-        "dist/#/loginIndex";
+        "dist/loginIndex";
     },
     GetRequest() {
       var url = location.search; //获取url中"?"符后的字串

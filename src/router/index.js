@@ -55,13 +55,13 @@ import coupon from '@/components/doctor/order/coupon'
 Vue.use(Router)
 
 export default new Router({
-  // mode: 'history',//使用html5
-  base: '/dist/',
+  mode: 'history',//使用html5
+  base: '/mp/dist/',
   routes: [
     //重定向
     {
       path: '/',
-      redirect: '/navPage'
+      redirect: '/loginIndex'
     },
     //xu
     {

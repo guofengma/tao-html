@@ -28,7 +28,7 @@ export default {
       window.location.href =
         "http://wx.buchang.com/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_base&state=wangyiyang&redirect_uri=" +
         this.baseUpUrl +
-        "dist/#/navPage";
+        "dist/navPage";
     } else {
       let code = this.GetRequest().code;
       http: this.$http
