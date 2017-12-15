@@ -22,7 +22,8 @@ Vue.config.debug = true
 Vue.config.productionTip = false
 Vue.http.options.emulateJSON = true
 /*全局的baseUrl*/
-Vue.prototype.baseUrl = 'https://www.tdaifu.cn:8443/taodoctor/rest/'
+//https://www.tdaifu.cn:8443
+Vue.prototype.baseUrl = 'http://120.26.107.233:8080/taodoctor/rest/'
 Vue.prototype.baseImgUrl = 'https://www.tdaifu.cn:8443/taodoctor' 
 //暂定的微信授权链接(暂定) 接口
 Vue.prototype.baseAuthonUrl = 'http://120.26.107.233:8080/taodoctor/rest/'
@@ -40,4 +41,5 @@ new Vue({
   router,
   template: '<App/>',
   components: { App }
+  // render: h=>h(App)
 })
