@@ -96,12 +96,17 @@ export default {
     console.log(this.$route.params)
 
     var userInfo = JSON.parse(localStorage.getItem('userInfo')); // 用户信息
+    
     var healthInfo = JSON.parse(localStorage.getItem('healthInfo'));
     // console.log(healthInfo)
-    this.doctorRelServiceId = healthInfo.doctorRelServiceId;
+    
     this.userId = userInfo.id;
     this.visitTime = JSON.parse(localStorage.getItem('visitTime'));
     this.visitType = localStorage.getItem('visitType'); // 服务类型
+    console.log("服务类型",this.visitType)
+    if(this.visitType == "health"){
+      this.doctorRelServiceId = healthInfo.doctorRelServiceId;
+    }
     this.doctorInfo = JSON.parse(localStorage.getItem('doctorInfo')); // 医生详情
     this.cost = this.transferUnit(this.doctorInfo.yusheprice); // 服务价格
     this.visitInfo = data.visitInfo; // 就诊人信息
