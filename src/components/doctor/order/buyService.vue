@@ -103,7 +103,7 @@ export default {
     this.userId = userInfo.id;
     this.visitTime = JSON.parse(localStorage.getItem('visitTime'));
     this.visitType = localStorage.getItem('visitType'); // 服务类型
-    console.log("服务类型",this.visitType)
+    // console.log("服务类型",this.visitType)
     if(this.visitType == "health"){
       this.doctorRelServiceId = healthInfo.doctorRelServiceId;
     }
