@@ -22,13 +22,16 @@ Vue.config.debug = true
 Vue.config.productionTip = false
 Vue.http.options.emulateJSON = true
 /*全局的baseUrl*/
-//https://www.tdaifu.cn:8443  11111111111222
+//https://www.tdaifu.cn:8443 
+//www.buchang.com:3435
 Vue.prototype.baseUrl = 'https://www.tdaifu.cn:8443/taodoctor/rest/'
 Vue.prototype.baseImgUrl = 'https://www.tdaifu.cn:8443/taodoctor' 
 //暂定的微信授权链接(暂定) 接口
-Vue.prototype.baseAuthonUrl = 'https://www.tdaifu.cn:8443/taodoctor/rest/'
+Vue.prototype.baseAuthonUrl = 'https://www.buchang.com:3436/taodoctor/rest/'
 //服务器上的回调路径
-Vue.prototype.baseUpUrl = 'https://www.tdaifu.cn:8443/'
+Vue.prototype.baseUpUrl = 'http://www.buchang.com:3435/taodoctor/'
+
+//http://localhost:8080/
 //正则匹配
 Vue.prototype.regTel = /^(0|86|17951)?(13[0-9]|15[012356789]|17[0123456789]|18[0-9]|14[57])[0-9]{8}$/
 Vue.prototype.regCode = /^\d{4}$/

@@ -193,7 +193,7 @@ export default {
             res => {
               //该服务器
               let userInfo = JSON.parse(localStorage.getItem('userInfo'));
-              let headerImage = res.body.object.headerImage;
+              let headerImage = res.body.object.headerImage;   //该图片已上传到服务器上
               userInfo.headerImage = headerImage;
               localStorage.removeItem('userInfo');
               localStorage.setItem('userInfo',JSON.stringify(userInfo));

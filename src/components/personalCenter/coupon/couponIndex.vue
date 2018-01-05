@@ -97,8 +97,8 @@ export default {
                 Toast(data.message);
               }else if(data.statusCode==1) {
                 Toast(data.message);
-                setImmediate(function(){
-                  window.history.go(0);
+                setTimeout(function(){
+                  // window.history.go(0);
                 },1000);
               }
               console.log(res);

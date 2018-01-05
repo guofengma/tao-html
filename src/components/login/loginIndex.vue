@@ -297,7 +297,7 @@ export default {
     },
     wxPop() {
       window.location.href =
-        "http://wx.buchang.com/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
+        "https://www.tdaifu.cn/mp/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
         this.baseUpUrl +
         "dist/loginIndex";
     },
