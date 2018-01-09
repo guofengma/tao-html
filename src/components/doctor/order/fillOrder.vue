@@ -51,7 +51,7 @@ export default {
       userInfo: [],
       customerId:'',
       uid:'',
-      phone:'18404984908',
+      phone:'',
       description:'',
       visitData:{},
       visitType:'',
@@ -194,7 +194,9 @@ export default {
             this.addFile(); // 上传附件
           }else{
             // 没有附件直接跳转
-            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitInfo:this.visitInfo}});
+            // 存储订单信息
+            localStorage.setItem('orderInfo',JSON.stringify({uid:this.uid,description:this.description,visitInfo:this.visitInfo}));
+            this.$router.push({name:'buyService'});
           }
         }
       },res => {
@@ -229,7 +231,9 @@ export default {
             this.addFile(); // 上传附件
           }else{
             // 没有附件直接跳转
-            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitInfo:this.visitInfo}});
+            // 存储订单信息
+            localStorage.setItem('orderInfo',JSON.stringify({uid:this.uid,description:this.description,visitInfo:this.visitInfo}));
+            this.$router.push({name:'buyService'});
           }
         }
       },res => {
@@ -259,7 +263,9 @@ export default {
         console.log(res.data);
         if(res.data.statusCode == 1){
           if(n == this.viewImg.length - 1){
-            this.$router.push({name:'buyService',params:{uid:this.uid,description:this.description,visitInfo:this.visitInfo}});
+            // 存储订单信息
+            localStorage.setItem('orderInfo',JSON.stringify({uid:this.uid,description:this.description,visitInfo:this.visitInfo}));
+            this.$router.push({name:'buyService'});
           }
         }
       },res => {
