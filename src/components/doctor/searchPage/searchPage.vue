@@ -97,6 +97,8 @@ export default {
 }
 .search_top {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.5rem 0;
   li {
     color: @fontColor;
@@ -105,7 +107,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     &.search {
-      width: 15rem;
+      width: 75%;
       height: 1.6rem;
       border-radius: 1rem;
       background: @bgColor;

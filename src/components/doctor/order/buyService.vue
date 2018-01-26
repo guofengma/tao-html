@@ -31,13 +31,13 @@
         <li>
           <span>健康咨询</span><span>{{cost}} 元</span>
         </li>
-        <router-link tag="li" :to="{name:'couponIndex'}">
+        <router-link tag="li" :to="{name:'couponIndex',query:{cost:cost,type:visitType}}">
           <span>优惠券</span> 
-          <div class="coupon">使用优惠券<span class="coupon_icon"><img src="../../../../static/imgs/hospital/order/tdf_back_r.png" alt=""></span></div>
+          <div class="coupon">{{userCouponText}}<span class="coupon_icon"><img src="../../../../static/imgs/hospital/order/tdf_back_r.png" alt=""></span></div>
         </router-link>
         <li @click="useBalance($event)">
           <span>账户零钱</span>
-          <div class="coupon">{{accountMoney | fen2yuan}}<span class="dib_icon" :class="{'active':useSmall}"></span></div>
+          <div class="coupon">{{accountMoney}} 元<span class="dib_icon" :class="{'active':useSmall}"></span></div>
         </li>
       </ul>
       <div class="payment_method">
@@ -72,12 +72,18 @@ export default {
   data() {
     return {
       cost:0,// 费用
-      discount:0, // 优惠
+      discount:0, // 优惠(零钱)
+      coupon:0, // 优惠(优惠券)
+      couponId:'', // 优惠券id
       paid:0, // 支付
       useSmall:false, 
+      useConpon:false, 
       userId:'',
+      userCouponText:'使用优惠券',
       doctorRelServiceId:'', // 健康咨询的priceId
-      accountMoney:'', // 用户余额
+      accountMoney:'', // 用户余额(显示)
+      balance:'', // 用户余额(计算)
+      accountPay:0, // 余额支付
       doctorInfo:{}, // 医师详情
       visitInfo:{}, // 就诊人信息
       description:'', // 病情描述
@@ -92,23 +98,44 @@ export default {
     };
   },
   created() {
-    var data = this.$route.params;
-    console.log(this.$route.params)
+    // var data = this.$route.params;
+    var couponInfo = this.$route.params; // 使用优惠券时的信息
+    if(couponInfo.dicValue != undefined){
+      // 使用优惠券
+      this.useConpon = true;
+      this.couponId = couponInfo.couponId; // 优惠券id
+      if(couponInfo.dicValue == '004001'){
+        this.userCouponText = (couponInfo.couponMoney * 10).toFixed(1) + "折折扣券";
+        this.coupon = couponInfo.discount;
+      }else if(couponInfo.dicValue == '004002'){
+        this.userCouponText = couponInfo.couponMoney + "元优惠券";
+        this.coupon = couponInfo.discount;
+      }
+    }else{
+      // 不使用优惠券
+      this.useConpon = false;
+      this.userCouponText = this.userCouponText;
+    }
+    var data = JSON.parse(localStorage.getItem('orderInfo'));
+    console.log(this.$route.params,data)
 
-    var userInfo = JSON.parse(localStorage.getItem('userInfo')); // 用户信息
-    
-    var healthInfo = JSON.parse(localStorage.getItem('healthInfo'));
-    // console.log(healthInfo)
-    
-    this.userId = userInfo.id;
-    this.visitTime = JSON.parse(localStorage.getItem('visitTime'));
+    this.visitTime = JSON.parse(localStorage.getItem('visitTime')); // 准时预约服务信息
     this.visitType = localStorage.getItem('visitType'); // 服务类型
+    var userInfo = JSON.parse(localStorage.getItem('userInfo')); // 用户信息
+    this.doctorInfo = JSON.parse(localStorage.getItem('doctorInfo')); // 医生详情
+    var healthInfo = JSON.parse(localStorage.getItem('healthInfo')); // 健康咨询服务信息
+    // console.log(healthInfo)
+    this.userId = userInfo.id;
+    
     console.log("服务类型",this.visitType)
     if(this.visitType == "health"){
       this.doctorRelServiceId = healthInfo.doctorRelServiceId;
+      var healthPrice = healthInfo.servicePrice.split("/")[0];
+      this.cost = parseFloat(healthPrice).toFixed(2);
+    }else if(this.visitType == "punctual"){
+      this.cost = this.transferUnit(this.doctorInfo.yusheprice); // 服务价格
     }
-    this.doctorInfo = JSON.parse(localStorage.getItem('doctorInfo')); // 医生详情
-    this.cost = this.transferUnit(this.doctorInfo.yusheprice); // 服务价格
+    
     this.visitInfo = data.visitInfo; // 就诊人信息
     this.description = data.description; // 病情描述
     this.uid = data.uid; // Uuid
@@ -142,18 +169,51 @@ export default {
   computed:{
     calDiscount(){
       // 费用(cost) - 优惠(discount) = 第三方(paid)
-      if(this.useSmall){
-        var price = Tool("subtract",this.cost,this.accountMoney / 100);
-        if(price >= 0){
-          this.discount = this.accountMoney / 100;
-          this.paid = price;
+      if(this.useSmall && this.useConpon){ // 同时使用零钱、优惠券支付
+        var couponPayment = Tool("subtract",this.cost,this.coupon); // 优先使用优惠券
+        var discountPayment = Tool("subtract",couponPayment,this.balance); // 再使用零钱
+        console.log('同时使用零钱、优惠券支付',couponPayment,discountPayment);
+        if(discountPayment >= 0){
+          this.discount = Tool("add",couponPayment,this.balance);
+          // this.accountMoney = Tool("subtract",this.balance,this.discount);
+          this.accountMoney = parseFloat(0).toFixed(2);
+          this.paid = discountPayment;
+          this.accountPay = this.balance; // 余额支付
+          console.log(1)
         }else{
           this.discount = this.cost;
+          this.accountMoney = Tool("subtract",this.balance,couponPayment);
           this.paid = parseFloat(0).toFixed(2);
+          this.accountPay = Tool("subtract",this.cost,couponPayment) // 余额支付
+          console.log(this.accountMoney)
+        }
+      }else if(this.useConpon){ // 使用优惠券支付
+        console.log('使用优惠券支付');
+        var price = Tool("subtract",this.cost,this.coupon);
+        this.discount = this.coupon;
+        this.accountMoney = this.balance;
+        this.paid = price;
+        this.accountPay = parseFloat(0).toFixed(2); // 余额支付
+      }else if(this.useSmall){ // 使用零钱支付
+        console.log('使用零钱支付');
+        var price = Tool("subtract",this.cost,this.balance);
+        console.log(price)
+        if(price >= 0){
+          this.discount = this.balance;
+          this.accountMoney = Tool("subtract",this.balance,this.discount);
+          this.paid = price;
+          this.accountPay = this.discount; // 余额支付
+        }else{
+          this.discount = this.cost;
+          this.accountMoney = Tool("subtract",this.balance,this.discount);
+          this.paid = parseFloat(0).toFixed(2);
+          this.accountPay = this.discount; // 余额支付
         }
       }else{
         this.discount = parseFloat(0).toFixed(2);
+        this.accountMoney = this.balance;
         this.paid = this.cost;
+        this.accountPay = this.discount; // 余额支付
       }
       return this.discount;
     }
@@ -164,25 +224,42 @@ export default {
       Indicator.open({ text:'加载中...'});
       var url = this.baseUrl + 'allorder/saveOrder';
       var serviceType = this.visitType == "punctual" ? "visitTime" : "phone";
-      var data;
-      if(serviceType == 'punctual'){
-        data = {
-          diseaseId:this.uid,
-          payType:'005001',
-          payMoney:this.paid, // 第三方
-          serviceType:serviceType, 
-          accountPay:this.discount, // 余额
+      var data = {
+        diseaseId:this.uid,
+        payType:'005001',
+        payMoney:this.paid, // 第三方
+        serviceType:serviceType, 
+        accountPay:this.accountPay, // 余额
+      };
+      console.log(this.doctorRelServiceId)
+      if(serviceType == 'visitTime'){
+        // data = {
+        //   diseaseId:this.uid,
+        //   payType:'005001',
+        //   payMoney:this.paid, // 第三方
+        //   serviceType:serviceType, 
+        //   accountPay:this.discount, // 余额
+        // }
+        if(this.couponId){
+          data.couponId = this.couponId;
         }
-      }else{
-        data = {
-          diseaseId:this.uid,
-          payType:'005001',
-          payMoney:this.paid, // 第三方
-          serviceType:serviceType, 
-          accountPay:this.discount, // 余额
-          doctorId:this.doctorInfo.id,
-          priceId:this.doctorRelServiceId
+      }else if(serviceType == 'phone'){
+        data.doctorId = this.doctorInfo.id;
+        data.priceId = this.doctorRelServiceId;
+        console.log(this.couponId)
+        if(this.couponId){
+          data.couponId = this.couponId;
         }
+        // data = {
+        //   diseaseId:this.uid,
+        //   payType:'005001',
+        //   payMoney:this.paid, // 第三方
+        //   serviceType:serviceType, 
+        //   accountPay:this.discount, // 余额
+        //   doctorId:this.doctorInfo.id,
+        //   priceId:this.doctorRelServiceId,
+        //   // couponId:this.couponId // 优惠券id
+        // }
       }
       this.$http.post(url,data).then(res => {
         console.log(res.data);
@@ -202,6 +279,11 @@ export default {
         result = parseFloat(result) + 0.01;
       }
       return result.toFixed(2);
+    },
+    // 分转元
+    fen2yuan(num){
+      if ( typeof num !== "number" || isNaN( num ) ) return null;
+      return ( num / 100 ).toFixed( 2 );
     },
     // 获取优惠券
     getCoupon(){
@@ -225,8 +307,10 @@ export default {
       this.$http.post(url,data).then(res => {
         console.log(res.data);
         if(res.data.statusCode == 1){
-          console.log(res.data.object.accountMoney)
-          this.accountMoney = res.data.object.accountMoney;
+          console.log(res.data.object.accountMoney);
+          // 余额
+          this.balance = this.fen2yuan(res.data.object.accountMoney); // 后台返回余额
+          this.accountMoney = this.fen2yuan(res.data.object.accountMoney); // 前端显示
         }
       },res => {
         console.log("error");
