@@ -27,9 +27,12 @@ Vue.http.options.emulateJSON = true
 Vue.prototype.baseUrl = 'https://www.tdaifu.cn:8443/taodoctor/rest/'
 Vue.prototype.baseImgUrl = 'https://www.tdaifu.cn:8443/taodoctor' 
 //暂定的微信授权链接(暂定) 接口
-Vue.prototype.baseAuthonUrl = 'https://www.buchang.com:3436/taodoctor/rest/'
+Vue.prototype.baseAuthonUrl = 'https://www.tdaifu.cn/taodoctor/rest/'
 //服务器上的回调路径
-Vue.prototype.baseUpUrl = 'http://www.buchang.com:3435/taodoctor/'
+Vue.prototype.baseUpUrl = 'https://www.tdaifu.cn/taodoctor/dist/'
+
+//微信支付接口baseUrl
+Vue.prototype.basePayUrl = '';
 
 //http://localhost:8080/
 //正则匹配

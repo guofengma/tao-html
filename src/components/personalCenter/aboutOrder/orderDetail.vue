@@ -41,7 +41,7 @@
           <span class="pay_money">{{orderInfo.status=='待付款' ? orderInfo.servermoney+'元' : ''}}</span>
           <div class="btn_box">
               <a v-if="orderInfo.status=='待付款'" @click="cancelOrder(orderInfo.orderid,orderInfo.servertype)" href="javascritp:;">取消订单</a>
-              <a v-if="orderInfo.status=='待付款'" href="javascritp:;" class="go_pay" @click="nowPay(orderInfo.diseaseId,orderInfo.servertype)">去支付</a>
+              <a v-if="orderInfo.status=='待付款'" href="javascript:;" class="go_pay" @click="nowPay(orderInfo.diseaseId,orderInfo.servertype)">去支付</a>
               <a v-else-if="orderInfo.status=='待服务'" href="javascritp:;" class="go_pay">去交流</a>
               <a v-else-if="orderInfo.status=='服务中'" href="javascritp:;" class="go_pay">去交流</a>
               <a v-else-if="orderInfo.status=='待评价'" href="javascritp:;" class="go_pay" @click.stop="goEva(orderInfo.doctorid,orderInfo.customerid,orderInfo.orderid,orderInfo.servertype=='健康咨询'?'010002':'010001')">去评价</a>
@@ -178,6 +178,7 @@ export default {
     },
     nowPay(diseaseId,servertype) {
       let openid = localStorage.getItem('taoOpenid');
+      let that = this;
       this.$http
         .post(
           "https://www.tdaifu.cn:8443/taodoctor-pay-server/wx/app/old/doWXPAYRequest",
@@ -203,9 +204,10 @@ export default {
                 paySign: objJson.sign, // 支付签名
                 success: function(res) {
                   // 支付成功后的回调函数
+                  console.log(JSON.stringify(res));
                   if (res.errMsg == "chooseWXPay:ok") {
                     //支付成功
-                    alert("支付成功");
+                    that.$router.push({name: 'myOrder', params: { id: '3' }});
                   } else {
                     console.log(res.errMsg);
                   }

@@ -297,9 +297,9 @@ export default {
     },
     wxPop() {
       window.location.href =
-        "https://www.tdaifu.cn/mp/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
-        this.baseUpUrl +
-        "dist/loginIndex";
+        "https://www.tdaifu.cn/taodoctor/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
+        encodeURI(this.baseUpUrl) +
+        "loginIndex";
     },
     GetRequest() {
       var url = location.search; //获取url中"?"符后的字串

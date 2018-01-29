@@ -36,6 +36,8 @@ import changeIndex from '@/components/personalCenter/change/changeIndex.vue'
 import changeLog from '@/components/personalCenter/change/changeLog.vue'
 /************************************评价******************************************************************/
 import evaluate from '@/components/personalCenter/evaluate/evaluate.vue'
+
+import NotFoundComponent from '@/components/pages404/notFoundComponent.vue'
 /************************************优惠券******************************************************************/
 // import couponIndex from '@/components/personalCenter/coupon/couponIndex.vue'
 /**********************************xu************************************************/
@@ -56,12 +58,17 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',//使用html5
-  base: '/dist',
+  base: '/taodoctor/dist/',
   routes: [
     //重定向
     {
       path: '/',
+      name: 'loginIndex',
       redirect: '/loginIndex'
+    },
+    { path: '*',  //404页面
+      name: 'NotFoundComponent',
+      component: NotFoundComponent 
     },
     //xu
     {
