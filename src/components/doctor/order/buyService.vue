@@ -262,11 +262,12 @@ export default {
         // }
       }
       this.$http.post(url,data).then(res => {
-        console.log(res.data);
+        console.log('2222222222222'+res.data);
         Indicator.close();
         if(res.data.statusCode == 1){
-          nowPay(res.data.obj,serviceType);
+          this.nowPay(res.data.obj,serviceType);
         }else{
+          alert('1111111111111');
           Toast(res.data.message);
         }
       },res => {
