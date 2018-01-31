@@ -58,7 +58,7 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',//使用html5
-  base: '/taodoctor/dist/',
+  base: '/taodoctor/nbhhTaohtml/',
   routes: [
     //重定向
     {

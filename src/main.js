@@ -29,10 +29,8 @@ Vue.prototype.baseImgUrl = 'https://www.tdaifu.cn:8443/taodoctor'
 //暂定的微信授权链接(暂定) 接口
 Vue.prototype.baseAuthonUrl = 'https://www.tdaifu.cn/taodoctor/rest/'
 //服务器上的回调路径
-Vue.prototype.baseUpUrl = 'https://www.tdaifu.cn/taodoctor/dist/'
+Vue.prototype.baseUpUrl = 'https://www.tdaifu.cn/taodoctor/nbhhTaohtml/'
 
-//微信支付接口baseUrl
-Vue.prototype.basePayUrl = '';
 
 //http://localhost:8080/
 //正则匹配
