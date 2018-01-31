@@ -22,7 +22,7 @@
           <h2>热门搜索</h2>
         </div>
         <ul>
-          <li v-for="(item,index) in hotSearch" :key="index" @click="clickOption(item)">{{item}}</li>
+          <li v-for="(item,index) in hotSearch" :key="index" @click="clickOption(item.keyWord)">{{item.keyWord}}</li>
         </ul>
       </div>
     </div>
@@ -42,6 +42,7 @@ export default {
   },
   created(){
     this.historySearch = this.getSearchHistory();
+    this.getHotHistor(); // 获取热门搜索历史
   },
   beforeRouteLeave(to, from, next) {
     // 设置下一个路由的 meta
@@ -64,6 +65,16 @@ export default {
     // 点击查询
     clickOption(key){
       this.$router.push({path:'/searchDoctorList',query:{key:key}});
+    },
+     // 获取热门搜索历史
+    getHotHistor(){
+      var url = this.baseUrl + "doc/getHotSearchHistory";
+      this.$http.post(url).then(res => {
+        console.log(res.data)
+        this.hotSearch = res.data.data.slice(0,7);
+      },res => {
+        console.log('error')
+      })
     },
     // 回车查询
     Enter(e) {
