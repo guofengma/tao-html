@@ -99,8 +99,11 @@
     </div>
 
     <ul class="service">
-      <li v-for="(item,index) in service" :key="index" @click="choiceService(index)">
-        <div class="service_icon"><img :src="item.img" alt=""></div>
+      <li v-for="(item,index) in service" :key="index" @click="choiceService(item,index)">
+        <div class="service_icon">
+          <img v-if="item.isOpen" :src="item.img1" alt="">
+          <img v-else :src="item.img2" alt="">
+        </div>
         <p>{{item.text}}</p>
       </li>
     </ul>
@@ -109,7 +112,10 @@
         <!-- 服务tab切换栏 -->
         <ul class="service_tab">
           <li v-for="(item,index) in service" :key="index" @click="switchService(item,index)" :class="{'active':serviceid == 'service' + index}">
-            <div class="service_icon"><img :src="item.img" alt=""></div>
+            <div class="service_icon">
+              <img v-if="item.isOpen" :src="item.img1" alt="">
+              <img v-else :src="item.img2" alt="">
+            </div>
             <p>{{item.text}}</p>
           </li>
         </ul>
@@ -137,7 +143,7 @@
             </ol>
             <!-- 开放时间 -->
             <ol class="service_time">
-              <li v-for="(item,index) in serviceTime" :key="index" @click="choiceVisitTime($event,item,index)" :class="{'active':visit == 'visit' + index}">{{item.num | takeOver}}</li>
+              <li v-for="(item,index) in serviceTime" :key="index" @click="choiceVisitTime($event,item,index)" :class="[{'active':visit == 'visit' + index},{'isuser':item.isuser === 1}]">{{item.num | takeOver}}</li>
               <div class='service_no' v-if='serviceTime.length == 0'>暂未开放时间</div>
             </ol>
             <!-- 地址 -->
@@ -176,9 +182,24 @@ export default {
       customerImpression: [], // 患者印象
       simpleContent: [], // 用户评价中患者印象
       service:[
-        {img:require('../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png'),text:'健康咨询'},
-        {img:require('../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png'),text:'准时预约'},
-        {img:require('../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png'),text:'家庭医生'},
+        {
+          isOpen:false,
+          img1:require('../../../../static/imgs/hospital/index/tdf_hospital_jkzx.png'),
+          img2:require('../../../../static/imgs/hospital/index/tdf_hospital_jkzx_pre.png'),
+          text:'健康咨询'
+        },
+        {
+          isOpen:false,
+          img1:require('../../../../static/imgs/hospital/index/tdf_hospital_jzhyy.png'),
+          img2:require('../../../../static/imgs/hospital/index/tdf_hospital_jzhyy_pre.png'),
+          text:'准时预约'
+        },
+        {
+          isOpen:false,
+          img1:require('../../../../static/imgs/hospital/index/tdf_hospital_jtysh.png'),
+          img2:require('../../../../static/imgs/hospital/index/tdf_hospital_jtysh_pre.png'),
+          text:'家庭医生'
+        },
       ], // 服务类型
       visitType:'forbid', // 就诊类型
       serviceid:"", // 切换服务类型id
@@ -266,9 +287,19 @@ export default {
       });
       this.$http.post(url, data).then(
         response => {
-          // console.log(response.data); 
+          console.log(response.data); 
           if (response.data.statusCode == 1) {
             this.doctorInfo = response.data.obj; // 医生详情
+            console.log(this.service)
+            this.service.forEach(function(v,i){
+              if(i == 0){
+                v.isOpen = response.data.obj.isOpenPhone == '1' ? true : false;
+              }else if(i == 1){
+                v.isOpen = response.data.obj.isOpenBespeak == '1' ? true : false;
+              }else if(i == 2){
+                v.isOpen = response.data.obj.isOpenFamily == '1' ? true : false;
+              }
+            })
             var customerImpression = response.data.obj.customerImpression; // 患者印象
             var imgUrl = response.data.obj.photo; // 医生头像
             if (customerImpression) {
@@ -284,10 +315,15 @@ export default {
       );
     },
     // 选择服务
-    choiceService(index){
-      this.isService = true; // 选择服务弹窗显示、隐藏
-      this.serviceid = "service" + index;
-      this.visitType = 'forbid';
+    choiceService(item,index){
+      if(item.isOpen){
+        this.isService = true; // 选择服务弹窗显示、隐藏
+        this.serviceid = "service" + index;
+        this.visitType = 'forbid';
+      }else{
+        return false;
+      }
+      
       if(index == 0){
         this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
       }else if(index == 1){
@@ -311,12 +347,14 @@ export default {
     },
     // 选择服务类型切换
     switchService(item,index){
-      // this.serviceid = "service" + index;
-      if(index == 0){
+      if(item.isOpen){
         this.serviceid = "service" + index;
+      }else{
+        return false;
+      }
+      if(index == 0){
         this.consultation.length ? '' : this.getHealthPrice(this.doctorId);
       }else if(index == 1){
-        this.serviceid = "service" + index;
         this.punctualBespeak.length ? '' : this.getpunctualBespeak(this.doctorId);
       }else if(index == 2){
         this.serviceid = this.serviceid; // 家庭医生功能待开发
@@ -347,13 +385,19 @@ export default {
     },
     // 选择就诊时间
     choiceVisitTime(e,item,index){
-      this.visit = 'visit' + index;
-      this.address = item.address;
-      this.isAddress = true;
-      this.visitType = 'punctual';
-      // console.log(item);
-      // 存储就诊时间对象
-      localStorage.setItem('visitTime',JSON.stringify(item))
+      console.log(typeof item.isuser)
+      // isuser为1 代表已经购买了服务，不能再次购买
+      if(item.isuser === 1){
+        return false;
+      }else if(item.isuser === 0){
+        this.visit = 'visit' + index;
+        this.address = item.address;
+        this.isAddress = true;
+        this.visitType = 'punctual';
+        // console.log(item);
+        // 存储就诊时间对象
+        localStorage.setItem('visitTime',JSON.stringify(item))
+      }
     },
     // 获取健康咨询医生定价
     getHealthPrice(doctorId){
@@ -374,7 +418,7 @@ export default {
       var url = this.baseUrl + 'doc/getDoctorOpenTime';
       Indicator.open({text:'加载中...'});
       this.$http.post(url,{docid:doctorId}).then(res => {
-        // console.log(res.data);
+        console.log(res.data);
         if(res.data.success){
           this.punctualBespeak = res.data.data;
           this.serviceTime = this.punctualBespeak[0].item;
@@ -944,6 +988,11 @@ export default {
     color:rgb(82,163,255);
     &.active{
       background:rgb(218,234,253);
+    }
+    &.isuser{
+      border-color:red;
+      color:red;
+      // background-color:rgba(255,0,0,0.2);
     }
   }
   .service_no{
