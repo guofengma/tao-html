@@ -154,7 +154,7 @@ export default {
   min-width: 320px;
   max-width: 640px;
   margin: 0 auto;
-  height: 100%;
+  min-height: 100%;
   position: relative;
   li:nth-of-type(1) {
     padding: 0.6rem 1.2rem;

@@ -15,13 +15,14 @@
                   <i class="iconfont icon-right"></i>
               </div>
           </router-link>
-          <router-link tag="li" :to="{name:'myErweima'}">
+          <!-- 由于暂不知晓二维码接口 -->
+          <!-- <router-link tag="li" :to="{name:'myErweima'}">
               <span>我的二维码</span>
               <div>
                   <em class="iconfont icon-qrcode"></em>
                   <i class="iconfont icon-right"></i>
               </div>
-          </router-link>
+          </router-link> -->
           <li>
               <span>我的地址</span>
               <div>
@@ -240,7 +241,7 @@ export default {
   max-width: 640px;
   margin: 0 auto;
   padding-top: 0.6rem;
-  height: 100%;
+  min-height: 100%;
 }
 .personal_data {
   li {

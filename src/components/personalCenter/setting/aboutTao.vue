@@ -40,7 +40,7 @@ export default {
     max-width: 640px;
     margin: 0 auto;
     background-color: rgb(239, 244, 250);
-    height: 100%;
+    min-height: 100%;
     position: relative;
     .top_logo {
         display: flex;

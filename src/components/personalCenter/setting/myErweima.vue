@@ -26,16 +26,17 @@ export default {
   },
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    userInfo.headerImage = this.baseImgUrl + userInfo.headerImage
     this.userInfo = userInfo;
     //调用请求二维码的接口
-    this.$http.post(this.baseUrl + "", {}).then(
-      res => {
-        console.log(res);
-      },
-      res => {
-        console.log(res);
-      }
-    );
+    // this.$http.post(this.baseUrl + "", {}).then(
+    //   res => {
+    //     console.log(res);
+    //   },
+    //   res => {
+    //     console.log(res);
+    //   }
+    // );
   }
 };
 </script>
@@ -58,6 +59,7 @@ export default {
           width: 3rem;
           margin-right: 0.5rem;
           height: 3rem;
+          border-radius: 50%; 
         }
         span {
           font-size: 0.8rem;

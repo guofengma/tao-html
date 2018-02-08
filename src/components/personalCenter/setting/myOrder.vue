@@ -70,7 +70,7 @@ export default {
   max-width: 640px;
   margin: 0 auto;
   background-color: #eff4fa;
-  height: 100%;
+  min-height: 100%;
 }
 .top_header {
   display: flex;

@@ -80,7 +80,7 @@
       <li>
         <div>
           <img src="../../../static/imgs/personalCenterImgs/index/tdf_my_order@2x.png" alt="">
-          <span>需求订单</span>
+          <span>药品订单</span>
         </div>
         <i class="iconfont icon-right"></i>
       </li>
