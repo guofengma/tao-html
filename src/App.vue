@@ -27,7 +27,7 @@ export default {
           let dataJson = res.body.object;
           wx.config({
             debug: false,
-            appId: "wx5b95d4f216a65e2d",
+            appId: "wx944b482b1c088969",
             timestamp: dataJson.timestamp,
             nonceStr: dataJson.nonceStr,
             signature: dataJson.signature,

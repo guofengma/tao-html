@@ -26,12 +26,12 @@ export default {
     console.log("navPage的created事件已执行");
     if (!this.GetRequest().code) {
       window.location.href =
-        "https://www.tdaifu.cn/taodoctor/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_base&state=wangyiyang&redirect_uri=" +
+        "https://www.tdaifu.cn/taodoctor/get-weixin-code.html?appid=wx944b482b1c088969&scope=snsapi_base&state=wangyiyang&redirect_uri=" +
         encodeURI(this.baseUpUrl) +
         "navPage";
     } else {
       let code = this.GetRequest().code;
-      http: this.$http
+      this.$http
         .post(this.baseAuthonUrl + "customer/getWechatOpenid", {
           code
         })

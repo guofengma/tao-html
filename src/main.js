@@ -29,7 +29,10 @@ Vue.prototype.baseImgUrl = 'https://www.tdaifu.cn:8443/taodoctor'
 //暂定的微信授权链接(暂定) 接口
 Vue.prototype.baseAuthonUrl = 'https://www.tdaifu.cn/taodoctor/rest/'
 //服务器上的回调路径
+/*********************原有************************* */
 Vue.prototype.baseUpUrl = 'https://www.tdaifu.cn/taodoctor/nbhhTaohtml/'
+
+
 
 
 //http://localhost:8080/

@@ -122,11 +122,11 @@ export default {
   },
   beforeCreate() {
     //如果用户已经存储了userInfo则直接跳转到首页
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (!!userInfo) {
-      //已经登录过涛大夫
-      this.$router.push({ name: "home" });
-    }
+    // let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    // if (!!userInfo) {
+    //   //已经登录过涛大夫
+    //   this.$router.push({ name: "home" });
+    // }
   },
   created() {
     let parameterObj = this.GetRequest();
@@ -297,7 +297,7 @@ export default {
     },
     wxPop() {
       window.location.href =
-        "https://www.tdaifu.cn/taodoctor/get-weixin-code.html?appid=wx5b95d4f216a65e2d&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
+        "https://www.tdaifu.cn/taodoctor/get-weixin-code.html?appid=wx944b482b1c088969&scope=snsapi_userinfo&state=wangyiyang&redirect_uri=" +
         encodeURI(this.baseUpUrl) +
         "loginIndex";
     },
